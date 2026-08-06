@@ -1,0 +1,198 @@
+/* ===== FLEX SHORTHAND UTILITIES ===== */
+
+/* Basic Flex */
+@utility fc {
+	@apply flex items-center justify-center;
+}
+@utility fcx {
+	@apply flex justify-center;
+}
+@utility fcy {
+	@apply flex items-center;
+}
+
+/* Alignment */
+@utility fs {
+	@apply flex items-start justify-start;
+}
+@utility fe {
+	@apply flex items-end justify-end;
+}
+@utility ft {
+	@apply flex items-start;
+}
+@utility fb {
+	@apply flex items-end;
+}
+@utility fl {
+	@apply flex justify-start;
+}
+@utility fr {
+	@apply flex justify-end;
+}
+
+/* Space Between */
+@utility fcb {
+	@apply flex items-center justify-between;
+}
+@utility fbs {
+	@apply flex items-start justify-between;
+}
+@utility fbe {
+	@apply flex items-end justify-between;
+}
+@utility fa {
+	@apply flex items-center justify-around;
+}
+@utility fev {
+	@apply flex items-center justify-evenly;
+}
+
+/* Column */
+@utility fcc {
+	@apply flex flex-col items-center justify-center;
+}
+@utility fcs {
+	@apply flex flex-col items-start justify-start;
+}
+@utility fce {
+	@apply flex flex-col items-end justify-end;
+}
+@utility fct {
+	@apply flex flex-col items-start;
+}
+@utility fcb2 {
+	@apply flex flex-col justify-between;
+}
+@utility fcb3 {
+	@apply flex flex-col items-end;
+}
+
+/* Wrap */
+@utility fwc {
+	@apply flex flex-wrap items-center justify-center;
+}
+@utility fws {
+	@apply flex flex-wrap items-start justify-start;
+}
+@utility fwe {
+	@apply flex flex-wrap items-end justify-end;
+}
+@utility fwb {
+	@apply flex flex-wrap items-center justify-between;
+}
+@utility fwa {
+	@apply flex flex-wrap items-center justify-around;
+}
+@utility fwrap {
+	@apply flex flex-wrap;
+}
+
+/* Gap */
+@utility fg2 {
+	@apply flex items-center gap-2;
+}
+@utility fg4 {
+	@apply flex items-center gap-4;
+}
+@utility fg6 {
+	@apply flex items-center gap-6;
+}
+@utility fcg2 {
+	@apply flex flex-col items-center gap-2;
+}
+@utility fcg4 {
+	@apply flex flex-col items-center gap-4;
+}
+@utility fcg6 {
+	@apply flex flex-col items-center gap-6;
+}
+
+/* Self Alignment */
+@utility fss {
+	@apply self-start;
+}
+@utility fsc {
+	@apply self-center;
+}
+@utility fse {
+	@apply self-end;
+}
+@utility fss2 {
+	@apply self-stretch;
+}
+@utility fsa {
+	@apply self-auto;
+}
+
+/* Common Patterns */
+@utility fn {
+	@apply flex items-center justify-between;
+}
+@utility fcard {
+	@apply flex flex-col items-center justify-center;
+}
+@utility fri {
+	@apply flex flex-wrap items-center gap-4;
+}
+@utility ffc {
+	@apply flex items-center justify-center min-h-screen;
+}
+@utility ff {
+	@apply flex flex-col justify-between min-h-screen;
+}
+@utility fstack {
+	@apply flex flex-col md:flex-row items-center justify-between gap-4;
+}
+@utility fbtn {
+	@apply flex items-center justify-center gap-2;
+}
+@utility ffm {
+	@apply flex flex-col gap-2;
+}
+@utility flist {
+	@apply flex flex-wrap items-center gap-4;
+}
+
+/* Responsive */
+@utility fresp {
+	@apply flex flex-col md:flex-row items-center justify-between gap-4;
+}
+@utility frespc {
+	@apply flex flex-col md:flex-row items-center justify-center gap-4;
+}
+@utility fresps {
+	@apply flex flex-col md:flex-row items-start justify-start gap-4;
+}
+
+/* Special */
+@utility ftc {
+	@apply flex items-center justify-center text-center;
+}
+@utility ffull {
+	@apply flex items-center justify-center w-full;
+}
+@utility ffh {
+	@apply flex items-center justify-center h-full;
+}
+@utility fnested {
+	@apply flex flex-wrap items-start gap-4;
+}
+@utility fgrid {
+	@apply flex flex-wrap -mx-2;
+}
+@utility fac {
+	@apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center;
+}
+@utility fi {
+	@apply inline-flex items-center justify-center;
+}
+@utility fic {
+	@apply inline-flex flex-col items-center justify-center;
+}
+@utility fg1 {
+	@apply flex-1;
+}
+@utility sh0 {
+	@apply shrink-0;
+}
