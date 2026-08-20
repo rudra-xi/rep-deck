@@ -1,55 +1,25 @@
-/** biome-ignore-all lint/style/noNonNullAssertion: <explanation> */
-/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
-
-import { createClient } from "@supabase/supabase-js";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "./schema";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+if (!process.env.DATABASE_URL) {
+	throw new Error("DATABASE_URL environment variable is not set");
+}
 
-// Create Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Configure postgres client with better settings
+const client = postgres(process.env.DATABASE_URL, {
+	ssl: { rejectUnauthorized: false },
+	max: 10, // Maximum number of connections
+	idle_timeout: 20, // Idle connection timeout in seconds
+	connect_timeout: 10, // Connection timeout in seconds
+	prepare: false, // Disable prepared statements for better compatibility
+});
 
-// Export schema for types
-export { schema };
+// Create drizzle instance with schema
+export const db = drizzle({client, schema });
 
-// Create a mock db for compatibility
-export const db = {
-	query: {
-		users: {
-			findMany: async () => {
-				const { data, error } = await supabase
-					.from("users")
-					.select("*");
-				if (error) throw error;
-				return data;
-			},
-		},
-		programTemplates: {
-			findMany: async () => {
-				const { data, error } = await supabase
-					.from("program_templates")
-					.select("*");
-				if (error) throw error;
-				return data;
-			},
-		},
-		workoutSessions: {
-			findMany: async (options?: any) => {
-				let query = supabase.from("workout_sessions").select(`
-          *,
-          workout_sets (*)
-        `);
-				if (options?.with?.sets) {
-					query = supabase.from("workout_sessions").select(`
-            *,
-            workout_sets (*)
-          `);
-				}
-				const { data, error } = await query;
-				if (error) throw error;
-				return data;
-			},
-		},
-	},
-};
+// Export client for raw queries if needed
+export { client };
+
+// Export everything from schema
+export * from "./schema";
