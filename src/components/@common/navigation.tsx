@@ -9,6 +9,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/assets/image";
+import { SignOutButton } from "@/auth";
 import {
 	NavigationMenu,
 	NavigationMenuItem,
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { navigationData } from "@/constants";
 
-// Icon mapping per Navigation ID
+// Icon mapping per Navigation ID (Updated to standard Phosphor icon names)
 const navIconMap = {
 	1: NotebookIcon,
 	2: TrendUpIcon,
@@ -45,9 +46,9 @@ export const Navigation = () => {
 					<span className="hidden lg:inline">Rep Deck</span>
 				</Link>
 
-				{/* Center/Right: Navigation Links */}
+				{/* Center/Right: Navigation Links & Auth Actions */}
 				<NavigationMenu>
-					<NavigationMenuList className="gap-0.5 lg:gap-1">
+					<NavigationMenuList className="gap-0.5 lg:gap-1 items-center">
 						{navigationData.map((item) => {
 							const NavSpecificIcon =
 								navIconMap[
@@ -61,7 +62,7 @@ export const Navigation = () => {
 										className={`${navigationMenuTriggerStyle()} uppercase text-[11px] lg:text-xs tracking-wider cursor-pointer font-semibold px-2.5 lg:px-3 h-8 flex items-center gap-1.5`}
 									>
 										<NavSpecificIcon
-											className="size-2.5 lg:size-4"
+											className="size-3.5 lg:size-4"
 											weight="bold"
 										/>
 										<span>{item.label}</span>
@@ -69,6 +70,11 @@ export const Navigation = () => {
 								</NavigationMenuItem>
 							);
 						})}
+
+						{/* Sign Out Button integrated inside Navigation Menu */}
+						<NavigationMenuItem className="pl-1">
+							<SignOutButton variant="icon" className="h-8 w-8" />
+						</NavigationMenuItem>
 					</NavigationMenuList>
 				</NavigationMenu>
 			</header>
