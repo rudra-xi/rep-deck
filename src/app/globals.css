@@ -149,3 +149,7 @@
 @utility base-ease {
 	@apply transition-all ease-in duration-300;
 }
+
+@utility main-padding {
+	@apply lg:mx-10 lg:my-24;
+}

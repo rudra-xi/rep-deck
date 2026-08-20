@@ -1,14 +1,14 @@
-import {
-	pgTable,
-	uuid,
-	text,
-	integer,
-	timestamp,
-	index,
-} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/_relations";
-import { users } from "./users";
+import {
+	index,
+	integer,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+} from "drizzle-orm/pg-core";
 import { programTemplates } from "./programTemplates";
+import { users } from "./users";
 import { workoutSets } from "./workoutSets";
 
 // ---------- Workout Sessions ----------

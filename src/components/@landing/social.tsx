@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import {
 	GithubLogoIcon,
 	InstagramLogoIcon,
 	LinkedinLogoIcon,
 } from "@phosphor-icons/react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { socialLinksData } from "@/constants";
 

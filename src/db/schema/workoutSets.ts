@@ -1,15 +1,15 @@
-import {
-	pgTable,
-	uuid,
-	text,
-	integer,
-	decimal,
-	timestamp,
-	index,
-} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/_relations";
-import { workoutSessions } from "./workoutSessions";
+import {
+	decimal,
+	index,
+	integer,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+} from "drizzle-orm/pg-core";
 import { exerciseTemplates } from "./exerciseTemplates";
+import { workoutSessions } from "./workoutSessions";
 
 // ---------- Workout Sets ----------
 export const workoutSets = pgTable(

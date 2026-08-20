@@ -16,7 +16,7 @@ const client = postgres(process.env.DATABASE_URL, {
 });
 
 // Create drizzle instance with schema
-export const db = drizzle({client, schema });
+export const db = drizzle({ client, schema });
 
 // Export client for raw queries if needed
 export { client };

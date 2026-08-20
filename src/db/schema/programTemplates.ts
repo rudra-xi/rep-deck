@@ -1,15 +1,15 @@
-import {
-	pgTable,
-	uuid,
-	text,
-	integer,
-	boolean,
-	timestamp,
-	index,
-} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/_relations";
-import { users } from "./users";
+import {
+	boolean,
+	index,
+	integer,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+} from "drizzle-orm/pg-core";
 import { programDayTemplates } from "./programDayTemplates";
+import { users } from "./users";
 
 // ---------- Program Templates ----------
 export const programTemplates = pgTable(

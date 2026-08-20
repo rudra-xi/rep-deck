@@ -1,12 +1,12 @@
-import {
-	pgTable,
-	uuid,
-	text,
-	integer,
-	timestamp,
-	index,
-} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/_relations";
+import {
+	index,
+	integer,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+} from "drizzle-orm/pg-core";
 import { programDayTemplates } from "./programDayTemplates";
 
 // ---------- Exercise Templates ----------

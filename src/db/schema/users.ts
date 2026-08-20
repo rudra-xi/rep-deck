@@ -1,8 +1,8 @@
-import { pgTable, uuid, text, timestamp, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/_relations";
+import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { bodyMeasurements } from "./bodyMeasurements";
 import { programTemplates } from "./programTemplates";
 import { workoutSessions } from "./workoutSessions";
-import { bodyMeasurements } from "./bodyMeasurements";
 
 // ---------- Users (profile) ----------
 export const users = pgTable(
