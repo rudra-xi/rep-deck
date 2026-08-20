@@ -1,6 +1,6 @@
-import { createClient } from "@/utils/supabase/server";
-import { syncUserWithDatabase } from "@/actions/auth";
 import { NextResponse } from "next/server";
+import { syncUserWithDatabase } from "@/actions/auth";
+import { createClient } from "@/utils/supabase/server";
 
 export async function GET(request: Request) {
 	console.log("=== Auth Callback Started ===");
@@ -11,6 +11,7 @@ export async function GET(request: Request) {
 
 	console.log("Code present:", !!code);
 	console.log("Next redirect:", next);
+	console.log("Origin:", origin);
 
 	if (code) {
 		try {
@@ -22,6 +23,7 @@ export async function GET(request: Request) {
 
 			if (error) {
 				console.error("Exchange code error:", error);
+				// Use the origin from the request instead of hardcoded URL
 				return NextResponse.redirect(
 					new URL(
 						`/?error=${encodeURIComponent(error.message)}`,
@@ -40,11 +42,10 @@ export async function GET(request: Request) {
 				console.log("User synced:", syncedUser?.id || "Failed to sync");
 			} catch (syncError) {
 				console.error("Sync error (continuing):", syncError);
-				// Continue even if sync fails - user is already in Supabase Auth
 			}
 
-			// Redirect to dashboard
-			console.log("Redirecting to dashboard");
+			// Use the origin from the request
+			console.log("Redirecting to dashboard at:", origin);
 			return NextResponse.redirect(new URL("/dashboard", origin));
 		} catch (error) {
 			console.error("Callback error:", error);
