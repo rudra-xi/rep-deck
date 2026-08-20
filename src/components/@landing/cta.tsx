@@ -1,8 +1,7 @@
 "use client";
 
 import { ArrowRightIcon } from "@phosphor-icons/react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { GoogleBtn } from "@/auth";
 import { ctaData } from "@/constants";
 
 export const CTA = () => {
@@ -21,16 +20,9 @@ export const CTA = () => {
 
 				{/* Action Button */}
 				<div className="pt-4">
-					<Button
-						nativeButton={false}
-						render={
-							<Link href="/signup">
-								{ctaData.buttonText}
-								<ArrowRightIcon className="ml-2 size-5 animate-pulse" />
-							</Link>
-						}
-						size="lg"
-						className=" font-semibold px-10 py-6 text-base shadow-lg"
+					<GoogleBtn
+						text={ctaData.buttonText}
+						icon={<ArrowRightIcon />}
 					/>
 				</div>
 			</div>

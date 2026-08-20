@@ -1,8 +1,9 @@
 "use client";
 
+import { GoogleLogoIcon } from "@phosphor-icons/react";
 import Image from "next/image";
-import Link from "next/link";
 import { Sample } from "@/assets/image";
+import { GoogleBtn } from "@/auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -46,13 +47,9 @@ export const Hero = () => {
 					{/* Call To Action Buttons */}
 					<div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
 						{/* Redirects to Signup Page */}
-						<Button
-							nativeButton={false}
-							render={
-								<Link href="/signup">Start Tracking Free</Link>
-							}
-							size="lg"
-							className="w-full sm:w-auto font-semibold px-8 shadow-lg shadow-primary/20"
+						<GoogleBtn
+							text="Start Tracking Free"
+							icon={<GoogleLogoIcon />}
 						/>
 
 						{/* Smooth Scroll to Features */}
