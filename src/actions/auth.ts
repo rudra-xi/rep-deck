@@ -1,42 +1,55 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 
 // Sign in with Google
 export async function signInWithGoogle(redirectTo?: string) {
-	const supabase = await createClient();
-	const headerList = await headers();
-	const origin =
-		headerList.get("origin") ||
-		process.env.NEXT_PUBLIC_APP_URL ||
-		"http://localhost:3000";
+	try {
+		const supabase = await createClient();
 
-	const { data, error } = await supabase.auth.signInWithOAuth({
-		provider: "google",
-		options: {
-			redirectTo: `${origin}/auth/callback${redirectTo ? `?next=${redirectTo}` : ""}`,
-			queryParams: {
-				access_type: "offline",
-				prompt: "consent",
+		// Get the origin from the request headers
+		const headersList = await headers();
+		const origin =
+			headersList.get("origin") ||
+			process.env.NEXT_PUBLIC_APP_URL ||
+			"http://localhost:3000";
+
+		console.log("Sign in origin:", origin);
+
+		const { data, error } = await supabase.auth.signInWithOAuth({
+			provider: "google",
+			options: {
+				redirectTo: `${origin}/auth/callback${redirectTo ? `?next=${redirectTo}` : ""}`,
+				queryParams: {
+					access_type: "offline",
+					prompt: "consent",
+				},
 			},
-		},
-	});
+		});
 
-	if (error) {
-		console.error("Google sign-in error:", error);
-		return { error: error.message };
+		if (error) {
+			console.error("Google sign-in error:", error);
+			return { error: error.message };
+		}
+
+		if (data?.url) {
+			console.log("Redirecting to:", data.url);
+			return redirect(data.url);
+		}
+
+		return { error: "No redirect URL received" };
+	} catch (error) {
+		if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+			throw error;
+		}
+		console.error("Sign in error:", error);
+		return { error: "Failed to sign in with Google" };
 	}
-
-	if (data?.url) {
-		redirect(data.url);
-	}
-
-	return { error: "No redirect URL received" };
 }
 
 // Sign out
