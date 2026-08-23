@@ -7,24 +7,39 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { createClient } from "@/utils/supabase/server";
 
+// Helper to generate a default avatar seed
+function generateDefaultAvatarSeed(identifier: string) {
+	return `thumb-${identifier.slice(0, 8)}`;
+}
+
 // Sign in with Google
 export async function signInWithGoogle(redirectTo?: string) {
 	try {
 		const supabase = await createClient();
 
-		// Get the origin from the request headers
+		// Fallback order for header parsing in Next.js Server Actions
 		const headersList = await headers();
+		const host = headersList.get("host");
+		const protocol = headersList.get("x-forwarded-proto") || "http";
+
 		const origin =
 			headersList.get("origin") ||
-			process.env.NEXT_PUBLIC_APP_URL ||
-			"http://localhost:3000";
+			(host
+				? `${protocol}://${host}`
+				: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
 
-		console.log("Sign in origin:", origin);
+		// Construct the absolute callback endpoint
+		const callbackUrl = new URL("/auth/callback", origin);
+		if (redirectTo) {
+			callbackUrl.searchParams.set("next", redirectTo);
+		}
+
+		console.log("OAuth Redirect Target:", callbackUrl.toString());
 
 		const { data, error } = await supabase.auth.signInWithOAuth({
 			provider: "google",
 			options: {
-				redirectTo: `${origin}/auth/callback${redirectTo ? `?next=${redirectTo}` : ""}`,
+				redirectTo: callbackUrl.toString(),
 				queryParams: {
 					access_type: "offline",
 					prompt: "consent",
@@ -38,7 +53,6 @@ export async function signInWithGoogle(redirectTo?: string) {
 		}
 
 		if (data?.url) {
-			console.log("Redirecting to:", data.url);
 			return redirect(data.url);
 		}
 
@@ -90,6 +104,19 @@ export async function getCurrentUser() {
 			return { supabaseUser: user, dbUser: syncedUser };
 		}
 
+		// Backfill avatarSeed if user exists in DB but doesn't have an avatarSeed set
+		if (!dbUser.avatarSeed) {
+			const [updatedUser] = await db
+				.update(users)
+				.set({
+					avatarSeed: generateDefaultAvatarSeed(user.id),
+				})
+				.where(eq(users.id, dbUser.id))
+				.returning();
+
+			return { supabaseUser: user, dbUser: updatedUser || dbUser };
+		}
+
 		return { supabaseUser: user, dbUser };
 	} catch (error) {
 		console.error("Get current user error:", error);
@@ -123,11 +150,14 @@ export async function syncUserWithDatabase() {
 			.where(eq(users.supabaseUserId, user.id));
 
 		if (existingUser) {
-			// Update user profile metadata
+			// Update user profile metadata and seed if missing
 			const [updatedUser] = await db
 				.update(users)
 				.set({
 					name: user.user_metadata?.full_name || existingUser.name,
+					avatarSeed:
+						existingUser.avatarSeed ||
+						generateDefaultAvatarSeed(user.id),
 				})
 				.where(eq(users.id, existingUser.id))
 				.returning();
@@ -135,7 +165,7 @@ export async function syncUserWithDatabase() {
 			return updatedUser || existingUser;
 		}
 
-		// Insert new database record
+		// Insert new database record with generated avatar seed
 		const [newUser] = await db
 			.insert(users)
 			.values({
@@ -145,6 +175,7 @@ export async function syncUserWithDatabase() {
 					user.user_metadata?.full_name ||
 					user.email?.split("@")[0] ||
 					"User",
+				avatarSeed: generateDefaultAvatarSeed(user.id),
 			})
 			.returning();
 

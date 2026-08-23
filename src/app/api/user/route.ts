@@ -1,30 +1,24 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
 
 export async function GET() {
-	const cookieStore = await cookies();
+	const supabase = await createClient();
 
-	// 1. Validate session token from request cookies
-	const sessionToken =
-		cookieStore.get("next-auth.session-token")?.value ||
-		cookieStore.get("__Secure-next-auth.session-token")?.value ||
-		cookieStore.get("session_token")?.value;
+	const {
+		data: { user },
+		error,
+	} = await supabase.auth.getUser();
 
-	// 2. Return 401 Unauthorized if no active session exists
-	if (!sessionToken) {
-		return NextResponse.json(
-			{ error: "Unauthorized access. Please log in at /" },
-			{ status: 401 },
-		);
+	if (error || !user) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
 
-	// 3. Perform authenticated data fetching / business logic
-	return NextResponse.json(
-		{
-			status: "success",
-			message: "Authenticated access granted.",
-			// Return protected user data here
+	return NextResponse.json({
+		status: "success",
+		message: "Authenticated access granted.",
+		user: {
+			id: user.id,
+			email: user.email,
 		},
-		{ status: 200 },
-	);
+	});
 }
