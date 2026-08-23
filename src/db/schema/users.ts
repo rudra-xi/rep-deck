@@ -12,6 +12,7 @@ export const users = pgTable(
 		supabaseUserId: uuid("supabase_user_id").notNull().unique(),
 		email: text("email").notNull(),
 		name: text("name"),
+		avatarSeed: text("avatar_seed"),
 		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
 			.defaultNow(),
