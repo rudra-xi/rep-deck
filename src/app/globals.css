@@ -69,13 +69,13 @@
 	--border: oklch(0.92 0.004 286.32);
 	--input: oklch(0.92 0.004 286.32);
 	--ring: oklch(0.705 0.015 286.067);
-	
+
 	/*--chart-1: oklch(0.871 0.006 286.286);
 	--chart-2: oklch(0.552 0.016 285.938);
 	--chart-3: oklch(0.442 0.017 285.786);
 	--chart-4: oklch(0.37 0.013 285.805);
 	--chart-5: oklch(0.274 0.006 286.033);*/
-	
+
 	--chart-1: oklch(0.827 0.119 306.383);
 	--chart-2: oklch(0.627 0.265 303.9);
 	--chart-3: oklch(0.558 0.288 302.321);
@@ -164,6 +164,11 @@
 
 @utility base-ease {
 	@apply transition-all ease-in duration-300;
+}
+
+@utility cubic-one {
+	@apply transition-all duration-300;
+	transition-timing-function: cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
 
 @utility main-padding {
