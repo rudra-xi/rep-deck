@@ -36,6 +36,8 @@ export default function Dashboard() {
 					<StrengthChart data={DASHBOARD_MOCK_DATA.strengthTrend} />
 				</div>
 
+				<Separator className="block lg:hidden" />
+
 				{/* Last Session Snapshot (Takes up 1 column on desktop) */}
 				<div className="lg:col-span-1 space-y-3">
 					<SectionTitleCard title="Last Session Snapshot" />
