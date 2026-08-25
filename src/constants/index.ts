@@ -149,3 +149,93 @@ export const aboutData = {
 	],
 	creator: "Designed and built by rudra-xi.",
 };
+
+export interface Challenge {
+	id: string;
+	title: string;
+	description: string;
+	target: string;
+	category: "Grip" | "Core" | "Endurance" | "Legs" | "Balance";
+}
+
+export const CHALLENGES: Challenge[] = [
+	{
+		id: "dead-hang",
+		title: "Dead Hang Max",
+		description:
+			"Hang from a pull-up bar for as long as possible. Aim to beat your last time.",
+		target: "Max Time",
+		category: "Grip",
+	},
+	{
+		id: "plank-hold",
+		title: "Plank Hold",
+		description: "Hold a strict plank with core engaged and neutral spine.",
+		target: "60–90 sec",
+		category: "Core",
+	},
+	{
+		id: "pushup-sprint",
+		title: "Push-Up Sprint",
+		description:
+			"Perform as many clean, full range-of-motion push-ups as possible.",
+		target: "60 seconds",
+		category: "Endurance",
+	},
+	{
+		id: "wall-sit",
+		title: "Wall Sit",
+		description:
+			"Back flat against the wall, knees bent at a strict 90° angle.",
+		target: "60+ sec",
+		category: "Legs",
+	},
+	{
+		id: "hollow-body",
+		title: "Hollow Body Hold",
+		description:
+			"Press lower back into the floor and hold a tight hollow body position.",
+		target: "30–45 sec",
+		category: "Core",
+	},
+	{
+		id: "air-squat-ladder",
+		title: "Air Squat Ladder",
+		description:
+			"Complete 10, 15, then 20 air squats with 30 seconds rest between sets.",
+		target: "3 Sets",
+		category: "Legs",
+	},
+	{
+		id: "reverse-plank",
+		title: "Reverse Plank Hold",
+		description:
+			"Drive hips high with arms extended behind you. Keep glutes engaged.",
+		target: "30–45 sec",
+		category: "Core",
+	},
+	{
+		id: "farmers-carry",
+		title: "Farmer's Carry",
+		description:
+			"Walk heel-to-toe in a straight line with arms at sides and core tight.",
+		target: "30–45 sec",
+		category: "Balance",
+	},
+	{
+		id: "single-leg-balance",
+		title: "Single-Leg Balance",
+		description:
+			"Stand on one leg with eyes closed. Maintain strict posture.",
+		target: "20–30s / leg",
+		category: "Balance",
+	},
+	{
+		id: "burpee-burst",
+		title: "Burpee Burst",
+		description:
+			"Perform clean burpees as fast as possible with good form.",
+		target: "10 Reps",
+		category: "Endurance",
+	},
+];
