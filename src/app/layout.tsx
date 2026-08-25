@@ -72,6 +72,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html
+			suppressHydrationWarning={true}
 			lang="en"
 			className={cn(
 				"h-full",
