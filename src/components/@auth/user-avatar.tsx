@@ -1,69 +1,60 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import { createClient } from "@/utils/supabase/client";
+import type { User } from "@supabase/supabase-js";
+import { getCurrentUser } from "@/actions/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getDiceBearAvatarUrl } from "@/utils/dicebear/dicebear";
 
 interface UserAvatarProps {
 	className?: string;
-	size?: "sm" | "md" | "lg";
+	size?: "sm" | "default" | "lg";
 }
 
-export function UserAvatar({ className = "", size = "md" }: UserAvatarProps) {
-	const [user, setUser] = useState<any>(null);
+export function UserAvatar({ className = "", size = "lg" }: UserAvatarProps) {
+	const [user, setUser] = useState<User | null>(null);
+	const [avatarSeed, setAvatarSeed] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 
-	const sizeClasses = {
-		sm: "w-8 h-8",
-		md: "w-10 h-10",
-		lg: "w-12 h-12",
-	};
-
 	useEffect(() => {
-		const fetchUser = async () => {
-			const supabase = createClient();
-			const {
-				data: { user },
-			} = await supabase.auth.getUser();
-			setUser(user);
+		const fetchUserData = async () => {
+			const { supabaseUser, dbUser } = await getCurrentUser();
+			setUser(supabaseUser);
+			setAvatarSeed(dbUser?.avatarSeed ?? null);
 			setLoading(false);
 		};
 
-		fetchUser();
+		fetchUserData();
 	}, []);
 
 	if (loading) {
 		return (
-			<div
-				className={`${sizeClasses[size]} rounded-full bg-gray-200 animate-pulse ${className}`}
+			<Avatar
+				size={size}
+				className={`rounded-none bg-muted animate-pulse ${className}`}
 			/>
 		);
 	}
 
-	if (!user) {
-		return null;
-	}
+	if (!user) return null;
 
-	const avatarUrl = user.user_metadata?.avatar_url;
-	const name = user.user_metadata?.full_name || user.email;
+	const name =
+		(user.user_metadata?.full_name as string | undefined) ||
+		user.email ||
+		"User";
+
+	const avatarUrl = getDiceBearAvatarUrl(avatarSeed || user.id || "default");
 
 	return (
-		<div
-			className={`${sizeClasses[size]} rounded-full overflow-hidden bg-blue-100 flex items-center justify-center ${className}`}
-		>
-			{avatarUrl ? (
-				<Image
-					src={avatarUrl}
-					alt={name || "User avatar"}
-					width={40}
-					height={40}
-					className="w-full h-full object-cover"
-				/>
-			) : (
-				<span className="text-blue-600 font-semibold text-sm">
-					{name?.charAt(0).toUpperCase() || "U"}
-				</span>
-			)}
-		</div>
+		<Avatar size={size} className={`after:border-0 rounded-none ${className}`}>
+			<AvatarImage
+				src={avatarUrl}
+				alt={name}
+				className="object-cover rounded-none"
+			/>
+			<AvatarFallback className="rounded-none bg-primary/10 text-primary font-semibold">
+				{name.charAt(0).toUpperCase()}
+			</AvatarFallback>
+		</Avatar>
 	);
 }
