@@ -151,3 +151,126 @@ export const mockLastWorkout: LastWorkoutSession = {
 		{ id: "3", exercise: "Leg Press", weightKg: 220, reps: 10 },
 	],
 };
+
+export type ExerciseTemplate = {
+	id: string;
+	name: string;
+	type: "Primary" | "Secondary" | "Extra";
+	target: string;
+	lastSession: string;
+};
+
+export const MOCK_PROGRAM_DAYS: Record<number, ExerciseTemplate[]> = {
+	1: [
+		{
+			id: "ex-101",
+			name: "Incline Barbell Bench Press",
+			type: "Primary",
+			target: "3 Sets × 6-8 Reps",
+			lastSession: "80kg × 8",
+		},
+		{
+			id: "ex-102",
+			name: "Standing Dumbbell Bicep Curls",
+			type: "Secondary",
+			target: "4 Sets × 10-12 Reps",
+			lastSession: "16kg × 10",
+		},
+		{
+			id: "ex-103",
+			name: "Cable Chest Flyes",
+			type: "Extra",
+			target: "3 Sets × 12-15 Reps",
+			lastSession: "15kg × 12",
+		},
+	],
+	2: [
+		{
+			id: "ex-201",
+			name: "Barbell Bent-Over Row",
+			type: "Primary",
+			target: "4 Sets × 8-10 Reps",
+			lastSession: "85kg × 8",
+		},
+		{
+			id: "ex-202",
+			name: "Tricep Rope Pushdowns",
+			type: "Secondary",
+			target: "3 Sets × 12-15 Reps",
+			lastSession: "27.5kg × 12",
+		},
+	],
+	3: [
+		{
+			id: "ex-301",
+			name: "Barbell Back Squat",
+			type: "Primary",
+			target: "4 Sets × 5 Reps",
+			lastSession: "120kg × 5",
+		},
+		{
+			id: "ex-302",
+			name: "Hanging Leg Raises",
+			type: "Secondary",
+			target: "3 Sets × 15 Reps",
+			lastSession: "Bodyweight × 15",
+		},
+	],
+	4: [
+		{
+			id: "ex-401",
+			name: "Overhead Dumbbell Press",
+			type: "Primary",
+			target: "4 Sets × 8-10 Reps",
+			lastSession: "28kg × 8",
+		},
+		{
+			id: "ex-402",
+			name: "Lateral Cable Raises",
+			type: "Secondary",
+			target: "4 Sets × 12-15 Reps",
+			lastSession: "10kg × 12",
+		},
+	],
+	5: [
+		{
+			id: "ex-501",
+			name: "Romanian Deadlift",
+			type: "Primary",
+			target: "3 Sets × 8-10 Reps",
+			lastSession: "110kg × 8",
+		},
+		{
+			id: "ex-502",
+			name: "Incline Dumbbell Press",
+			type: "Secondary",
+			target: "3 Sets × 10-12 Reps",
+			lastSession: "32kg × 10",
+		},
+	],
+	6: [
+		{
+			id: "ex-601",
+			name: "Kettlebell Swings",
+			type: "Primary",
+			target: "5 Sets × 20 Reps",
+			lastSession: "24kg × 20",
+		},
+		{
+			id: "ex-602",
+			name: "Ab Wheel Rollouts",
+			type: "Secondary",
+			target: "4 Sets × 12 Reps",
+			lastSession: "Bodyweight × 12",
+		},
+	],
+};
+
+export const DAYS = [
+	{ id: 1, label: "Day 1 – Chest & Biceps (Heavy)" },
+	{ id: 2, label: "Day 2 – Back & Triceps (Hypertrophy)" },
+	{ id: 3, label: "Day 3 – Legs & Abs (Heavy)" },
+	{ id: 4, label: "Day 4 – Shoulders & Arms" },
+	{ id: 5, label: "Day 5 – Full Body Volume" },
+	{ id: 6, label: "Day 6 – Conditioning & Core" },
+];
