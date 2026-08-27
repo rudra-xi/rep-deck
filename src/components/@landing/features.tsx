@@ -48,6 +48,7 @@ export const Features = () => {
 
 						return (
 							<Card
+								size="sm"
 								key={item.id}
 								className={` border border-border/80 bg-card/60 hover:border-primary/50 hover:-translate-y-2 base-ease ${
 									isLastItem

@@ -18,12 +18,14 @@ export default function Dashboard() {
 			/>
 
 			{/* KPI / Quick Stats Section */}
-			<div className="space-y-3">
+			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Quick Stats" />
 				<KpiCards data={DASHBOARD_MOCK_DATA.kpis} />
 			</div>
+			
 			<Separator />
-			<div className="space-y-3">
+
+			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Daily Challenge" />
 				<ChallengeCard />
 			</div>

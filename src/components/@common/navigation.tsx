@@ -59,7 +59,7 @@ export const Navigation = () => {
 				</Link>
 
 				{/* --- Right Side: Desktop Inline Navigation --- */}
-				<NavigationMenu className="hidden md:flex">
+				<NavigationMenu className="hidden lg:flex">
 					<NavigationMenuList className="fcy gap-1">
 						{navigationData.map((item) => {
 							const NavSpecificIcon =

@@ -187,7 +187,7 @@ export function ChallengeCard() {
 						>
 							<CaretLeftIcon size={14} />
 						</Button>
-						<span className="text-[11px] font-medium text-foreground w-16 text-center">
+						<span className="text-[11px] font-medium text-foreground w-16 text-center mt-1.5">
 							{mobileItems[mobileTab].title}
 						</span>
 						<Button

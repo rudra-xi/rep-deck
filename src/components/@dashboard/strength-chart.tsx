@@ -54,7 +54,10 @@ export function StrengthChart({ data }: StrengthChartProps) {
 	};
 
 	return (
-		<Card className="border-secondary/50 bg-card/50 lg:col-span-2">
+		<Card
+			size="sm"
+			className="border-secondary/50 bg-card/50 lg:col-span-2"
+		>
 			<CardHeader className="p-4 lg:p-6 flex fct justify-between gap-3 lg:flex-row lg:items-center">
 				<div className="fc gap-2">
 					<NumberSquareOneIcon

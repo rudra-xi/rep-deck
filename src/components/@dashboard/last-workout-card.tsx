@@ -9,11 +9,7 @@ import {
 } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
 	Table,
 	TableBody,
@@ -31,7 +27,10 @@ interface LastWorkoutCardProps {
 
 export function LastWorkoutCard({ data, onViewSession }: LastWorkoutCardProps) {
 	return (
-		<Card className="w-full border-secondary/50 bg-card/50 text-foreground">
+		<Card
+			size="sm"
+			className="w-full border-secondary/50 bg-card/50 text-foreground"
+		>
 			{/* Card Header */}
 			<CardHeader className="p-4 sm:p-6 pb-3 space-y-2">
 				<div className="fwb gap-2">

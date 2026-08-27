@@ -27,6 +27,7 @@ export const HowItWorks = () => {
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
 					{onboardingSteps.map((item) => (
 						<Card
+							size="sm"
 							key={item.step}
 							className=" border border-border/80 bg-card/50 shadow-sm  hover:border-primary/50 hover:-translate-y-2 base-ease"
 						>
