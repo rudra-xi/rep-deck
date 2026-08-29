@@ -68,9 +68,22 @@ export async function signInWithGoogle(redirectTo?: string) {
 
 // Sign out
 export async function signOut() {
-	const supabase = await createClient();
-	await supabase.auth.signOut();
-	redirect("/");
+	try {
+		const supabase = await createClient();
+		await supabase.auth.signOut();
+
+		return {
+			success: true,
+			message: "Signed out successfully",
+		};
+	} catch (error) {
+		console.error("Sign out error:", error);
+		return {
+			success: false,
+			message:
+				error instanceof Error ? error.message : "Failed to sign out",
+		};
+	}
 }
 
 // Get current user
@@ -96,7 +109,7 @@ export async function getCurrentUser() {
 		const [dbUser] = await db
 			.select()
 			.from(users)
-			.where(eq(users.supabaseUserId, user.id));
+			.where(eq(users.id, user.id));
 
 		// If user exists in Auth but not in DB yet, attempt sync
 		if (!dbUser) {
@@ -147,7 +160,7 @@ export async function syncUserWithDatabase() {
 		const [existingUser] = await db
 			.select()
 			.from(users)
-			.where(eq(users.supabaseUserId, user.id));
+			.where(eq(users.id, user.id));
 
 		if (existingUser) {
 			// Update user profile metadata and seed if missing
@@ -169,7 +182,7 @@ export async function syncUserWithDatabase() {
 		const [newUser] = await db
 			.insert(users)
 			.values({
-				supabaseUserId: user.id,
+				id: user.id,
 				email: user.email!,
 				name:
 					user.user_metadata?.full_name ||
