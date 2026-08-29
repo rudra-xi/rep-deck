@@ -42,7 +42,7 @@ export const Social = () => {
 				</p>
 
 				{/* Social Links */}
-				<div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+				<div className="fwc gap-3 pt-2">
 					{socialLinksData.map((item) => {
 						const SocialSpecificIcon =
 							socialIconMap[

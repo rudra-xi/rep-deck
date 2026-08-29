@@ -10,7 +10,7 @@ import { onboardingSteps } from "@/constants";
 
 export const HowItWorks = () => {
 	return (
-		<section className="w-full py-20 px-6 bg-background">
+		<section className="w-full px-6 bg-background">
 			<div className="container max-w-6xl mx-auto space-y-12">
 				{/* Section Header */}
 				<div className="text-center space-y-4 max-w-2xl mx-auto">
@@ -33,7 +33,7 @@ export const HowItWorks = () => {
 						>
 							<CardHeader className="space-y-4">
 								{/* Step Indicator */}
-								<div className="size-10 flex items-center justify-center bg-primary text-primary-foreground font-bold text-lg ">
+								<div className="size-10 fcc bg-primary text-primary-foreground font-bold text-lg ">
 									0{item.step}
 								</div>
 								<CardTitle className="text-xl font-bold uppercase tracking-wider">
