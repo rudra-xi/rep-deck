@@ -54,8 +54,8 @@ export const FAQ = () => {
 								className="border border-border/80 px-6 bg-card/50  transition-colors data-[state=open]:border-primary/50"
 							>
 								<AccordionTrigger className="text-left font-semibold text-base sm:text-lg hover:no-underline py-5">
-									<div className="flex items-center gap-3">
-										<div className="size-8 shrink-0 flex items-center justify-center border border-primary/30 bg-primary/10 text-primary ">
+									<div className="fcy gap-3">
+										<div className="size-8 shrink-0 fcc border border-primary/30 bg-primary/10 text-primary ">
 											<QuestionSpecificIcon
 												className="size-4"
 												weight="bold"
@@ -65,7 +65,7 @@ export const FAQ = () => {
 									</div>
 								</AccordionTrigger>
 								<AccordionContent className="text-muted-foreground leading-relaxed text-sm sm:text-base pb-5 pl-11">
-									<div className="flex items-start gap-2.5">
+									<div className="ft gap-2.5">
 										<CheckCircleIcon
 											className="size-5 shrink-0 text-primary mt-0.5"
 											weight="bold"

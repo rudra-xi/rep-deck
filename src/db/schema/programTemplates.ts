@@ -21,7 +21,8 @@ export const programTemplates = pgTable(
 			.references(() => users.id, { onDelete: "cascade" }),
 		name: text("name").notNull(),
 		version: integer("version").notNull(),
-		startDate: timestamp("start_date", { withTimezone: true }).notNull(),
+		// Allow nullable start dates or set a default:
+		startDate: timestamp("start_date", { withTimezone: true }).defaultNow(),
 		endDate: timestamp("end_date", { withTimezone: true }),
 		active: boolean("active").notNull().default(false),
 		createdAt: timestamp("created_at", { withTimezone: true })

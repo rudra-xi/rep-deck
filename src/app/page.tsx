@@ -3,20 +3,8 @@ import { Suspense } from "react";
 import { getCurrentUser } from "@/actions/auth";
 import { CTA, FAQ, Features, Hero, HowItWorks, Social } from "@/landing";
 
-// Loading component
-function LandingLoading() {
-	return (
-		<div className="min-h-screen flex items-center justify-center">
-			<div className="text-center">
-				<div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-				<p className="mt-4 text-gray-600">Loading...</p>
-			</div>
-		</div>
-	);
-}
-
 // Main landing page component
-async function LandingContent() {
+export default async function Landing() {
 	try {
 		const { supabaseUser } = await getCurrentUser();
 
@@ -40,13 +28,5 @@ async function LandingContent() {
 			<Social />
 			<CTA />
 		</>
-	);
-}
-
-export default function Landing() {
-	return (
-		<Suspense fallback={<LandingLoading />}>
-			<LandingContent />
-		</Suspense>
 	);
 }

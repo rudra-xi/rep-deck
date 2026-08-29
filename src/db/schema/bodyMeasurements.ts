@@ -17,15 +17,38 @@ export const bodyMeasurements = pgTable(
 			.notNull()
 			.references(() => users.id, { onDelete: "cascade" }),
 		date: timestamp("date", { withTimezone: true }).notNull(),
-		// Increase precision for all decimal fields
-		weightKg: decimal("weight_kg", { precision: 6, scale: 2 }),
-		bodyFatPercent: decimal("body_fat_percent", { precision: 5, scale: 2 }),
-		armsCm: decimal("arms_cm", { precision: 5, scale: 2 }),
-		forearmsCm: decimal("forearms_cm", { precision: 5, scale: 2 }),
-		thighsCm: decimal("thighs_cm", { precision: 5, scale: 2 }),
-		chestCm: decimal("chest_cm", { precision: 5, scale: 2 }),
-		waistCm: decimal("waist_cm", { precision: 5, scale: 2 }),
-		hipsCm: decimal("hips_cm", { precision: 5, scale: 2 }),
+		weightKg: decimal("weight_kg", {
+			precision: 6,
+			scale: 2,
+			mode: "number",
+		}),
+		bodyFatPercent: decimal("body_fat_percent", {
+			precision: 5,
+			scale: 2,
+			mode: "number",
+		}),
+		armsCm: decimal("arms_cm", { precision: 5, scale: 2, mode: "number" }),
+		forearmsCm: decimal("forearms_cm", {
+			precision: 5,
+			scale: 2,
+			mode: "number",
+		}),
+		thighsCm: decimal("thighs_cm", {
+			precision: 5,
+			scale: 2,
+			mode: "number",
+		}),
+		chestCm: decimal("chest_cm", {
+			precision: 5,
+			scale: 2,
+			mode: "number",
+		}),
+		waistCm: decimal("waist_cm", {
+			precision: 5,
+			scale: 2,
+			mode: "number",
+		}),
+		hipsCm: decimal("hips_cm", { precision: 5, scale: 2, mode: "number" }),
 		notes: text("notes"),
 		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()

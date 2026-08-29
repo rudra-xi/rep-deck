@@ -11,7 +11,6 @@ import {
 import { exerciseTemplates } from "./exerciseTemplates";
 import { workoutSessions } from "./workoutSessions";
 
-// ---------- Workout Sets ----------
 export const workoutSets = pgTable(
 	"workout_sets",
 	{
@@ -23,9 +22,14 @@ export const workoutSets = pgTable(
 		templateId: uuid("template_id").references(() => exerciseTemplates.id, {
 			onDelete: "set null",
 		}),
-		weight: decimal("weight", { precision: 6, scale: 2 }).notNull(),
+		setNumber: integer("set_number").notNull(),
+		weight: decimal("weight", {
+			precision: 6,
+			scale: 2,
+			mode: "number",
+		}).notNull(),
 		reps: integer("reps").notNull(),
-		rpe: integer("rpe"),
+		rpe: decimal("rpe", { precision: 3, scale: 1, mode: "number" }),
 		notes: text("notes"),
 		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()

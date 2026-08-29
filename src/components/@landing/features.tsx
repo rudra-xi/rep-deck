@@ -57,7 +57,7 @@ export const Features = () => {
 								}`}
 							>
 								<CardHeader className="space-y-4">
-									<div className="size-11 flex items-center justify-center border border-primary/30 bg-primary/10 text-primary ">
+									<div className="size-11 fcc border border-primary/30 bg-primary/10 text-primary ">
 										<IconComponent
 											className="size-6"
 											weight="bold"

@@ -1,52 +1,105 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
-	PencilSimpleIcon,
-	PlusIcon,
-	RowsIcon,
-	SunDimIcon,
-	TrashIcon,
-} from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
+	addExerciseToDay,
+	deleteExercise,
+	updateExercise,
+} from "@/actions/plans";
+import {
+	CreateExerciseDialog,
+	DeleteExerciseDialog,
+	EditExerciseDialog,
+} from "@/plan-dialogs";
+import { SunDimIcon } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { DayPlan } from "@/constants/mock-data";
+import type { DayWithExercises } from "@/types/plans";
 
 interface DayExercisesListProps {
-	day?: DayPlan;
+	day?: DayWithExercises;
 }
 
 export function DayExercisesList({ day }: DayExercisesListProps) {
-	if (!day) return null;
+	const router = useRouter();
+
+	const handleAddExercise = async (data: {
+		programDayId: string;
+		name: string;
+		type: string;
+		targetSets: number;
+		targetRepRange: string;
+	}) => {
+		await addExerciseToDay(data);
+		router.refresh();
+	};
+
+	const handleEditExercise = async (
+		exerciseId: string,
+		data: {
+			name: string;
+			type: string;
+			targetSets: number;
+			targetRepRange: string;
+		},
+	) => {
+		if (typeof updateExercise === "function") {
+			await updateExercise(exerciseId, data);
+			router.refresh();
+		}
+	};
+
+	const handleDeleteExercise = async (exerciseId: string) => {
+		await deleteExercise(exerciseId);
+		router.refresh();
+	};
+
+	// ✅ Empty state when no day is selected
+	if (!day) {
+		return (
+			<Card
+				size="sm"
+				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none h-full min-h-[200px] fcc"
+			>
+				<div className="fcard text-center p-8 space-y-3">
+					<div className="rounded-full bg-muted/30 p-3">
+						<SunDimIcon
+							className="size-5 text-muted-foreground/60"
+							weight="bold"
+						/>
+					</div>
+					<div>
+						<p className="text-xs font-medium text-muted-foreground">
+							No Day Selected
+						</p>
+						<p className="text-[11px] text-muted-foreground/60 mt-1">
+							Select a training day from the plan structure to
+							view exercises.
+						</p>
+					</div>
+				</div>
+			</Card>
+		);
+	}
 
 	return (
 		<Card
 			size="sm"
-			className="relative border border-secondary/50 bg-card/50 base-ease hover:border-primary/50 rounded-none shadow-none"
+			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
 		>
 			<CardHeader className="space-y-0 pb-3 flex fcb">
-				<div>
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<SunDimIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						{day.label} – {day.title}
-					</CardTitle>
-				</div>
+				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
+					<SunDimIcon
+						weight="bold"
+						className="text-popover-foreground"
+					/>
+					Day {day.dayIndex} – {day.label}
+				</CardTitle>
 
-				<div className="flex items-center gap-2">
-					<Button
-						size="sm"
-						variant="outline"
-						className="h-7 text-xs rounded-none gap-1 border-border/50"
-					>
-						<PlusIcon className="size-3.5" weight="bold" />
-						Add Exercise
-					</Button>
-					<div className="fc border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
-						<RowsIcon className="size-4" weight="bold" />
-					</div>
-				</div>
+				{/* Modularized Create Exercise Dialog */}
+				<CreateExerciseDialog
+					programDayId={day.id}
+					onAddExercise={handleAddExercise}
+				/>
 			</CardHeader>
 
 			<CardContent className="space-y-3">
@@ -55,66 +108,62 @@ export function DayExercisesList({ day }: DayExercisesListProps) {
 						No exercises configured for this day.
 					</p>
 				) : (
-					<div className="overflow-x-auto">
-						<table className="w-full text-left text-xs border-collapse">
-							<thead>
-								<tr className="border-b border-border/50 text-[11px] text-muted-foreground uppercase font-medium">
-									<th className="py-2 px-2">Exercise</th>
-									<th className="py-2 px-2">Type</th>
-									<th className="py-2 px-2 text-center">
-										Sets
-									</th>
-									<th className="py-2 px-2 text-center">
-										Target Reps
-									</th>
-									<th className="py-2 px-2 text-right">
-										Actions
-									</th>
+					<table className="w-full text-left text-xs border-collapse">
+						<thead>
+							<tr className="border-b border-border/50 text-[11px] text-muted-foreground uppercase font-medium">
+								<th className="py-2 px-2">Exercise</th>
+								<th className="py-2 px-2">Type</th>
+								<th className="py-2 px-2 text-center">Sets</th>
+								<th className="py-2 px-2 text-center">
+									Target Reps
+								</th>
+								<th className="py-2 px-2 text-right">
+									Actions
+								</th>
+							</tr>
+						</thead>
+						<tbody className="divide-y divide-border/30">
+							{day.exercises.map((ex) => (
+								<tr
+									key={ex.id}
+									className="hover:bg-background/40 transition-colors"
+								>
+									<td className="py-2.5 px-2 font-semibold text-foreground capitalize">
+										{ex.name}
+									</td>
+									<td className="py-2.5 px-2">
+										<span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20">
+											{ex.type || "General"}
+										</span>
+									</td>
+									<td className="py-2.5 px-2 text-center font-medium">
+										{ex.targetSets}
+									</td>
+									<td className="py-2.5 px-2 text-center font-medium">
+										{ex.targetRepRange || "-"}
+									</td>
+									<td className="py-2.5 px-2 text-right">
+										<div className="flex items-center justify-end gap-1">
+											{/* Modularized Edit Exercise Dialog */}
+											<EditExerciseDialog
+												exercise={ex}
+												onEditExercise={
+													handleEditExercise
+												}
+											/>
+											{/* Modularized Delete Exercise Dialog */}
+											<DeleteExerciseDialog
+												exerciseName={ex.name}
+												onDelete={() =>
+													handleDeleteExercise(ex.id)
+												}
+											/>
+										</div>
+									</td>
 								</tr>
-							</thead>
-							<tbody className="divide-y divide-border/30">
-								{day.exercises.map((ex) => (
-									<tr
-										key={ex.id}
-										className="hover:bg-background/40 transition-colors"
-									>
-										<td className="py-2.5 px-2 font-semibold text-foreground">
-											{ex.name}
-										</td>
-										<td className="py-2.5 px-2">
-											<span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded-none bg-primary/10 text-primary border border-primary/20">
-												{ex.type}
-											</span>
-										</td>
-										<td className="py-2.5 px-2 text-center font-medium text-foreground">
-											{ex.sets}
-										</td>
-										<td className="py-2.5 px-2 text-center font-medium text-foreground">
-											{ex.reps}
-										</td>
-										<td className="py-2.5 px-2 text-right">
-											<div className="flex items-center justify-end gap-1">
-												<Button
-													size="sm"
-													variant="ghost"
-													className="size-7 p-0 rounded-none text-muted-foreground hover:text-foreground"
-												>
-													<PencilSimpleIcon className="size-3.5" />
-												</Button>
-												<Button
-													size="sm"
-													variant="ghost"
-													className="size-7 p-0 rounded-none text-muted-foreground hover:text-destructive"
-												>
-													<TrashIcon className="size-3.5" />
-												</Button>
-											</div>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
+							))}
+						</tbody>
+					</table>
 				)}
 			</CardContent>
 		</Card>

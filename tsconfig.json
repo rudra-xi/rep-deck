@@ -21,6 +21,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
+			"@/plan-dialogs": ["src/components/@plans/@plan-dialogs"],
 			"@/auth": ["./src/components/@auth"],
 			"@/common": ["./src/components/@common"],
 			"@/landing": ["./src/components/@landing"],

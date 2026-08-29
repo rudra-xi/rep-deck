@@ -16,14 +16,14 @@ export const Hero = () => {
 	};
 
 	return (
-		<section className="relative min-h-screen w-full flex items-center justify-center overflow-x-hidden py-16 px-6">
+		<section className="relative min-h-screen w-full fcc overflow-x-hidden px-6 lg:px-0 pt-30 lg:pt-0">
 			{/* Subtle Background Glow */}
 			<div className="absolute -top-40 -left-40 size-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 			<div className="absolute bottom-10 -right-40 size-86 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
-			<div className="container max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 z-10">
+			<div className="container max-w-7xl mx-auto fcc flex-col lg:flex-row  z-10 min-h-screen">
 				{/* Left Content */}
-				<div className="flex-1 space-y-6 text-center lg:text-left">
+				<div className="mb-16 text-center lg:text-left">
 					<Badge
 						variant="outline"
 						className="px-4 pt-3 pb-2.5 text-sm tracking-widest uppercase text-primary"
@@ -45,7 +45,7 @@ export const Hero = () => {
 					</p>
 
 					{/* Call To Action Buttons */}
-					<div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+					<div className="fcc flex-col sm:flex-row lg:justify-start gap-4 pt-2">
 						{/* Redirects to Signup Page */}
 						<GoogleBtn
 							text="Start Tracking Free"
@@ -65,8 +65,8 @@ export const Hero = () => {
 				</div>
 
 				{/* Right Image Display (Rectangular Dashboard Preview) */}
-				<div className="flex-1 w-full max-w-xl lg:max-w-2xl shrink-0">
-					<div className="relative w-full aspect-16/10 sm:aspect-v overflow-hidden bg-background shadow-2xl border border-border/80">
+				<div className="flex-1 w-full max-w-xl lg:max-w-2xl sh0">
+					<div className="relative w-full aspect-16/10 sm:aspect-v overflow-hidden bg-background shadow-2xl">
 						{/*TODO: A Dashboard Preview will be added here*/}
 						<Image
 							src={Sample}
