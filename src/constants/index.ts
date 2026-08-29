@@ -239,3 +239,107 @@ export const CHALLENGES: Challenge[] = [
 		category: "Endurance",
 	},
 ];
+
+export const PRESET_EXERCISES = [
+	// Chest
+	{ name: "Bench Press", type: "Chest" },
+	{ name: "Incline Bench Press", type: "Chest" },
+	{ name: "Decline Bench Press", type: "Chest" },
+	{ name: "Dumbbell Bench Press", type: "Chest" },
+	{ name: "Incline Dumbbell Press", type: "Chest" },
+	{ name: "Dumbbell Flyes", type: "Chest" },
+	{ name: "Cable Flyes", type: "Chest" },
+	{ name: "Pec Deck Flyes", type: "Chest" },
+	{ name: "Push-Ups", type: "Chest" },
+
+	// Shoulders
+	{ name: "Overhead Press", type: "Shoulders" },
+	{ name: "Dumbbell Shoulder Press", type: "Shoulders" },
+	{ name: "Arnold Press", type: "Shoulders" },
+	{ name: "Lateral Raise", type: "Shoulders" },
+	{ name: "Front Raise", type: "Shoulders" },
+	{ name: "Rear Delt Flyes", type: "Shoulders" },
+	{ name: "Face Pull", type: "Shoulders" },
+	{ name: "Upright Row", type: "Shoulders" },
+	{ name: "Shrugs", type: "Shoulders" },
+
+	// Back
+	{ name: "Lat Pulldown", type: "Back" },
+	{ name: "Barbell Row", type: "Back" },
+	{ name: "Dumbbell Row", type: "Back" },
+	{ name: "Seated Cable Row", type: "Back" },
+	{ name: "T-Bar Row", type: "Back" },
+	{ name: "Pull-Ups", type: "Back" },
+	{ name: "Chin-Ups", type: "Back" },
+	{ name: "Deadlift", type: "Back" },
+	{ name: "Romanian Deadlift", type: "Back" },
+	{ name: "Good Mornings", type: "Back" },
+	{ name: "Hyperextensions", type: "Back" },
+
+	// Legs
+	{ name: "Barbell Squat", type: "Legs" },
+	{ name: "Front Squat", type: "Legs" },
+	{ name: "Goblet Squat", type: "Legs" },
+	{ name: "Leg Press", type: "Legs" },
+	{ name: "Bulgarian Split Squat", type: "Legs" },
+	{ name: "Lunges", type: "Legs" },
+	{ name: "Walking Lunges", type: "Legs" },
+	{ name: "Reverse Lunges", type: "Legs" },
+	{ name: "Step-Ups", type: "Legs" },
+	{ name: "Leg Curl", type: "Legs" },
+	{ name: "Leg Extension", type: "Legs" },
+	{ name: "Calf Raise", type: "Legs" },
+	{ name: "Seated Calf Raise", type: "Legs" },
+	{ name: "Hip Thrusts", type: "Legs" },
+	{ name: "Glute Bridges", type: "Legs" },
+
+	// Arms - Biceps
+	{ name: "Barbell Curl", type: "Biceps" },
+	{ name: "Dumbbell Curl", type: "Biceps" },
+	{ name: "Hammer Curl", type: "Biceps" },
+	{ name: "Preacher Curl", type: "Biceps" },
+	{ name: "Concentration Curl", type: "Biceps" },
+
+	// Arms - Triceps
+	{ name: "Tricep Pushdown", type: "Triceps" },
+	{ name: "Tricep Extension", type: "Triceps" },
+	{ name: "Skull Crushers", type: "Triceps" },
+	{ name: "Close Grip Bench Press", type: "Triceps" },
+	{ name: "Overhead Tricep Extension", type: "Triceps" },
+
+	// Core
+	{ name: "Plank", type: "Core" },
+	{ name: "Side Plank", type: "Core" },
+	{ name: "Leg Raises", type: "Core" },
+	{ name: "Hanging Leg Raises", type: "Core" },
+	{ name: "Crunches", type: "Core" },
+	{ name: "Russian Twists", type: "Core" },
+	{ name: "Bicycle Crunches", type: "Core" },
+	{ name: "Woodchoppers", type: "Core" },
+	{ name: "Cable Crunches", type: "Core" },
+	{ name: "Ab Rollouts", type: "Core" },
+
+	// Full Body
+	{ name: "Clean and Jerk", type: "Full Body" },
+	{ name: "Snatch", type: "Full Body" },
+	{ name: "Power Clean", type: "Full Body" },
+	{ name: "Thruster", type: "Full Body" },
+	{ name: "Burpee", type: "Full Body" },
+	{ name: "Kettlebell Swing", type: "Full Body" },
+	{ name: "Turkish Get-Up", type: "Full Body" },
+	{ name: "Box Jumps", type: "Full Body" },
+	{ name: "Farmers Carry", type: "Full Body" },
+] as const;
+
+export type PresetExercise = (typeof PRESET_EXERCISES)[number];
+
+export const PRESET_REP_RANGES = [
+	"ORM",
+	"Failure",
+	"AMRAP",
+	"4-6",
+	"10-12",
+	"12-16",
+	"5x5",
+	"10x10",
+];
