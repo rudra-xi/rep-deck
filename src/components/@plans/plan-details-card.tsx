@@ -1,14 +1,16 @@
 "use client";
 
-import { BlueprintIcon, CalendarIcon, CaretRightIcon } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
+import { addPlanDay, deletePlanDay } from "@/actions/plans";
+import { CreateDayDialog, DeleteDayDialog } from "@/plan-dialogs";
+import { BlueprintIcon, CaretRightIcon } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Plan } from "@/constants/mock-data";
-import { Button } from "../ui/button";
+import type { PlanWithStructure } from "@/types/plans";
 
 interface PlanDetailsCardProps {
-	plan: Plan;
-	selectedDayId: number;
-	onSelectDay: (dayId: number) => void;
+	plan: PlanWithStructure;
+	selectedDayId: string;
+	onSelectDay: (dayId: string) => void;
 }
 
 export function PlanDetailsCard({
@@ -16,25 +18,45 @@ export function PlanDetailsCard({
 	selectedDayId,
 	onSelectDay,
 }: PlanDetailsCardProps) {
+	const router = useRouter();
+
+	const handleAddDay = async (label: string) => {
+		await addPlanDay(plan.id, label);
+		router.refresh();
+	};
+
+	const handleDeleteDay = async (dayId: string) => {
+		await deletePlanDay(dayId);
+		router.refresh();
+	};
+
+	// Keyboard event handler for accessibility
+	const handleKeyDown = (
+		event: React.KeyboardEvent<HTMLDivElement>,
+		dayId: string,
+	) => {
+		if (event.key === "Enter" || event.key === " ") {
+			event.preventDefault();
+			onSelectDay(dayId);
+		}
+	};
+
 	return (
 		<Card
 			size="sm"
-			className="relative border border-secondary/50 bg-card/50 base-ease hover:border-primary/50 rounded-none shadow-none"
+			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
 		>
 			<CardHeader className="space-y-0 pb-3 flex fcb">
-				<div className="flex items-center gap-2">
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<BlueprintIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						{plan.name} ({plan.version})
-					</CardTitle>
-				</div>
+				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
+					<BlueprintIcon
+						weight="bold"
+						className="text-popover-foreground"
+					/>
+					{plan.name} (v{plan.version})
+				</CardTitle>
 
-				<div className="fc border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
-					<CalendarIcon className="size-4" weight="bold" />
-				</div>
+				{/* Modularized Create Day Dialog */}
+				<CreateDayDialog onAddDay={handleAddDay} />
 			</CardHeader>
 
 			<CardContent className="space-y-2">
@@ -46,10 +68,13 @@ export function PlanDetailsCard({
 					{plan.days.map((day) => {
 						const isSelected = day.id === selectedDayId;
 						return (
-							<Button
+							<div
 								key={day.id}
 								onClick={() => onSelectDay(day.id)}
-								className={`w-full fcb p-2.5 text-left text-xs transition-colors rounded-none border ${
+								onKeyDown={(e) => handleKeyDown(e, day.id)}
+								role="button"
+								tabIndex={0}
+								className={`w-full fcb p-2.5 text-xs capitalize transition-colors cursor-pointer border ${
 									isSelected
 										? "border-primary bg-primary/10 text-foreground font-semibold"
 										: "border-border/40 bg-background/50 text-muted-foreground hover:text-foreground hover:border-primary/40"
@@ -57,20 +82,28 @@ export function PlanDetailsCard({
 							>
 								<div className="flex items-center gap-2">
 									<span className="text-[10px] font-bold px-1.5 py-0.5 bg-background border border-border/50 text-primary">
-										{day.label}
+										Day {day.dayIndex}
 									</span>
 									<span className="line-clamp-1">
-										{day.title}
+										{day.label}
 									</span>
 								</div>
-								<CaretRightIcon
-									className={`size-3.5 transition-transform ${
-										isSelected
-											? "text-primary translate-x-0.5"
-											: "text-muted-foreground"
-									}`}
-								/>
-							</Button>
+
+								<div className="flex items-center gap-1">
+									{/* Modularized Delete Day Dialog */}
+									<DeleteDayDialog
+										dayLabel={day.label}
+										onDelete={() => handleDeleteDay(day.id)}
+									/>
+									<CaretRightIcon
+										className={`size-3.5 ${
+											isSelected
+												? "text-primary translate-x-0.5"
+												: "text-muted-foreground"
+										}`}
+									/>
+								</div>
+							</div>
 						);
 					})}
 				</div>

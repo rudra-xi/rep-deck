@@ -1,26 +1,31 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { deletePlan } from "@/actions/plans";
+import {
+	CreatePlanDialog,
+	DeletePlanDialog,
+	DuplicatePlanDialog,
+} from "@/plan-dialogs";
 import {
 	CaretLeftIcon,
 	CaretRightIcon,
-	CopyIcon,
 	FolderStarIcon,
-	PencilSimpleIcon,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Plan } from "@/constants/mock-data";
+import type { PlanWithStructure } from "@/types/plans";
 
 interface PlansOverviewCardsProps {
-	plans: Plan[];
+	plans: PlanWithStructure[];
 	selectedPlanId: string;
 	onSelectPlan: (id: string) => void;
 	onSetActivePlan: (id: string) => void;
 }
 
 interface PlanCardItemProps {
-	plan: Plan;
+	plan: PlanWithStructure;
 	isSelected: boolean;
 	onSelectPlan: (id: string) => void;
 	onSetActivePlan: (id: string) => void;
@@ -32,6 +37,21 @@ function PlanCardItem({
 	onSelectPlan,
 	onSetActivePlan,
 }: PlanCardItemProps) {
+	const router = useRouter();
+
+	const handleDelete = async () => {
+		await deletePlan(plan.id);
+		router.refresh();
+	};
+
+	const formattedStartDate = plan.startDate
+		? new Date(plan.startDate).toLocaleDateString("en-IN", {
+				day: "numeric",
+				month: "short",
+				year: "numeric",
+			})
+		: "N/A";
+
 	return (
 		<Card
 			size="sm"
@@ -48,7 +68,7 @@ function PlanCardItem({
 						{plan.name}
 					</CardTitle>
 					<span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded-none bg-primary/10 text-primary border border-primary/20">
-						{plan.version}
+						v{plan.version}
 					</span>
 				</div>
 
@@ -59,26 +79,26 @@ function PlanCardItem({
 
 			<CardContent className="space-y-3 pt-1">
 				<div className="flex items-center justify-between text-[11px] text-muted-foreground">
-					<span>Timeline:</span>
+					<span>Started:</span>
 					<span className="font-semibold text-foreground">
-						{plan.startDate} – {plan.endDate}
+						{formattedStartDate}
 					</span>
 				</div>
 
 				<div className="flex items-center justify-between gap-2 border-t border-border/40 pt-2.5">
 					<span
 						className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-none border base-ease ${
-							plan.isActive
+							plan.active
 								? "bg-primary/10 text-primary-foreground border-primary"
 								: "bg-muted text-muted-foreground border-border/50"
 						}`}
 					>
-						{plan.isActive ? "Active" : "Archived"}
+						{plan.active ? "Active" : "Archived"}
 					</span>
 
-					{!plan.isActive && (
+					{!plan.active && (
 						<Button
-							key={`set-active-${plan.id}-${plan.isActive}`}
+							key={`set-active-${plan.id}-${plan.active}`}
 							size="sm"
 							variant="ghost"
 							onClick={(e) => {
@@ -92,25 +112,13 @@ function PlanCardItem({
 					)}
 				</div>
 
-				<div className="grid grid-cols-2 gap-1.5 pt-1">
-					<Button
-						key={`edit-${plan.id}`}
-						size="sm"
-						variant="outline"
-						className="rounded-none h-7 text-[11px] gap-1 border-border/50"
-					>
-						<PencilSimpleIcon className="size-3" weight="bold" />
-						Edit
-					</Button>
-					<Button
-						key={`duplicate-${plan.id}`}
-						size="sm"
-						variant="secondary"
-						className="rounded-none h-7 text-[11px] gap-1 border border-border/40"
-					>
-						<CopyIcon className="size-3" weight="bold" />
-						Duplicate
-					</Button>
+				<div className="flex items-end justify-end gap-2">
+					{/* Modularized Delete Dialog */}
+					<DuplicatePlanDialog plan={plan} />
+					<DeletePlanDialog
+						planName={plan.name}
+						onDelete={handleDelete}
+					/>
 				</div>
 			</CardContent>
 		</Card>
@@ -123,76 +131,71 @@ export function PlansOverviewCards({
 	onSelectPlan,
 	onSetActivePlan,
 }: PlansOverviewCardsProps) {
-	// Find index of the active plan to serve as default mobile starting point
 	const activeIndex = useMemo(() => {
-		const idx = plans.findIndex((p) => p.isActive);
+		const idx = plans.findIndex((p) => p.active);
 		return idx !== -1 ? idx : 0;
 	}, [plans]);
 
-	const [mobileIndex, setMobileIndex] = useState<number>(activeIndex);
+	const totalItems = plans.length + 1;
+	const [mobileIndex, setMobileIndex] = useState<number>(0);
 
-	const currentMobilePlan = plans[mobileIndex] ?? plans[0];
+	const currentMobilePlan = mobileIndex > 0 ? plans[mobileIndex - 1] : null;
 
 	return (
-		<div>
-			{/* Mobile View: Single Active/Selected Card with Prev/Next Toggle */}
+		<div className="space-y-3">
+			{/* Mobile View */}
 			<div className="block md:hidden space-y-2">
-				{plans.length > 0 && (
-					<>
-						<div className="fcb px-1">
-							<span />
-							<div className="fcx gap-1">
-								<Button
-									variant="ghost"
-									size="icon"
-									className="h-7 w-7"
-									disabled={mobileIndex === 0}
-									onClick={() =>
-										setMobileIndex((prev) =>
-											Math.max(0, prev - 1),
-										)
-									}
-								>
-									<CaretLeftIcon size={14} />
-								</Button>
-								<span className="text-[11px] font-medium text-foreground min-w-16 text-center mt-1.5">
-									{mobileIndex + 1} of {plans.length}
-								</span>
-								<Button
-									variant="ghost"
-									size="icon"
-									className="h-7 w-7"
-									disabled={mobileIndex === plans.length - 1}
-									onClick={() =>
-										setMobileIndex((prev) =>
-											Math.min(
-												plans.length - 1,
-												prev + 1,
-											),
-										)
-									}
-								>
-									<CaretRightIcon size={14} />
-								</Button>
-							</div>
-						</div>
+				<div className="fcb px-1">
+					<span />
+					<div className="fcx gap-1">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-7 w-7"
+							disabled={mobileIndex === 0}
+							onClick={() =>
+								setMobileIndex((prev) => Math.max(0, prev - 1))
+							}
+						>
+							<CaretLeftIcon size={14} />
+						</Button>
+						<span className="text-[11px] font-medium text-foreground min-w-16 text-center mt-1.5">
+							{mobileIndex + 1} of {totalItems}
+						</span>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-7 w-7"
+							disabled={mobileIndex === totalItems - 1}
+							onClick={() =>
+								setMobileIndex((prev) =>
+									Math.min(totalItems - 1, prev + 1),
+								)
+							}
+						>
+							<CaretRightIcon size={14} />
+						</Button>
+					</div>
+				</div>
 
-						{currentMobilePlan && (
-							<PlanCardItem
-								plan={currentMobilePlan}
-								isSelected={
-									currentMobilePlan.id === selectedPlanId
-								}
-								onSelectPlan={onSelectPlan}
-								onSetActivePlan={onSetActivePlan}
-							/>
-						)}
-					</>
+				{mobileIndex === 0 ? (
+					<CreatePlanDialog />
+				) : (
+					currentMobilePlan && (
+						<PlanCardItem
+							plan={currentMobilePlan}
+							isSelected={currentMobilePlan.id === selectedPlanId}
+							onSelectPlan={onSelectPlan}
+							onSetActivePlan={onSetActivePlan}
+						/>
+					)
 				)}
 			</div>
 
-			{/* Desktop View: Full Grid */}
+			{/* Desktop View */}
 			<div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+				<CreatePlanDialog />
+
 				{plans.map((plan) => (
 					<PlanCardItem
 						key={plan.id}
