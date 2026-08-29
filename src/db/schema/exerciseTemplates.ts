@@ -9,7 +9,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { programDayTemplates } from "./programDayTemplates";
 
-// ---------- Exercise Templates ----------
 export const exerciseTemplates = pgTable(
 	"exercise_templates",
 	{
@@ -19,6 +18,7 @@ export const exerciseTemplates = pgTable(
 			.references(() => programDayTemplates.id, { onDelete: "cascade" }),
 		name: text("name").notNull(),
 		type: text("type").notNull(),
+		order: integer("order").notNull().default(1),
 		targetSets: integer("target_sets"),
 		targetRepRange: text("target_rep_range"),
 		createdAt: timestamp("created_at", { withTimezone: true })
