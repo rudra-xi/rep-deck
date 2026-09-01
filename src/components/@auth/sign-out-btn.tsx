@@ -6,6 +6,7 @@ import { useState } from "react";
 import { signOut } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 interface SignOutButtonProps {
 	className?: string;
@@ -84,10 +85,7 @@ export function SignOutButton({
 				title="Sign out"
 			>
 				{loading ? (
-					<CircleNotchIcon
-						weight="bold"
-						className="h-5 w-5 animate-spin"
-					/>
+					<Spinner />
 				) : (
 					<SignOutIcon weight="bold" className="h-5 w-5" />
 				)}
@@ -104,7 +102,7 @@ export function SignOutButton({
 		>
 			{loading ? (
 				<>
-					<CircleNotchIcon className="h-4 w-4 animate-spin" />
+					<Spinner />
 					Signing out...
 				</>
 			) : (

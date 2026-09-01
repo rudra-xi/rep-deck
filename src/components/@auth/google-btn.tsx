@@ -5,6 +5,7 @@ import { useState, type ReactNode } from "react";
 import { signInWithGoogle } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 interface GoogleLoginButtonProps {
 	text?: string;
@@ -73,7 +74,7 @@ export function GoogleBtn({
 			{loading ? (
 				<>
 					<span>Signing in...</span>
-					<CircleNotchIcon className="h-5 w-5 animate-spin text-muted-foreground" />
+					<Spinner />
 				</>
 			) : (
 				<>
