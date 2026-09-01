@@ -22,7 +22,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { KpiCardData } from "@/constants/mock-data";
-import { DotOutlineIcon } from "@phosphor-icons/react/dist/ssr";
+import { DotOutlineIcon } from "@phosphor-icons/react";
 
 interface KpiCardsProps {
 	data?: {

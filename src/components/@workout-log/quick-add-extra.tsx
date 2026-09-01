@@ -4,35 +4,88 @@ import { useState } from "react";
 import { AsteriskIcon, PlusCircleIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Combobox,
+	ComboboxContent,
+	ComboboxEmpty,
+	ComboboxInput,
+	ComboboxItem,
+	ComboboxList,
+} from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
+import { useFormField, useRangedInput } from "@/hooks";
+import { toast } from "sonner";
+import { PRESET_EXERCISES, type PresetExercise } from "@/constants";
 import type { LoggedSet } from "@/types";
 
-interface QuickAddExtraProps {
-	onAddSet: (set: Omit<LoggedSet, "id">) => void;
+interface PlannedExerciseItem {
+	id: string;
+	name: string;
 }
 
-export function QuickAddExtra({ onAddSet }: QuickAddExtraProps) {
+interface QuickAddExtraProps {
+	plannedExercises?: PlannedExerciseItem[];
+	onAddSet: (set: Omit<LoggedSet, "id"> & { templateId?: string }) => void;
+}
+
+export function QuickAddExtra({
+	plannedExercises = [],
+	onAddSet,
+}: QuickAddExtraProps) {
 	const [exerciseName, setExerciseName] = useState("");
-	const [weight, setWeight] = useState("");
-	const [reps, setReps] = useState("");
-	const [rpe, setRpe] = useState("");
+	const weight = useFormField("");
+	const reps = useFormField("");
+	const rpe = useRangedInput("", 0, 10);
+	const [notes, setNotes] = useState(""); // ✅ Add notes state
+
+	const handleSelectExercise = (item: PresetExercise | string | null) => {
+		if (!item) return;
+
+		if (typeof item === "object") {
+			setExerciseName(item.name);
+		} else {
+			setExerciseName(item);
+		}
+	};
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!exerciseName || !weight || !reps) return;
+		const finalName = exerciseName.trim();
+		if (!finalName || !weight.value || !reps.value) return;
 
-		onAddSet({
-			exerciseName,
-			weight,
-			reps,
-			rpe: rpe || "8",
-		});
+		const matchedPlannedExercise = plannedExercises.find(
+			(ex) => ex.name.toLowerCase() === finalName.toLowerCase(),
+		);
 
-		setExerciseName("");
-		setWeight("");
-		setReps("");
-		setRpe("");
+		try {
+			onAddSet({
+				exerciseName: finalName,
+				templateId: matchedPlannedExercise?.id,
+				weight: weight.value.toString(),
+				reps: reps.value.toString(),
+				rpe: rpe.value.toString() || "",
+				notes: notes, // ✅ Add notes
+			});
+
+			toast.success("Extra set added", {
+				description: `Added 1 set of ${finalName} (${weight.value}kg × ${reps.value}).`,
+			});
+
+			setExerciseName("");
+			weight.setValue("");
+			reps.setValue("");
+			rpe.setValue("");
+			setNotes(""); // ✅ Reset notes
+		} catch {
+			toast.error("Failed to add set", {
+				description: "There was an error adding the extra set.",
+			});
+		}
 	};
+
+	const isPreset = PRESET_EXERCISES.some(
+		(e) => e.name.toLowerCase() === exerciseName.trim().toLowerCase(),
+	);
 
 	return (
 		<Card
@@ -57,39 +110,93 @@ export function QuickAddExtra({ onAddSet }: QuickAddExtraProps) {
 
 			<CardContent>
 				<form onSubmit={handleSubmit} className="space-y-3">
-					<Input
-						placeholder="Exercise Name (e.g., Face Pulls)"
-						className="rounded-none text-xs border-border/50 bg-background/50 focus:border-primary/50"
-						value={exerciseName}
-						onChange={(e) => setExerciseName(e.target.value)}
-					/>
+					<div className="space-y-1">
+						<Combobox
+							items={PRESET_EXERCISES}
+							itemToStringValue={(item) =>
+								typeof item === "string" ? item : item.name
+							}
+							onValueChange={handleSelectExercise}
+						>
+							<ComboboxInput
+								placeholder="Search or type exercise name..."
+								value={exerciseName}
+								onChange={(e) =>
+									setExerciseName(e.target.value)
+								}
+								className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50 w-full"
+							/>
+							<ComboboxContent className="rounded-none border-secondary/50 bg-card max-h-48 overflow-y-auto">
+								<ComboboxEmpty className="text-xs text-muted-foreground p-2">
+									No matching exercise found.
+								</ComboboxEmpty>
+								<ComboboxList>
+									{(item: PresetExercise) => (
+										<ComboboxItem
+											key={item.name}
+											value={item}
+											className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer flex justify-between items-center"
+										>
+											<span>{item.name}</span>
+											<span className="text-[10px] text-muted-foreground uppercase">
+												{item.type}
+											</span>
+										</ComboboxItem>
+									)}
+								</ComboboxList>
+							</ComboboxContent>
+						</Combobox>
+
+						{exerciseName.trim() && !isPreset && (
+							<p className="text-[10px] text-muted-foreground mt-0.5">
+								Custom exercise: "{exerciseName.trim()}"
+							</p>
+						)}
+					</div>
+
 					<div className="grid grid-cols-3 gap-2">
 						<Input
-							placeholder="Weight (kg)"
+							placeholder="kg"
 							type="number"
+							value={weight.value}
+							onChange={weight.onChange}
 							className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
-							value={weight}
-							onChange={(e) => setWeight(e.target.value)}
 						/>
 						<Input
-							placeholder="Reps"
+							placeholder="reps"
+							max={100}
+							min={1}
 							type="number"
+							value={reps.value}
+							onChange={reps.onChange}
 							className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
-							value={reps}
-							onChange={(e) => setReps(e.target.value)}
 						/>
 						<Input
-							placeholder="RPE"
+							placeholder="rpe"
+							max={10}
+							min={1}
 							type="number"
+							value={rpe.value}
+							onChange={rpe.onChange}
 							className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
-							value={rpe}
-							onChange={(e) => setRpe(e.target.value)}
 						/>
 					</div>
+
+					{/* ✅ Add notes input */}
+					<Input
+						placeholder="Notes (optional)"
+						className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
+						value={notes}
+						onChange={(e) => setNotes(e.target.value)}
+					/>
+
 					<Button
 						type="submit"
 						variant="outline"
-						className="rounded-none w-full h-8 text-xs gap-1.5 font-semibold border-border/50 hover:border-primary/50"
+						disabled={
+							!exerciseName.trim() || !weight.value || !reps.value
+						}
+						className="rounded-none w-full h-8 text-xs gap-1.5 font-semibold border-border/50 hover:border-primary/50 cursor-pointer"
 					>
 						<PlusIcon className="size-4" weight="bold" />
 						Add Extra Set

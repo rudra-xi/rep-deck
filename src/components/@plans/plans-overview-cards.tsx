@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { deletePlan } from "@/actions/plans";
+import { deletePlan, setActivePlan } from "@/actions/plans";
 import {
 	CreatePlanDialog,
 	DeletePlanDialog,
@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PlanWithStructure } from "@/types/plans";
+import { toast } from "sonner";
 
 interface PlansOverviewCardsProps {
 	plans: PlanWithStructure[];
@@ -38,10 +39,69 @@ function PlanCardItem({
 	onSetActivePlan,
 }: PlanCardItemProps) {
 	const router = useRouter();
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [isActivating, setIsActivating] = useState(false);
 
 	const handleDelete = async () => {
-		await deletePlan(plan.id);
-		router.refresh();
+		setIsDeleting(true);
+		try {
+			await deletePlan(plan.id);
+			toast.success(`Plan "${plan.name}" deleted`, {
+				description: "The plan has been removed successfully.",
+				duration: 3000,
+			});
+			router.refresh();
+		} catch (error) {
+			toast.error("Failed to delete plan", {
+				description:
+					error instanceof Error
+						? error.message
+						: "An unexpected error occurred.",
+				duration: 4000,
+			});
+		} finally {
+			setIsDeleting(false);
+		}
+	};
+
+	const handleSetActive = async (e: React.MouseEvent) => {
+		e.stopPropagation();
+
+		if (plan.active) {
+			toast.info(`"${plan.name}" is already active`, {
+				description:
+					"This plan is currently your active training plan.",
+				duration: 2500,
+			});
+			return;
+		}
+
+		setIsActivating(true);
+		const loadingToast = toast.loading(`Activating "${plan.name}"...`, {
+			description: "Please wait while we update your active plan.",
+		});
+
+		try {
+			await onSetActivePlan(plan.id);
+			toast.dismiss(loadingToast);
+			toast.success(`"${plan.name}" is now active!`, {
+				description:
+					"Your training plan has been updated successfully.",
+				duration: 3000,
+			});
+			router.refresh();
+		} catch (error) {
+			toast.dismiss(loadingToast);
+			toast.error("Failed to activate plan", {
+				description:
+					error instanceof Error
+						? error.message
+						: "An unexpected error occurred.",
+				duration: 4000,
+			});
+		} finally {
+			setIsActivating(false);
+		}
 	};
 
 	const formattedStartDate = plan.startDate
@@ -55,7 +115,16 @@ function PlanCardItem({
 	return (
 		<Card
 			size="sm"
-			onClick={() => onSelectPlan(plan.id)}
+			onClick={() => {
+				onSelectPlan(plan.id);
+				// Show toast when selecting a plan
+				if (!isSelected) {
+					toast.info(`Viewing "${plan.name}"`, {
+						description: `Plan version ${plan.version} - ${plan.active ? "Active" : "Archived"}`,
+						duration: 2000,
+					});
+				}
+			}}
 			className={`relative cursor-pointer border bg-card/50 base-ease rounded-none shadow-none transition-all ${
 				isSelected
 					? "border-primary ring-1 ring-primary/40"
@@ -98,26 +167,23 @@ function PlanCardItem({
 
 					{!plan.active && (
 						<Button
-							key={`set-active-${plan.id}-${plan.active}`}
 							size="sm"
 							variant="ghost"
-							onClick={(e) => {
-								e.stopPropagation();
-								onSetActivePlan(plan.id);
-							}}
-							className="h-6 px-2 text-[10px] rounded-none hover:bg-primary/10 hover:text-primary"
+							onClick={handleSetActive}
+							disabled={isActivating}
+							className="h-6 px-2 text-[10px] rounded-none hover:bg-primary/10 hover:text-primary disabled:opacity-50"
 						>
-							Set Active
+							{isActivating ? "Activating..." : "Set Active"}
 						</Button>
 					)}
 				</div>
 
 				<div className="flex items-end justify-end gap-2">
-					{/* Modularized Delete Dialog */}
 					<DuplicatePlanDialog plan={plan} />
 					<DeletePlanDialog
 						planName={plan.name}
 						onDelete={handleDelete}
+						isDeleting={isDeleting}
 					/>
 				</div>
 			</CardContent>
@@ -141,6 +207,29 @@ export function PlansOverviewCards({
 
 	const currentMobilePlan = mobileIndex > 0 ? plans[mobileIndex - 1] : null;
 
+	const handleMobileNav = (direction: "prev" | "next") => {
+		const newIndex =
+			direction === "prev"
+				? Math.max(0, mobileIndex - 1)
+				: Math.min(totalItems - 1, mobileIndex + 1);
+
+		setMobileIndex(newIndex);
+
+		// Show toast when navigating to a plan
+		if (newIndex > 0) {
+			const plan = plans[newIndex - 1];
+			toast.info(`Viewing "${plan.name}"`, {
+				description: `Plan ${newIndex} of ${totalItems - 1}`,
+				duration: 1500,
+			});
+		} else {
+			toast.info("Create a new plan", {
+				description: "Ready to create a new training plan.",
+				duration: 1500,
+			});
+		}
+	};
+
 	return (
 		<div className="space-y-3">
 			{/* Mobile View */}
@@ -153,9 +242,7 @@ export function PlansOverviewCards({
 							size="icon"
 							className="h-7 w-7"
 							disabled={mobileIndex === 0}
-							onClick={() =>
-								setMobileIndex((prev) => Math.max(0, prev - 1))
-							}
+							onClick={() => handleMobileNav("prev")}
 						>
 							<CaretLeftIcon size={14} />
 						</Button>
@@ -167,11 +254,7 @@ export function PlansOverviewCards({
 							size="icon"
 							className="h-7 w-7"
 							disabled={mobileIndex === totalItems - 1}
-							onClick={() =>
-								setMobileIndex((prev) =>
-									Math.min(totalItems - 1, prev + 1),
-								)
-							}
+							onClick={() => handleMobileNav("next")}
 						>
 							<CaretRightIcon size={14} />
 						</Button>
