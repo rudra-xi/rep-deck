@@ -14,6 +14,14 @@ import {
 import { SunDimIcon } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DayWithExercises } from "@/types/plans";
+import {
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "@/components/ui/empty";
 
 interface DayExercisesListProps {
 	day?: DayWithExercises;
@@ -53,30 +61,30 @@ export function DayExercisesList({ day }: DayExercisesListProps) {
 		router.refresh();
 	};
 
-	// ✅ Empty state when no day is selected
+	// Empty state when no day is selected
 	if (!day) {
 		return (
 			<Card
 				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none h-full min-h-[200px] fcc"
+				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none h-full min-h-50  w-full"
 			>
-				<div className="fcard text-center p-8 space-y-3">
-					<div className="rounded-full bg-muted/30 p-3">
-						<SunDimIcon
-							className="size-5 text-muted-foreground/60"
-							weight="bold"
-						/>
-					</div>
-					<div>
-						<p className="text-xs font-medium text-muted-foreground">
+				<Empty className="p-8 text-center w-full">
+					<EmptyHeader>
+						<EmptyMedia className="fc border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+							<SunDimIcon
+								className="size-6 text-primary"
+								weight="bold"
+							/>
+						</EmptyMedia>
+						<EmptyTitle className="text-xs font-medium text-muted-foreground">
 							No Day Selected
-						</p>
-						<p className="text-[11px] text-muted-foreground/60 mt-1">
-							Select a training day from the plan structure to
+						</EmptyTitle>
+						<EmptyDescription className="text-[11px] text-muted-foreground/60">
+							Create a training day from the plan structure to
 							view exercises.
-						</p>
-					</div>
-				</div>
+						</EmptyDescription>
+					</EmptyHeader>
+				</Empty>
 			</Card>
 		);
 	}

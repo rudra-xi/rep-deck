@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PlusIcon } from "@phosphor-icons/react";
+import { NotePencilIcon} from "@phosphor-icons/react";
 import { setActivePlan } from "@/actions/plans";
 import { PageTitleCard, SectionTitleCard } from "@/common";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
 	DayExercisesList,
@@ -14,6 +13,14 @@ import {
 } from "@/plans";
 import { CreatePlanDialog } from "@/plan-dialogs";
 import type { PlanWithStructure } from "@/types/plans";
+import {
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "@/components/ui/empty";
 
 interface PlansClientViewProps {
 	initialPlans: PlanWithStructure[];
@@ -86,17 +93,27 @@ export default function PlansClientView({
 					title="Plans"
 					subTitle="Manage your training blocks and switch between plan versions"
 				/>
-				<div className="p-8 border border-dashed border-border/80 bg-card/30 space-y-4">
-					<p className="text-sm text-muted-foreground">
-						You don't have any training plans yet. Create your first
-						plan to start building your workout structure!
-					</p>
-
-					<CreatePlanDialog
-						open={isCreateModalOpen}
-						onOpenChange={setIsCreateModalOpen}
-					/>
-				</div>
+				<Empty className="border border-dashed border-border/80 bg-card/30 p-8 items-stretch text-center">
+					<EmptyHeader className="items-center">
+						<EmptyMedia className="fc border border-primary/30 bg-primary/10 p-2 text-primary shrink-0">
+							<NotePencilIcon
+								className="size-6 text-primary"
+								weight="light"
+							/>
+						</EmptyMedia>
+						<EmptyTitle>No Training Plans</EmptyTitle>
+						<EmptyDescription>
+							You don't have any training plans yet. Create your
+							first plan to start building your workout structure!
+						</EmptyDescription>
+					</EmptyHeader>
+					<EmptyContent className="w-full items-stretch">
+						<CreatePlanDialog
+							open={isCreateModalOpen}
+							onOpenChange={setIsCreateModalOpen}
+						/>
+					</EmptyContent>
+				</Empty>
 			</section>
 		);
 	}
