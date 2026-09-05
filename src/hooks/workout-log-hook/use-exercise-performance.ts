@@ -9,23 +9,35 @@ interface Exercise {
 	name: string;
 }
 
+// Extend the type to include isPR
+interface ExercisePerformanceWithPR extends ExercisePerformanceSummary {
+	isPR: boolean;
+}
+
 export function useExercisePerformance(exercises: Exercise[]) {
 	const [lastLogs, setLastLogs] = useState<
-		Record<string, ExercisePerformanceSummary | null>
+		Record<string, ExercisePerformanceWithPR | null>
 	>({});
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		async function fetchPerformance() {
 			setIsLoading(true);
-			const logs: Record<string, ExercisePerformanceSummary | null> = {};
+			const logs: Record<string, ExercisePerformanceWithPR | null> = {};
 
 			for (const ex of exercises) {
 				try {
 					const performance = await getExercisePerformanceHistory(
 						ex.name,
 					);
-					logs[ex.id] = performance;
+
+					// The isPR is already returned from the server action
+					const isPR = performance?.isPR ?? false;
+
+					logs[ex.id] = {
+						...performance,
+						isPR,
+					} as ExercisePerformanceWithPR;
 				} catch (error) {
 					console.error(
 						`Failed to fetch performance for ${ex.name}:`,
