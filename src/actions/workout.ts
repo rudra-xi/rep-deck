@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
 	exerciseTemplates,
@@ -26,6 +26,49 @@ export interface ExercisePerformanceSummary {
 		formatted: string;
 	} | null;
 	lastNote?: string | null;
+	isPR?: boolean; // Add isPR flag
+}
+
+// Helper function to check if a set is a PR
+async function checkIfPR(
+	userId: string,
+	exerciseName: string,
+	weight: number,
+	reps: number,
+): Promise<boolean> {
+	// Calculate estimated 1RM using Epley formula
+	const estimated1RM = weight * (1 + reps / 30);
+
+	// Find the best previous performance for this exercise
+	const previousBest = await db
+		.select({
+			weight: workoutSets.weight,
+			reps: workoutSets.reps,
+		})
+		.from(workoutSets)
+		.innerJoin(
+			workoutSessions,
+			eq(workoutSets.sessionId, workoutSessions.id),
+		)
+		.where(
+			and(
+				eq(workoutSessions.userId, userId),
+				eq(workoutSets.exerciseName, exerciseName),
+			),
+		)
+		.orderBy(desc(workoutSets.weight), desc(workoutSets.reps))
+		.limit(1);
+
+	// If no previous records, this is a PR
+	if (previousBest.length === 0) return true;
+
+	// Calculate previous estimated 1RM
+	const prevWeight = Number(previousBest[0].weight);
+	const prevReps = previousBest[0].reps;
+	const prevEstimated1RM = prevWeight * (1 + prevReps / 30);
+
+	// Check if current set is better
+	return estimated1RM > prevEstimated1RM;
 }
 
 // 1. Get Active Plan with Days and Exercises
@@ -93,7 +136,8 @@ export async function getExercisePerformanceHistory(
 				weight: workoutSets.weight,
 				reps: workoutSets.reps,
 				rpe: workoutSets.rpe,
-				notes: workoutSets.notes, // Query set notes
+				notes: workoutSets.notes,
+				isPR: workoutSets.isPR, // Include isPR field
 				createdAt: workoutSets.createdAt,
 			})
 			.from(workoutSets)
@@ -116,7 +160,7 @@ export async function getExercisePerformanceHistory(
 			reps: number;
 			rpe?: number | null;
 		}) =>
-			`${set.weight}kg × ${set.reps}${set.rpe ? ` @ RPE ${set.rpe}` : ""}`;
+			`${set.weight}kg × ${set.reps}${set.rpe ? ` @ rpe ${set.rpe}` : ""}`;
 
 		const latestSessionId = allSets[0].sessionId;
 		const lastSessionSets = allSets.filter(
@@ -142,6 +186,9 @@ export async function getExercisePerformanceHistory(
 			return prev;
 		}, allSets[0]);
 
+		// Check if any set in history is a PR
+		const isPR = allSets.some((set) => set.isPR === true);
+
 		return {
 			lastBest: {
 				weight: lastBestSet.weight,
@@ -155,7 +202,8 @@ export async function getExercisePerformanceHistory(
 				rpe: overallBestSet.rpe,
 				formatted: formatSet(overallBestSet),
 			},
-			lastNote: lastNoteSet?.notes ?? null, // Return latest note
+			lastNote: lastNoteSet?.notes ?? null,
+			isPR, // Return isPR flag
 		};
 	} catch (error) {
 		console.error("Error fetching exercise performance history:", error);
@@ -169,7 +217,7 @@ export async function getLastExercisePerformance(exerciseName: string) {
 	return history?.lastBest?.formatted ?? null;
 }
 
-// 3. Save Workout Session and Sets
+// 3. Save Workout Session and Sets with PR detection
 export async function finishWorkoutSession(data: {
 	programId?: string;
 	dayIndex?: number;
@@ -181,13 +229,14 @@ export async function finishWorkoutSession(data: {
 		weight: number;
 		reps: number;
 		rpe?: number;
-		notes?: string; // 1. Added notes to input type
+		notes?: string;
 	}>;
 }) {
 	console.log(
 		"📝 Server received notes:",
 		data.sets.map((s) => ({ name: s.exerciseName, notes: s.notes })),
-	); // ✅ Debug log
+	);
+
 	try {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) {
@@ -232,8 +281,9 @@ export async function finishWorkoutSession(data: {
 				.returning();
 
 			if (data.sets.length > 0) {
-				await tx.insert(workoutSets).values(
-					data.sets.map((set) => {
+				// Process each set and check for PRs
+				const setsWithPR = await Promise.all(
+					data.sets.map(async (set) => {
 						const normalizedName = set.exerciseName
 							.trim()
 							.toLowerCase();
@@ -241,6 +291,14 @@ export async function finishWorkoutSession(data: {
 							set.templateId ||
 							templateMap.get(normalizedName) ||
 							null;
+
+						// Check if this set is a PR
+						const isPR = await checkIfPR(
+							dbUser.id,
+							set.exerciseName,
+							set.weight,
+							set.reps,
+						);
 
 						return {
 							sessionId: session.id,
@@ -250,10 +308,13 @@ export async function finishWorkoutSession(data: {
 							weight: set.weight,
 							reps: set.reps,
 							rpe: set.rpe || null,
-							notes: set.notes || null, // 2. Insert set-level notes into DB
+							notes: set.notes || null,
+							isPR, // Set the PR flag
 						};
 					}),
 				);
+
+				await tx.insert(workoutSets).values(setsWithPR);
 			}
 
 			return session;
@@ -301,6 +362,45 @@ export async function getLastSessionNote(
 		return lastSession?.notes ?? null;
 	} catch (error) {
 		console.error("Error fetching last session note:", error);
+		return null;
+	}
+}
+
+// 5. Get PRs for an exercise (optional helper)
+export async function getPersonalRecords(exerciseName: string) {
+	try {
+		const { dbUser } = await getCurrentUser();
+		if (!dbUser) return null;
+
+		const prs = await db
+			.select({
+				id: workoutSets.id,
+				weight: workoutSets.weight,
+				reps: workoutSets.reps,
+				rpe: workoutSets.rpe,
+				date: workoutSessions.date,
+			})
+			.from(workoutSets)
+			.innerJoin(
+				workoutSessions,
+				eq(workoutSets.sessionId, workoutSessions.id),
+			)
+			.where(
+				and(
+					eq(workoutSessions.userId, dbUser.id),
+					eq(workoutSets.exerciseName, exerciseName),
+					eq(workoutSets.isPR, true),
+				),
+			)
+			.orderBy(desc(workoutSets.weight), desc(workoutSets.reps));
+
+		return prs.map((pr) => ({
+			...pr,
+			formatted: `${pr.weight}kg × ${pr.reps}${pr.rpe ? ` @ rpe ${pr.rpe}` : ""}`,
+			date: pr.date.toLocaleDateString(),
+		}));
+	} catch (error) {
+		console.error("Error fetching personal records:", error);
 		return null;
 	}
 }

@@ -1,6 +1,4 @@
 "use client";
-
-import React, { useMemo, useState } from "react";
 import {
 	CaretLeftIcon,
 	CaretRightIcon,
@@ -18,7 +16,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { CHALLENGES, type Challenge } from "@/constants";
+import type { Challenge } from "@/constants";
+import { useChallenge } from "@/hooks";
 
 interface ChallengeItemProps {
 	variant: "past" | "current" | "next";
@@ -33,7 +32,7 @@ function ChallengeCardItem({ variant, title, challenge }: ChallengeItemProps) {
 	return (
 		<Card
 			size="sm"
-			className={`w-full transition-all ${
+			className={`w-full ${
 				isCurrent
 					? "border border-secondary/50 base-ease hover:border-primary/50 bg-card/50 text-foreground shadow-md ring-1 ring-primary/20"
 					: "border-border/50 bg-card/30 text-muted-foreground opacity-75"
@@ -138,52 +137,29 @@ function ChallengeCardItem({ variant, title, challenge }: ChallengeItemProps) {
 }
 
 export function ChallengeCard() {
-	const [mobileTab, setMobileTab] = useState<"past" | "current" | "next">(
-		"current",
-	);
-
-	const { yesterday, today, tomorrow } = useMemo(() => {
-		const now = new Date();
-		const start = new Date(now.getFullYear(), 0, 0);
-		const diff = now.getTime() - start.getTime();
-		const oneDay = 1000 * 60 * 60 * 24;
-		const dayIndex = Math.floor(diff / oneDay);
-
-		const total = CHALLENGES.length;
-		const yesterdayIdx = (dayIndex - 1 + total) % total;
-		const todayIdx = dayIndex % total;
-		const tomorrowIdx = (dayIndex + 1) % total;
-
-		return {
-			yesterday: CHALLENGES[yesterdayIdx],
-			today: CHALLENGES[todayIdx],
-			tomorrow: CHALLENGES[tomorrowIdx],
-		};
-	}, []);
-
-	const mobileItems = {
-		past: { title: "Yesterday", challenge: yesterday },
-		current: { title: "Today", challenge: today },
-		next: { title: "Tomorrow", challenge: tomorrow },
-	};
+	const {
+		mobileTab,
+		mobileItems,
+		yesterday,
+		today,
+		tomorrow,
+		goToPrevious,
+		goToNext,
+	} = useChallenge();
 
 	return (
 		<div>
 			{/* Mobile View: Single card with prev/next quick toggle */}
 			<div className="block md:hidden space-y-2">
 				<div className="fcb px-1">
-					<span/>
+					<span />
 					<div className="fcx gap-1">
 						<Button
 							variant="ghost"
 							size="icon"
 							className="h-7 w-7"
 							disabled={mobileTab === "past"}
-							onClick={() =>
-								setMobileTab((p) =>
-									p === "next" ? "current" : "past",
-								)
-							}
+							onClick={goToPrevious}
 						>
 							<CaretLeftIcon size={14} />
 						</Button>
@@ -195,11 +171,7 @@ export function ChallengeCard() {
 							size="icon"
 							className="h-7 w-7"
 							disabled={mobileTab === "next"}
-							onClick={() =>
-								setMobileTab((p) =>
-									p === "past" ? "current" : "next",
-								)
-							}
+							onClick={goToNext}
 						>
 							<CaretRightIcon size={14} />
 						</Button>

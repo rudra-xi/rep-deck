@@ -6,6 +6,7 @@ export type LoggedSet = {
 	rpe: string;
 	notes: string;
 	templateId?: string;
+	isPR?: boolean;
 };
 
 // You can also add other workout-related types here

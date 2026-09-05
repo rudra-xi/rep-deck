@@ -5,13 +5,14 @@ import {
 	InfoIcon,
 	ListIcon,
 	NotebookIcon,
+	PersonIcon,
 	TrendUpIcon,
 } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Logo } from "@/assets/image";
-import { SignOutButton } from "@/auth";
+import { SignOutButton, UserAvatar } from "@/auth";
 import {
 	NavigationMenu,
 	NavigationMenuItem,
@@ -28,6 +29,7 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { navigationData } from "@/constants";
+import { Separator } from "@/components/ui/separator";
 
 // Phosphor React Icon Mapping
 const navIconMap: Record<number, React.ElementType> = {
@@ -35,20 +37,21 @@ const navIconMap: Record<number, React.ElementType> = {
 	2: TrendUpIcon,
 	3: BarbellIcon,
 	4: InfoIcon,
+	5: PersonIcon,
 };
 
 export const Navigation = () => {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<div className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] max-w-2xl sm:top-4 sm:w-[calc(100%-2rem)]">
-			<header className="fcb rounded-xl border border-border/80 bg-background/60 px-3 py-2 shadow-xl backdrop-blur-md sm:px-4 sm:py-2.5">
+		<div className="fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] max-w-full lg:max-w-6/10 top-4">
+			<header className="fcb rounded-xl border border-border/80 bg-background/60 px-3 py-2 shadow-xl backdrop-blur-md">
 				{/* --- Left Side: Always-Visible Logo & Brand --- */}
 				<Link
 					href="/dashboard"
-					className="fcy sh0 gap-2 text-sm font-extrabold uppercase tracking-wider lg:text-base"
+					className="fcy sh0 gap-2 text-sm font-extrabold uppercase tracking-wider lg:text-base text-foreground hover:opacity-90 transition-opacity"
 				>
-					<div className="fc size-6 lg:size-7">
+					<div className="fc size-7">
 						<Image
 							src={Logo}
 							alt="Rep Deck Logo"
@@ -81,18 +84,25 @@ export const Navigation = () => {
 								</NavigationMenuItem>
 							);
 						})}
-
-						{/* Desktop Sign Out Button */}
-						<NavigationMenuItem className="pl-1">
-							<SignOutButton variant="icon" className="size-8" />
+						
+						{/* Desktop Avatar and Sign Out Button */}
+						<NavigationMenuItem className="pl-6 fcy gap-4">
+						<Separator orientation="vertical"/>
+							<Link href="/account" title="Account">
+								<UserAvatar size="default" />
+							</Link>
+							<SignOutButton variant="icon" className="" />
 						</NavigationMenuItem>
 					</NavigationMenuList>
 				</NavigationMenu>
 
 				{/* --- Right Side: Mobile Sheet Drawer --- */}
-				<div className="md:hidden">
+				<div className="lg:hidden">
 					<Sheet open={open} onOpenChange={setOpen}>
-						<SheetTrigger className="fc size-8 rounded-lg border border-border/60 bg-accent/30 transition-colors hover:bg-accent focus-visible:outline-none">
+						<SheetTrigger
+							aria-label="Open Navigation Menu"
+							className="fc size-8 rounded-lg border border-border/60 bg-accent/30 transition-colors hover:bg-accent focus-visible:outline-none"
+						>
 							<ListIcon
 								className="size-5 text-foreground"
 								weight="bold"
@@ -145,15 +155,19 @@ export const Navigation = () => {
 								</nav>
 							</div>
 
-							{/* Drawer Footer: Logout Action */}
+							{/* Drawer Footer: Account & Logout Action */}
 							<div className="border-t border-border/60 pt-4 fcb">
-								<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-									Account
-								</span>
-								<SignOutButton
-									variant="icon"
-									className="size-8"
-								/>
+								<SheetClose
+									nativeButton={false}
+									render={<Link href="/account" />}
+								>
+									<div className="fcy gap-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors cursor-pointer">
+										<UserAvatar size="default" />
+										<span>Account</span>
+									</div>
+								</SheetClose>
+
+								<SignOutButton variant="default" />
 							</div>
 						</SheetContent>
 					</Sheet>

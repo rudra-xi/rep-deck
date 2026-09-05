@@ -8,6 +8,7 @@ import {
 	ChecksIcon,
 	PlusSquareIcon,
 	ChatTextIcon,
+	BarbellIcon,
 } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,15 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "@/components/ui/empty";
+import Link from "next/link";
 
 interface ExerciseTemplate {
 	id: string;
@@ -60,7 +70,7 @@ export function PlannedExercises({
 		if (!setData?.weight || !setData?.reps) return;
 
 		const note = exerciseNotes[ex.id] || "";
-		console.log(`📝 Adding note for ${ex.name}:`, note); // ✅ This is already there
+		console.log(`📝 Adding note for ${ex.name}:`, note);
 
 		onAddSet({
 			exerciseName: ex.name,
@@ -73,6 +83,43 @@ export function PlannedExercises({
 
 		markSetAsAdded(ex.id, setNumber);
 	};
+
+	// Empty state when no exercises are available
+	if (!exercises || exercises.length === 0) {
+		return (
+			<Card
+				size="sm"
+				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none min-h-[200px] w-full"
+			>
+				<Empty className="p-6 sm:p-8 text-center w-full">
+					<EmptyHeader>
+						<EmptyMedia className="flex border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+							<BarbellIcon
+								className="size-6 text-primary"
+								weight="bold"
+							/>
+						</EmptyMedia>
+						<EmptyTitle className="text-sm font-medium text-foreground">
+							No Exercises Found
+						</EmptyTitle>
+						<EmptyDescription className="text-xs text-muted-foreground max-w-sm mx-auto">
+							This day doesn't have any exercises configured yet.
+							Add exercises to start logging your workout.
+						</EmptyDescription>
+					</EmptyHeader>
+					<EmptyContent>
+						<Button
+							nativeButton={false}
+							variant="outline"
+							size="sm"
+							className="text-xs mt-1"
+							render={<Link href="/plans">Manage Exercises</Link>}
+						/>
+					</EmptyContent>
+				</Empty>
+			</Card>
+		);
+	}
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 items-start">
@@ -249,7 +296,7 @@ export function PlannedExercises({
 									</span>
 									<span className="col-span-3">Kg</span>
 									<span className="col-span-3">Reps</span>
-									<span className="col-span-2">RPE</span>
+									<span className="col-span-2">rpe</span>
 									<span className="col-span-2"></span>
 								</div>
 
@@ -364,7 +411,7 @@ export function PlannedExercises({
 										console.log(
 											`✏️ Typing note for ${ex.name}:`,
 											note,
-										); // ✅ Debug
+										);
 										setExerciseNotes((prev) => ({
 											...prev,
 											[ex.id]: note,
