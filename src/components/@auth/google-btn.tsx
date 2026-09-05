@@ -5,7 +5,7 @@ import { useState, type ReactNode } from "react";
 import { signInWithGoogle } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 
 interface GoogleLoginButtonProps {
 	text?: string;

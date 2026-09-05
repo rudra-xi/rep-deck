@@ -5,6 +5,7 @@ import type { User } from "@supabase/supabase-js";
 import { getCurrentUser } from "@/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getDiceBearAvatarUrl } from "@/utils/dicebear/dicebear";
+import { Spinner } from "@/components/ui/spinner";
 
 interface UserAvatarProps {
 	className?: string;
@@ -29,10 +30,9 @@ export function UserAvatar({ className = "", size = "lg" }: UserAvatarProps) {
 
 	if (loading) {
 		return (
-			<Avatar
-				size={size}
-				className={`rounded-none bg-muted animate-pulse ${className}`}
-			/>
+			<Avatar size={size} className={`fc`}>
+				<Spinner />
+			</Avatar>
 		);
 	}
 
@@ -46,7 +46,10 @@ export function UserAvatar({ className = "", size = "lg" }: UserAvatarProps) {
 	const avatarUrl = getDiceBearAvatarUrl(avatarSeed || user.id || "default");
 
 	return (
-		<Avatar size={size} className={`after:border-0 rounded-none ${className}`}>
+		<Avatar
+			size={size}
+			className={`after:border-0 rounded-none ${className}`}
+		>
 			<AvatarImage
 				src={avatarUrl}
 				alt={name}

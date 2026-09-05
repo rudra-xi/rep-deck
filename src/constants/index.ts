@@ -108,6 +108,11 @@ export const navigationData = [
 		label: "About",
 		href: "/about",
 	},
+	{
+		id: 5,
+		label: "Metrics",
+		href: "/metrics",
+	},
 ];
 
 export const socialLinksData = [

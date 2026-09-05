@@ -1,29 +1,21 @@
 "use client";
 
-import { CircleNotchIcon, SignOutIcon } from "@phosphor-icons/react";
+import { SignOutIcon } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signOut } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 
 interface SignOutButtonProps {
 	className?: string;
 	variant?: "default" | "icon";
-	position?:
-		| "top-left"
-		| "top-center"
-		| "top-right"
-		| "bottom-left"
-		| "bottom-center"
-		| "bottom-right";
 }
 
 export function SignOutButton({
 	className = "",
 	variant = "default",
-	position = "top-right", // Default position
 }: SignOutButtonProps) {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
@@ -33,7 +25,6 @@ export function SignOutButton({
 
 		const toastId = toast.loading("Signing Out...", {
 			description: "Please wait while we sign you out.",
-			position, // ✅ Use the position prop
 		});
 
 		try {
@@ -44,10 +35,8 @@ export function SignOutButton({
 			if (result?.success) {
 				toast.success("Signed Out", {
 					description: "You have been signed out successfully.",
-					position, // ✅ Use the position prop
 				});
 
-				// Redirect after a short delay to show the toast
 				setTimeout(() => {
 					router.push("/");
 				}, 1000);
@@ -56,7 +45,6 @@ export function SignOutButton({
 					description:
 						result?.message ||
 						"An error occurred while signing out.",
-					position, // ✅ Use the position prop
 				});
 				setLoading(false);
 			}
@@ -68,7 +56,6 @@ export function SignOutButton({
 					error instanceof Error
 						? error.message
 						: "An unexpected error occurred.",
-				position, // ✅ Use the position prop
 			});
 			setLoading(false);
 		}
@@ -81,13 +68,14 @@ export function SignOutButton({
 				size="icon"
 				onClick={handleSignOut}
 				disabled={loading}
-				className={`text-muted-foreground hover:text-destructive hover:bg-destructive/20 transition-colors ${className}`}
+				aria-label="Sign out"
+				className={`fc shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors ${className}`}
 				title="Sign out"
 			>
 				{loading ? (
-					<Spinner />
+					<Spinner className="size-4" />
 				) : (
-					<SignOutIcon weight="bold" className="h-5 w-5" />
+					<SignOutIcon weight="bold" className="size-4 shrink-0" />
 				)}
 			</Button>
 		);
@@ -98,17 +86,17 @@ export function SignOutButton({
 			variant="destructive"
 			onClick={handleSignOut}
 			disabled={loading}
-			className={`font-medium gap-2 ${className}`}
+			className={`fcy justify-center font-medium gap-2 ${className}`}
 		>
 			{loading ? (
 				<>
-					<Spinner />
-					Signing out...
+					<Spinner className="size-3.5" />
+					<span>Signing out...</span>
 				</>
 			) : (
 				<>
-					<SignOutIcon className="h-4 w-4" />
-					Sign Out
+					<SignOutIcon className="size-3.5 shrink-0" weight="bold" />
+					<span>Sign Out</span>
 				</>
 			)}
 		</Button>
