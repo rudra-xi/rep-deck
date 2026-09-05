@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm/_relations";
 import {
+	boolean,
 	decimal,
 	index,
 	integer,
@@ -31,6 +32,7 @@ export const workoutSets = pgTable(
 		reps: integer("reps").notNull(),
 		rpe: decimal("rpe", { precision: 3, scale: 1, mode: "number" }),
 		notes: text("notes"),
+		isPR: boolean("is_pr").default(false),
 		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
 			.defaultNow(),
