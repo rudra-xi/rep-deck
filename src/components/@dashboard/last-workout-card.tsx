@@ -179,7 +179,7 @@ export function LastWorkoutCard({
 						size="sm"
 						className="h-8 justify-between border border-border/60 bg-muted/30 px-3 text-xs text-muted-foreground hover:bg-muted hover:text-foreground gap-1.5"
 						render={
-							<Link href={`/workouts/${data.id}`}>
+							<Link href={`/workout-log/${data.id}`}>
 								<span>Open Session</span>
 								<ArrowRightIcon size={14} />
 							</Link>
@@ -246,7 +246,7 @@ export function LastWorkoutCard({
 											{isPR && (
 												<Badge
 													variant="outline"
-													className="border-primary/40 text-primary cursor-pointer shrink-0"
+													className="border-primary/40 text-primary sh0"
 												>
 													<TrophyIcon
 														size={10}

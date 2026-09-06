@@ -404,3 +404,85 @@ export async function getPersonalRecords(exerciseName: string) {
 		return null;
 	}
 }
+
+// actions/workout.ts
+
+export async function getWorkoutSessionDetails(sessionId: string) {
+	try {
+		const { dbUser } = await getCurrentUser();
+		if (!dbUser) return null;
+
+		// Get ALL sessions for this user (for calendar navigation)
+		const allSessions = await db
+			.select({
+				id: workoutSessions.id,
+				date: workoutSessions.date,
+			})
+			.from(workoutSessions)
+			.where(eq(workoutSessions.userId, dbUser.id))
+			.orderBy(desc(workoutSessions.date));
+
+		// Map session dates with IDs
+		const sessionList = allSessions.map((s) => ({
+			id: s.id,
+			date: s.date.toISOString(),
+		}));
+
+		// Get specific session details
+		const [session] = await db
+			.select()
+			.from(workoutSessions)
+			.where(
+				and(
+					eq(workoutSessions.id, sessionId),
+					eq(workoutSessions.userId, dbUser.id),
+				),
+			)
+			.limit(1);
+
+		if (!session) return null;
+
+		let programName = "Workout Session";
+		if (session.programId) {
+			const [program] = await db
+				.select({ name: programTemplates.name })
+				.from(programTemplates)
+				.where(eq(programTemplates.id, session.programId))
+				.limit(1);
+			if (program) programName = program.name;
+		}
+
+		const sets = await db
+			.select()
+			.from(workoutSets)
+			.where(eq(workoutSets.sessionId, sessionId))
+			.orderBy(asc(workoutSets.setNumber));
+
+		return {
+			id: session.id,
+			rawDate: session.date.toISOString(),
+			date: new Date(session.date).toLocaleDateString("en-US", {
+				day: "numeric",
+				month: "short",
+				year: "numeric",
+			}),
+			programName,
+			dayName:
+				session.dayIndex !== null
+					? `Day ${session.dayIndex + 1}`
+					: "Custom Session",
+			sets: sets.map((set) => ({
+				id: set.id,
+				exercise: set.exerciseName,
+				weightKg: Number(set.weight),
+				reps: set.reps,
+				rpe: set.rpe ? Number(set.rpe) : undefined,
+				isPR: set.isPR || false,
+			})),
+			sessions: sessionList,
+		};
+	} catch (error) {
+		console.error("Error fetching workout details:", error);
+		return null;
+	}
+}
