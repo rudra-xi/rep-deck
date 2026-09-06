@@ -90,10 +90,8 @@ const renderDot = (props: any, isPR: boolean, color: string) => {
 				width={14}
 				height={14}
 				weight="fill"
-				className="text-primary"
 				style={{
 					position: "absolute",
-					filter: "drop-shadow(0 0 4px rgba(245, 158, 11, 0.5))",
 				}}
 			/>
 		);
@@ -201,7 +199,6 @@ export function StrengthChart({
 									</Link>
 								}
 							/>
-							
 						</div>
 					</EmptyContent>
 				</Empty>
@@ -219,7 +216,7 @@ export function StrengthChart({
 						weight="bold"
 						className="text-primary sh0"
 					/>
-					<CardDescription className="text-[11px] sm:text-xs text-neutral-400">
+					<CardDescription className="text-[11px] sm:text-xs text-primary-foreground">
 						Estimated 1RM.
 					</CardDescription>
 					{prCount > 0 && (
@@ -302,7 +299,6 @@ export function StrengthChart({
 							</Button>
 						);
 					})}
-					
 				</div>
 			</CardHeader>
 
@@ -353,25 +349,24 @@ export function StrengthChart({
 							<Line
 								dataKey="squat"
 								type="monotone"
-								stroke="var(--color-squat)"
+								stroke="var(--chart-1)"
 								strokeWidth={2}
 								connectNulls={true}
 								dot={(props) => {
 									const { payload } = props;
 									const isPR = payload?.prs?.squat;
-									const color = "var(--color-squat)";
+									const color = "var(--chart-1)";
 
 									if (isPR) {
 										return (
 											<StarIcon
 												key={`squat-${props.cx}-${props.cy}`}
 												size={14}
-												weight="duotone"
-												className="text-primary"
+												weight="fill"
+												className="text-chart-1"
 												style={{
 													position: "absolute",
 													transform: `translate(${props.cx - 7}px, ${props.cy - 7}px)`,
-													filter: "drop-shadow(0 0 4px rgba(245, 158, 11, 0.5))",
 												}}
 											/>
 										);
@@ -397,25 +392,24 @@ export function StrengthChart({
 							<Line
 								dataKey="bench"
 								type="monotone"
-								stroke="var(--color-bench)"
+								stroke="var(--chart-2)"
 								strokeWidth={2}
 								connectNulls={true}
 								dot={(props) => {
 									const { payload } = props;
 									const isPR = payload?.prs?.bench;
-									const color = "var(--color-bench)";
+									const color = "var(--chart-2)";
 
 									if (isPR) {
 										return (
 											<StarIcon
 												key={`bench-${props.cx}-${props.cy}`}
 												size={14}
-												weight="duotone"
-												className="text-primary"
+												weight="fill"
+												className="text-chart-2"
 												style={{
 													position: "absolute",
 													transform: `translate(${props.cx - 7}px, ${props.cy - 7}px)`,
-													filter: "drop-shadow(0 0 4px rgba(245, 158, 11, 0.5))",
 												}}
 											/>
 										);
@@ -441,25 +435,24 @@ export function StrengthChart({
 							<Line
 								dataKey="deadlift"
 								type="monotone"
-								stroke="var(--color-deadlift)"
+								stroke="var(--chart-3)"
 								strokeWidth={2}
 								connectNulls={true}
 								dot={(props) => {
 									const { payload } = props;
 									const isPR = payload?.prs?.deadlift;
-									const color = "var(--color-deadlift)";
+									const color = "var(--chart-3)";
 
 									if (isPR) {
 										return (
 											<StarIcon
 												key={`deadlift-${props.cx}-${props.cy}`}
 												size={14}
-												weight="duotone"
-												className="text-primary"
+												weight="fill"
+												className="text-chart-3"
 												style={{
 													position: "absolute",
 													transform: `translate(${props.cx - 7}px, ${props.cy - 7}px)`,
-													filter: "drop-shadow(0 0 4px rgba(245, 158, 11, 0.5))",
 												}}
 											/>
 										);
@@ -485,25 +478,24 @@ export function StrengthChart({
 							<Line
 								dataKey="ohp"
 								type="monotone"
-								stroke="var(--color-ohp)"
+								stroke="var(--chart-4)"
 								strokeWidth={2}
 								connectNulls={true}
 								dot={(props) => {
 									const { payload } = props;
 									const isPR = payload?.prs?.ohp;
-									const color = "var(--color-ohp)";
+									const color = "var(--chart-4)";
 
 									if (isPR) {
 										return (
 											<StarIcon
 												key={`ohp-${props.cx}-${props.cy}`}
 												size={14}
-												weight="duotone"
-												className="text-primary"
+												weight="fill"
+												className="text-chart-4"
 												style={{
 													position: "absolute",
 													transform: `translate(${props.cx - 7}px, ${props.cy - 7}px)`,
-													filter: "drop-shadow(0 0 4px rgba(245, 158, 11, 0.5))",
 												}}
 											/>
 										);
