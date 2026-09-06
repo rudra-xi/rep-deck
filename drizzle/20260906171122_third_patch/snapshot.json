@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "f403f7ca-d87b-4a7a-96db-7c8045ec15a0",
+  "id": "36f1e567-2ab9-42b7-800d-0d962bf222bf",
   "prevIds": [
-    "00000000-0000-0000-0000-000000000000"
+    "f403f7ca-d87b-4a7a-96db-7c8045ec15a0"
   ],
   "ddl": [
     {
@@ -441,9 +441,9 @@
     {
       "type": "timestamp with time zone",
       "typeSchema": null,
-      "notNull": true,
+      "notNull": false,
       "dimensions": 0,
-      "default": null,
+      "default": "now()",
       "generated": null,
       "identity": null,
       "name": "start_date",
@@ -759,6 +759,19 @@
       "generated": null,
       "identity": null,
       "name": "notes",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "workout_sets"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "name": "is_pr",
       "entityType": "columns",
       "schema": "public",
       "table": "workout_sets"
