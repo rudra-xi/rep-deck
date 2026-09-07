@@ -348,3 +348,13 @@ export const PRESET_REP_RANGES = [
 	"5x5",
 	"10x10",
 ];
+
+export const TWELVE_WEEK_BENCHMARK: Record<string, number> = {
+	Mon: 12, 
+	Tue: 12,
+	Wed: 12, 
+	Thu: 12,
+	Fri: 12, 
+	Sat: 12, 
+	Sun: 0,
+};
