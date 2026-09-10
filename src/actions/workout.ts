@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import {
 	exerciseTemplates,
@@ -11,6 +11,7 @@ import {
 	workoutSets,
 } from "@/db/schema";
 import { getCurrentUser } from "@/actions/auth";
+import { toCapitalized } from "@/lib/to-capitalized";
 
 export interface ExercisePerformanceSummary {
 	lastBest: {
@@ -26,21 +27,19 @@ export interface ExercisePerformanceSummary {
 		formatted: string;
 	} | null;
 	lastNote?: string | null;
-	isPR?: boolean; // Add isPR flag
+	isPR?: boolean;
 }
 
-// Helper function to check if a set is a PR
+// Helper function to check if a set is a PR using 1RM comparison
 async function checkIfPR(
 	userId: string,
 	exerciseName: string,
 	weight: number,
 	reps: number,
 ): Promise<boolean> {
-	// Calculate estimated 1RM using Epley formula
-	const estimated1RM = weight * (1 + reps / 30);
+	const current1RM = weight * (1 + reps / 30);
 
-	// Find the best previous performance for this exercise
-	const previousBest = await db
+	const previousSets = await db
 		.select({
 			weight: workoutSets.weight,
 			reps: workoutSets.reps,
@@ -55,29 +54,23 @@ async function checkIfPR(
 				eq(workoutSessions.userId, userId),
 				eq(workoutSets.exerciseName, exerciseName),
 			),
-		)
-		.orderBy(desc(workoutSets.weight), desc(workoutSets.reps))
-		.limit(1);
+		);
 
-	// If no previous records, this is a PR
-	if (previousBest.length === 0) return true;
+	if (previousSets.length === 0) return true;
 
-	// Calculate previous estimated 1RM
-	const prevWeight = Number(previousBest[0].weight);
-	const prevReps = previousBest[0].reps;
-	const prevEstimated1RM = prevWeight * (1 + prevReps / 30);
+	const maxPrevious1RM = Math.max(
+		...previousSets.map((s) => Number(s.weight) * (1 + s.reps / 30)),
+	);
 
-	// Check if current set is better
-	return estimated1RM > prevEstimated1RM;
+	return current1RM > maxPrevious1RM;
 }
 
-// 1. Get Active Plan with Days and Exercises
+// 1. Get Active Workout Plan
 export async function getActiveWorkoutPlan() {
 	try {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return null;
 
-		// 1. Fetch active program
 		const [activeProgram] = await db
 			.select()
 			.from(programTemplates)
@@ -91,14 +84,12 @@ export async function getActiveWorkoutPlan() {
 
 		if (!activeProgram) return null;
 
-		// 2. Fetch days for active program
 		const days = await db
 			.select()
 			.from(programDayTemplates)
 			.where(eq(programDayTemplates.programId, activeProgram.id))
 			.orderBy(asc(programDayTemplates.dayIndex));
 
-		// 3. Fetch exercises per day
 		const daysWithExercises = await Promise.all(
 			days.map(async (day) => {
 				const exercises = await db
@@ -107,12 +98,20 @@ export async function getActiveWorkoutPlan() {
 					.where(eq(exerciseTemplates.programDayId, day.id))
 					.orderBy(asc(exerciseTemplates.order));
 
-				return { ...day, exercises };
+				return {
+					...day,
+					label: toCapitalized(day.label),
+					exercises: exercises.map((e) => ({
+						...e,
+						name: toCapitalized(e.name),
+					})),
+				};
 			}),
 		);
 
 		return {
 			...activeProgram,
+			name: toCapitalized(activeProgram.name),
 			days: daysWithExercises,
 		};
 	} catch (error) {
@@ -129,7 +128,8 @@ export async function getExercisePerformanceHistory(
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return null;
 
-		// Fetch all historical sets for this user & exercise name ordered by date
+		const normalizedExerciseName = toCapitalized(exerciseName);
+
 		const allSets = await db
 			.select({
 				sessionId: workoutSessions.id,
@@ -137,7 +137,7 @@ export async function getExercisePerformanceHistory(
 				reps: workoutSets.reps,
 				rpe: workoutSets.rpe,
 				notes: workoutSets.notes,
-				isPR: workoutSets.isPR, // Include isPR field
+				isPR: workoutSets.isPR,
 				createdAt: workoutSets.createdAt,
 			})
 			.from(workoutSets)
@@ -148,7 +148,7 @@ export async function getExercisePerformanceHistory(
 			.where(
 				and(
 					eq(workoutSessions.userId, dbUser.id),
-					eq(workoutSets.exerciseName, exerciseName),
+					eq(workoutSets.exerciseName, normalizedExerciseName),
 				),
 			)
 			.orderBy(desc(workoutSessions.date), desc(workoutSets.createdAt));
@@ -167,9 +167,8 @@ export async function getExercisePerformanceHistory(
 			(set) => set.sessionId === latestSessionId,
 		);
 
-		// Find the most recent non-empty note left on this exercise
 		const lastNoteSet = allSets.find(
-			(set) => set.notes && set.notes.trim() !== "",
+			(set) => set.notes !== null && set.notes.trim() !== "",
 		);
 
 		const lastBestSet = lastSessionSets.reduce((prev, current) => {
@@ -186,7 +185,6 @@ export async function getExercisePerformanceHistory(
 			return prev;
 		}, allSets[0]);
 
-		// Check if any set in history is a PR
 		const isPR = allSets.some((set) => set.isPR === true);
 
 		return {
@@ -203,7 +201,7 @@ export async function getExercisePerformanceHistory(
 				formatted: formatSet(overallBestSet),
 			},
 			lastNote: lastNoteSet?.notes ?? null,
-			isPR, // Return isPR flag
+			isPR,
 		};
 	} catch (error) {
 		console.error("Error fetching exercise performance history:", error);
@@ -211,13 +209,12 @@ export async function getExercisePerformanceHistory(
 	}
 }
 
-// 2b. Backward compatibility helper (Returns Last Best string formatted)
 export async function getLastExercisePerformance(exerciseName: string) {
 	const history = await getExercisePerformanceHistory(exerciseName);
 	return history?.lastBest?.formatted ?? null;
 }
 
-// 3. Save Workout Session and Sets with PR detection
+// 3. Save Workout Session and Sets
 export async function finishWorkoutSession(data: {
 	programId?: string;
 	dayIndex?: number;
@@ -232,23 +229,19 @@ export async function finishWorkoutSession(data: {
 		notes?: string;
 	}>;
 }) {
-	console.log(
-		"📝 Server received notes:",
-		data.sets.map((s) => ({ name: s.exerciseName, notes: s.notes })),
-	);
-
 	try {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) {
 			return { success: false, error: "Unauthorized" };
 		}
 
-		// 1. Fetch template IDs for any sets missing a valid templateId
 		const missingTemplateNames = [
 			...new Set(
 				data.sets
 					.filter((s) => !s.templateId)
-					.map((s) => s.exerciseName.trim().toLowerCase()),
+					.map((s) =>
+						toCapitalized(s.exerciseName).trim().toLowerCase(),
+					),
 			),
 		];
 
@@ -267,7 +260,17 @@ export async function finishWorkoutSession(data: {
 			});
 		}
 
-		// 2. Insert session & sets in a transaction
+		// Group notes by exercise to guarantee note persistence across all sets
+		const exerciseNoteMap = new Map<string, string>();
+		data.sets.forEach((set) => {
+			const normalizedKey = toCapitalized(set.exerciseName)
+				.trim()
+				.toLowerCase();
+			if (set.notes && set.notes.trim() !== "") {
+				exerciseNoteMap.set(normalizedKey, set.notes.trim());
+			}
+		});
+
 		const result = await db.transaction(async (tx) => {
 			const [session] = await tx
 				.insert(workoutSessions)
@@ -275,16 +278,16 @@ export async function finishWorkoutSession(data: {
 					userId: dbUser.id,
 					programId: data.programId || null,
 					dayIndex: data.dayIndex || null,
-					notes: data.notes || null,
+					notes: data.notes?.trim() || null,
 					date: new Date(),
 				})
 				.returning();
 
 			if (data.sets.length > 0) {
-				// Process each set and check for PRs
 				const setsWithPR = await Promise.all(
 					data.sets.map(async (set) => {
-						const normalizedName = set.exerciseName
+						const capitalizedName = toCapitalized(set.exerciseName);
+						const normalizedName = capitalizedName
 							.trim()
 							.toLowerCase();
 						const resolvedTemplateId =
@@ -292,24 +295,29 @@ export async function finishWorkoutSession(data: {
 							templateMap.get(normalizedName) ||
 							null;
 
-						// Check if this set is a PR
 						const isPR = await checkIfPR(
 							dbUser.id,
-							set.exerciseName,
+							capitalizedName,
 							set.weight,
 							set.reps,
 						);
 
+						// Fallback to exerciseNoteMap if the set's individual note is empty
+						const finalNote =
+							set.notes?.trim() ||
+							exerciseNoteMap.get(normalizedName) ||
+							null;
+
 						return {
 							sessionId: session.id,
-							exerciseName: set.exerciseName,
+							exerciseName: capitalizedName,
 							templateId: resolvedTemplateId,
 							setNumber: set.setNumber,
 							weight: set.weight,
 							reps: set.reps,
 							rpe: set.rpe || null,
-							notes: set.notes || null,
-							isPR, // Set the PR flag
+							notes: finalNote,
+							isPR,
 						};
 					}),
 				);
@@ -343,7 +351,6 @@ export async function getLastSessionNote(
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return null;
 
-		// Find the most recent session for this program and day
 		const [lastSession] = await db
 			.select({
 				notes: workoutSessions.notes,
@@ -366,11 +373,13 @@ export async function getLastSessionNote(
 	}
 }
 
-// 5. Get PRs for an exercise (optional helper)
+// 5. Get Personal Records
 export async function getPersonalRecords(exerciseName: string) {
 	try {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return null;
+
+		const capitalizedName = toCapitalized(exerciseName);
 
 		const prs = await db
 			.select({
@@ -388,7 +397,7 @@ export async function getPersonalRecords(exerciseName: string) {
 			.where(
 				and(
 					eq(workoutSessions.userId, dbUser.id),
-					eq(workoutSets.exerciseName, exerciseName),
+					eq(workoutSets.exerciseName, capitalizedName),
 					eq(workoutSets.isPR, true),
 				),
 			)
@@ -405,14 +414,12 @@ export async function getPersonalRecords(exerciseName: string) {
 	}
 }
 
-// actions/workout.ts
-
+// 6. Get Workout Session Details
 export async function getWorkoutSessionDetails(sessionId: string) {
 	try {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return null;
 
-		// Get ALL sessions for this user (for calendar navigation)
 		const allSessions = await db
 			.select({
 				id: workoutSessions.id,
@@ -422,13 +429,11 @@ export async function getWorkoutSessionDetails(sessionId: string) {
 			.where(eq(workoutSessions.userId, dbUser.id))
 			.orderBy(desc(workoutSessions.date));
 
-		// Map session dates with IDs
 		const sessionList = allSessions.map((s) => ({
 			id: s.id,
 			date: s.date.toISOString(),
 		}));
 
-		// Get specific session details
 		const [session] = await db
 			.select()
 			.from(workoutSessions)
@@ -449,7 +454,7 @@ export async function getWorkoutSessionDetails(sessionId: string) {
 				.from(programTemplates)
 				.where(eq(programTemplates.id, session.programId))
 				.limit(1);
-			if (program) programName = program.name;
+			if (program) programName = toCapitalized(program.name);
 		}
 
 		const sets = await db
@@ -473,10 +478,11 @@ export async function getWorkoutSessionDetails(sessionId: string) {
 					: "Custom Session",
 			sets: sets.map((set) => ({
 				id: set.id,
-				exercise: set.exerciseName,
+				exercise: toCapitalized(set.exerciseName),
 				weightKg: Number(set.weight),
 				reps: set.reps,
 				rpe: set.rpe ? Number(set.rpe) : undefined,
+				notes: set.notes,
 				isPR: set.isPR || false,
 			})),
 			sessions: sessionList,

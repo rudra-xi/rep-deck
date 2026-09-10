@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { createClient } from "@/utils/supabase/server";
+import { toCapitalized } from "@/lib/to-capitalized";
 
 // Helper to generate a default avatar seed
 function generateDefaultAvatarSeed(identifier: string) {
@@ -162,12 +163,17 @@ export async function syncUserWithDatabase() {
 			.from(users)
 			.where(eq(users.id, user.id));
 
+		const rawName =
+			user.user_metadata?.full_name ||
+			user.email?.split("@")[0] ||
+			"User";
+
 		if (existingUser) {
 			// Update user profile metadata and seed if missing
 			const [updatedUser] = await db
 				.update(users)
 				.set({
-					name: user.user_metadata?.full_name || existingUser.name,
+					name: toCapitalized(rawName),
 					avatarSeed:
 						existingUser.avatarSeed ||
 						generateDefaultAvatarSeed(user.id),
@@ -184,10 +190,7 @@ export async function syncUserWithDatabase() {
 			.values({
 				id: user.id,
 				email: user.email!,
-				name:
-					user.user_metadata?.full_name ||
-					user.email?.split("@")[0] ||
-					"User",
+				name: toCapitalized(rawName),
 				avatarSeed: generateDefaultAvatarSeed(user.id),
 			})
 			.returning();

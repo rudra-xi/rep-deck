@@ -10,6 +10,7 @@ import {
 	workoutSets,
 } from "@/db/schema";
 import { getCurrentUser } from "@/actions/auth";
+import { toCapitalized } from "@/lib/to-capitalized";
 
 // Define the StrengthTrendDataPoint type
 export interface StrengthTrendDataPoint {
@@ -159,13 +160,16 @@ export async function getDashboardData() {
 			lastWorkoutData = {
 				id: lastSession.id,
 				date: formattedDate,
-				programName: activeProgram?.name || "Workout Session",
+				programName: activeProgram?.name
+					? toCapitalized(activeProgram.name)
+					: "Workout Session",
 				dayName:
 					lastSession.dayIndex !== null
 						? `Day ${lastSession.dayIndex + 1}`
 						: "Custom Session",
 				topLifts: topLifts.map((lift) => ({
 					...lift,
+					exercise: toCapitalized(lift.exercise),
 					isPR: lift.isPR || false,
 				})),
 			};
@@ -176,10 +180,10 @@ export async function getDashboardData() {
 		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
 		const trackedLifts = [
-			{ label: "Bench Press", value: "Bench Press" },
-			{ label: "Barbell Squat", value: "Barbell Squat" },
-			{ label: "Deadlift", value: "Deadlift" },
-			{ label: "Overhead Press", value: "Overhead Press" },
+			{ label: toCapitalized("Bench Press"), value: "Bench Press" },
+			{ label: toCapitalized("Barbell Squat"), value: "Barbell Squat" },
+			{ label: toCapitalized("Deadlift"), value: "Deadlift" },
+			{ label: toCapitalized("Overhead Press"), value: "Overhead Press" },
 		];
 
 		const dropdownOptions = await Promise.all(
@@ -259,7 +263,7 @@ export async function getDashboardData() {
 			}),
 		);
 
-		// ✅ NEW: 6. Fetch Strength Trend Data (Last 60 Days)
+		// 6. Fetch Strength Trend Data (Last 60 Days)
 		const sixtyDaysAgo = new Date();
 		sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
 
@@ -271,7 +275,6 @@ export async function getDashboardData() {
 		];
 		const liftKeys = ["squat", "bench", "deadlift", "ohp"];
 
-		// Fetch all sets from the last 60 days
 		const strengthSets = await db
 			.select({
 				exercise: workoutSets.exerciseName,
@@ -297,7 +300,6 @@ export async function getDashboardData() {
 			)
 			.orderBy(desc(workoutSessions.date));
 
-		// Group by date and exercise
 		const groupedByDate: Record<
 			string,
 			Record<string, { weight: number; reps: number; isPR: boolean }>
@@ -317,11 +319,9 @@ export async function getDashboardData() {
 			const liftKey = liftKeys[liftIndex];
 
 			if (liftKey) {
-				// Calculate estimated 1RM using Epley formula
 				const estimated1RM =
 					Number(set.weight) * (1 + Number(set.reps) / 30);
 
-				// Only store if it's better than what we have for this date
 				if (
 					!groupedByDate[dateKey][liftKey] ||
 					estimated1RM > groupedByDate[dateKey][liftKey].weight
@@ -335,7 +335,6 @@ export async function getDashboardData() {
 			}
 		});
 
-		// Convert to array format
 		const strengthTrendData: StrengthTrendDataPoint[] = Object.entries(
 			groupedByDate,
 		)
@@ -363,9 +362,8 @@ export async function getDashboardData() {
 				return point;
 			})
 			.sort((a, b) => {
-				// Sort by date (assuming format like "Dec 25")
-				const dateA = new Date(a.date + ", 2024");
-				const dateB = new Date(b.date + ", 2024");
+				const dateA = new Date(a.date + ", 2026");
+				const dateB = new Date(b.date + ", 2026");
 				return dateA.getTime() - dateB.getTime();
 			});
 
@@ -374,7 +372,9 @@ export async function getDashboardData() {
 			program: {
 				id: "program",
 				label: "Program",
-				value: activeProgram?.name || "None",
+				value: activeProgram?.name
+					? toCapitalized(activeProgram.name)
+					: "None",
 				subtext: activeProgram ? "Active" : "No active program",
 				action: { href: "/plans", label: "View Plans" },
 			},
@@ -416,7 +416,7 @@ export async function getDashboardData() {
 		return {
 			kpis,
 			lastWorkout: lastWorkoutData,
-			strengthTrend: strengthTrendData, // ✅ Now returns actual data
+			strengthTrend: strengthTrendData,
 		};
 	} catch (error) {
 		console.error("Error fetching dashboard data:", error);

@@ -6,6 +6,10 @@ import { db } from "@/db";
 import { workoutSessions, workoutSets, bodyMeasurements } from "@/db/schema";
 import { getCurrentUser } from "@/actions/auth";
 import { subDays, format } from "date-fns";
+import { toCapitalized } from "@/lib/to-capitalized";
+
+// Reference current date aligned to Sep 10, 2026
+const CURRENT_DATE = new Date(2026, 8, 10);
 
 // Helper to estimate 1RM using the Epley formula
 const calculateEpley1RM = (weight: number, reps: number) => {
@@ -22,7 +26,7 @@ export async function getStrengthOverview(
 		if (!dbUser) return [];
 
 		const daysMap = { "2M": 60, "3M": 90, "6M": 180, "1Y": 365 };
-		const startDate = subDays(new Date(), daysMap[timeRange] || 90);
+		const startDate = subDays(CURRENT_DATE, daysMap[timeRange] || 90);
 
 		const sets = await db
 			.select({
@@ -44,7 +48,6 @@ export async function getStrengthOverview(
 			)
 			.orderBy(asc(workoutSessions.date));
 
-		// Aggregate best estimated 1RM per exercise grouped by date
 		const aggregated: Record<string, Record<string, number>> = {};
 
 		sets.forEach((set) => {
@@ -173,13 +176,11 @@ export async function getRecentSessions(limit = 5) {
 
 		const sessionIds = sessions.map((s) => s.id);
 
-		// Batch query all sets for the fetched sessions
 		const allSets = await db
 			.select()
 			.from(workoutSets)
 			.where(inArray(workoutSets.sessionId, sessionIds));
 
-		// Map sets back to their respective sessions
 		return sessions.map((s) => {
 			const sets = allSets.filter((set) => set.sessionId === s.id);
 
@@ -189,7 +190,7 @@ export async function getRecentSessions(limit = 5) {
 			);
 
 			const uniqueExercises = Array.from(
-				new Set(sets.map((set) => set.exerciseName)),
+				new Set(sets.map((set) => toCapitalized(set.exerciseName))),
 			).slice(0, 3);
 
 			return {
@@ -209,15 +210,14 @@ export async function getRecentSessions(limit = 5) {
 	}
 }
 
-// 4. Get Training Frequency (Fixed to match RadarChart schema)
+// 4. Get Training Frequency
 export async function getTrainingFrequency() {
 	try {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return [];
 
-		const twelveWeeksAgo = subDays(new Date(), 84);
+		const twelveWeeksAgo = subDays(CURRENT_DATE, 84);
 
-		// Group sessions by day of week using PostgreSQL EXTRACT(DOW)
 		const queryResult = await db
 			.select({
 				dayNum: sql<number>`EXTRACT(DOW FROM ${workoutSessions.date})::int`,
@@ -232,7 +232,6 @@ export async function getTrainingFrequency() {
 			)
 			.groupBy(sql`EXTRACT(DOW FROM ${workoutSessions.date})`);
 
-		// Map PostgreSQL DOW (0 = Sunday, 1 = Monday, ..., 6 = Saturday) to Monday-start structure
 		const daysMap = [
 			{ day: "Mon", dow: 1 },
 			{ day: "Tue", dow: 2 },
