@@ -1,12 +1,13 @@
 export type LoggedSet = {
 	id: string;
 	exerciseName: string;
-	weight: string;
-	reps: string;
-	rpe: string;
+	weight: number | string;
+	reps: number | string;
+	rpe: number | string;
 	notes: string;
 	templateId?: string;
 	isPR?: boolean;
+	setNumber?: number | string;
 };
 
 // You can also add other workout-related types here
