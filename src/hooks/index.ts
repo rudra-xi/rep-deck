@@ -4,6 +4,12 @@ import { useKpiCards } from "./dashboard-hook/use-kpi-cards";
 import { useLastWorkout } from "./dashboard-hook/use-last-workout";
 import { useStrengthChart } from "./dashboard-hook/use-strength-chart";
 
+import { useDataQuality } from "./metrics-hook/use-data-quality";
+import { useMeasurementReminders } from "./metrics-hook/use-measurement-reminders";
+import { useMuscleSizeTrend } from "./metrics-hook/use-muscle-size-trend";
+import { useQuickAddMeasurement } from "./metrics-hook/use-quick-add-measurement";
+import { useQuickStats } from "./metrics-hook/use-quick-stats";
+
 import { useDialog } from "./plans-hook/use-dialog";
 import { useDialogForm } from "./plans-hook/use-dialog-form";
 import { useFormField } from "./plans-hook/use-form-field";
@@ -39,4 +45,9 @@ export {
 	useSessionHistory,
 	useStrengthOverview,
 	useTrainingFrequency,
+	useDataQuality,
+	useMeasurementReminders,
+	useMuscleSizeTrend,
+	useQuickAddMeasurement,
+	useQuickStats,
 };
