@@ -1,8 +1,5 @@
+import { MetricsClientPage } from "./client-page";
 
-export default function Metrics() {
-  return (
-    <section>
-      
-    </section>
-  );
+export default function MetricsPage() {
+	return <MetricsClientPage />;
 }

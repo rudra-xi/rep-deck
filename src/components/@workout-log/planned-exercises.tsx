@@ -6,7 +6,6 @@ import {
 	CaretUpIcon,
 	CheckIcon,
 	ChecksIcon,
-	PlusSquareIcon,
 	ChatTextIcon,
 	BarbellIcon,
 } from "@phosphor-icons/react";
@@ -36,6 +35,7 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import Link from "next/link";
+import { InlineStatSkeleton } from "@/skeletons";
 
 interface ExerciseTemplate {
 	id: string;
@@ -47,44 +47,72 @@ interface ExerciseTemplate {
 
 interface PlannedExercisesProps {
 	exercises: ExerciseTemplate[];
-	onAddSet: (set: Omit<LoggedSet, "id"> & { templateId?: string }) => void;
+	// Replaced single set handler with batch submission/removal
+	onAddExerciseSets: (
+		sets: Array<Omit<LoggedSet, "id"> & { templateId?: string }>,
+	) => void;
+	onRemoveExerciseSets?: (templateId: string) => void;
 }
 
 export function PlannedExercises({
 	exercises,
-	onAddSet,
+	onAddExerciseSets,
+	onRemoveExerciseSets,
 }: PlannedExercisesProps) {
 	const [completed, setCompleted] = useState<Record<string, boolean>>({});
 	const [openStates, setOpenStates] = useState<Record<string, boolean>>({});
-	// Local state for exercise-level notes
 	const [exerciseNotes, setExerciseNotes] = useState<Record<string, string>>(
 		{},
 	);
 
-	const { handleInputChange, markSetAsAdded, getSetInput } =
-		useExerciseInputs();
+	const { handleInputChange, getSetInput } = useExerciseInputs();
 	const { lastLogs, isLoading } = useExercisePerformance(exercises);
 
-	const handleAddSingleSet = (ex: ExerciseTemplate, setNumber: number) => {
-		const setData = getSetInput(ex.id, setNumber);
-		if (!setData?.weight || !setData?.reps) return;
+	const handleToggleDone = (ex: ExerciseTemplate) => {
+		const isCurrentlyCompleted = !!completed[ex.id];
+		const nextCompletedState = !isCurrentlyCompleted;
 
-		const note = exerciseNotes[ex.id] || "";
-		console.log(`📝 Adding note for ${ex.name}:`, note);
+		setCompleted((prev) => ({
+			...prev,
+			[ex.id]: nextCompletedState,
+		}));
 
-		onAddSet({
-			exerciseName: ex.name,
-			templateId: ex.id,
-			weight: setData.weight,
-			reps: setData.reps,
-			rpe: setData.rpe || "",
-			notes: note,
-		});
+		if (nextCompletedState) {
+			// User marked as DONE -> Collect all valid set inputs for this exercise
+			const targetSetsCount = ex.targetSets || 1;
+			const validSets: Array<
+				Omit<LoggedSet, "id"> & { templateId?: string }
+			> = [];
+			const currentNote = exerciseNotes[ex.id]?.trim() || "";
 
-		markSetAsAdded(ex.id, setNumber);
+			for (let setNum = 1; setNum <= targetSetsCount; setNum++) {
+				const setData = getSetInput(ex.id, setNum);
+
+				// Only add sets that have both weight and reps filled out
+				if (setData?.weight && setData?.reps) {
+					validSets.push({
+						exerciseName: ex.name,
+						templateId: ex.id,
+						setNumber: setNum,
+						weight: Number(setData.weight),
+						reps: Number(setData.reps),
+						rpe: setData.rpe ? String(setData.rpe) : "",
+						notes: currentNote,
+					});
+				}
+			}
+
+			if (validSets.length > 0) {
+				onAddExerciseSets(validSets);
+			}
+		} else {
+			// User UNMARKED -> Remove logged sets for this exercise if handler exists
+			if (onRemoveExerciseSets) {
+				onRemoveExerciseSets(ex.id);
+			}
+		}
 	};
 
-	// Empty state when no exercises are available
 	if (!exercises || exercises.length === 0) {
 		return (
 			<Card
@@ -129,12 +157,11 @@ export function PlannedExercises({
 					(_, i) => i + 1,
 				);
 				const isOpen = openStates[ex.id] ?? true;
-				const isCompleted = completed[ex.id];
+				const isCompleted = !!completed[ex.id];
 
 				const perfData = lastLogs[ex.id];
 				const lastBest = perfData?.lastBest?.formatted ?? null;
 				const overallBest = perfData?.overallBest?.formatted ?? null;
-				// Retrieve last session's note for this exercise from performance hook
 				const lastNote = perfData?.lastNote ?? null;
 
 				return (
@@ -143,7 +170,7 @@ export function PlannedExercises({
 						size="sm"
 						className={`h-fit border bg-card/40 backdrop-blur-sm rounded-none shadow-none transition-all ${
 							isCompleted
-								? "border-primary/50 bg-primary/5 opacity-75"
+								? "border-primary/50 bg-primary/5 opacity-80"
 								: "border-border/60 hover:border-primary/40"
 						}`}
 					>
@@ -164,12 +191,7 @@ export function PlannedExercises({
 										variant={
 											isCompleted ? "default" : "ghost"
 										}
-										onClick={() =>
-											setCompleted((prev) => ({
-												...prev,
-												[ex.id]: !prev[ex.id],
-											}))
-										}
+										onClick={() => handleToggleDone(ex)}
 										className="h-5 px-1.5 text-[10px] rounded-none gap-1 cursor-pointer"
 									>
 										{isCompleted ? (
@@ -194,7 +216,7 @@ export function PlannedExercises({
 										PR:{" "}
 										<span className="text-foreground font-semibold tracking-wider">
 											{isLoading ? (
-												<Spinner className="inline-block size-3 ml-1" />
+												<InlineStatSkeleton />
 											) : (
 												overallBest || "—"
 											)}
@@ -202,18 +224,17 @@ export function PlannedExercises({
 									</span>
 
 									<span className="gap-1">
-										Last:{" "}
+										Last: PR:{" "}
 										<span className="text-foreground font-semibold tracking-wider">
 											{isLoading ? (
-												<Spinner className="inline-block size-3 ml-1" />
+												<InlineStatSkeleton />
 											) : (
-												lastBest || "—"
+												overallBest || "—"
 											)}
 										</span>
 									</span>
 								</div>
 
-								{/* Display Last Session Notes or Loading state */}
 								{lastNote && (
 									<Popover>
 										<PopoverTrigger
@@ -291,29 +312,27 @@ export function PlannedExercises({
 
 							<CollapsibleContent className="p-2 space-y-2">
 								<div className="grid grid-cols-12 gap-1 text-[9px] font-semibold text-muted-foreground uppercase px-1 text-center">
-									<span className="col-span-2 text-left">
+									<span className="col-span-3 text-left">
 										Set
 									</span>
 									<span className="col-span-3">Kg</span>
 									<span className="col-span-3">Reps</span>
-									<span className="col-span-2">rpe</span>
-									<span className="col-span-2"></span>
+									<span className="col-span-3">RPE</span>
 								</div>
 
 								{setArray.map((setNum) => {
 									const setData = getSetInput(ex.id, setNum);
-									const isSetAdded = setData?.added;
 
 									return (
 										<div
 											key={setNum}
 											className={`grid grid-cols-12 gap-1 items-center p-1 border transition-colors ${
-												isSetAdded
+												isCompleted
 													? "bg-primary/10 border-primary/30"
 													: "bg-background/50 border-border/40"
 											}`}
 										>
-											<span className="col-span-2 text-[10px] font-mono font-bold text-foreground text-left pl-0.5">
+											<span className="col-span-3 text-[10px] font-mono font-bold text-foreground text-left pl-0.5">
 												#{setNum}
 											</span>
 
@@ -321,7 +340,7 @@ export function PlannedExercises({
 												placeholder="kg"
 												type="number"
 												step="any"
-												disabled={isSetAdded}
+												disabled={isCompleted}
 												className="col-span-3 rounded-none h-6 px-1 text-center font-mono text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
 												value={setData?.weight || ""}
 												onChange={(e) =>
@@ -336,7 +355,7 @@ export function PlannedExercises({
 											<Input
 												placeholder="reps"
 												type="number"
-												disabled={isSetAdded}
+												disabled={isCompleted}
 												className="col-span-3 rounded-none h-6 px-1 text-center font-mono text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
 												value={setData?.reps || ""}
 												onChange={(e) =>
@@ -354,8 +373,8 @@ export function PlannedExercises({
 												min={0}
 												type="number"
 												step="any"
-												disabled={isSetAdded}
-												className="col-span-2 rounded-none h-6 px-1 text-center font-mono text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
+												disabled={isCompleted}
+												className="col-span-3 rounded-none h-6 px-1 text-center font-mono text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
 												value={setData?.rpe || ""}
 												onChange={(e) =>
 													handleInputChange(
@@ -366,57 +385,22 @@ export function PlannedExercises({
 													)
 												}
 											/>
-
-											<div className="col-span-2 flex justify-end">
-												<Button
-													size="icon"
-													variant={
-														isSetAdded
-															? "default"
-															: "secondary"
-													}
-													disabled={isSetAdded}
-													className="h-6 w-full rounded-none cursor-pointer border border-border/40"
-													onClick={() =>
-														handleAddSingleSet(
-															ex,
-															setNum,
-														)
-													}
-												>
-													{isSetAdded ? (
-														<CheckIcon
-															className="size-3"
-															weight="bold"
-														/>
-													) : (
-														<PlusSquareIcon
-															className="size-3"
-															weight="bold"
-														/>
-													)}
-												</Button>
-											</div>
 										</div>
 									);
 								})}
 
-								{/* Exercise Note Input */}
+								{/* Exercise Level Note Input */}
 								<Input
-									placeholder="Add note for this exercise (e.g. adjust seat height to 4)..."
-									className="rounded-none h-7 text-[11px] border-border/40 bg-background/40 focus:border-primary/50"
+									placeholder="Exercise note (e.g. seat height 4, felt easy)..."
+									disabled={isCompleted}
+									className="rounded-none h-7 text-[11px] border-border/40 bg-background/40 focus:border-primary/50 disabled:opacity-50"
 									value={exerciseNotes[ex.id] || ""}
-									onChange={(e) => {
-										const note = e.target.value;
-										console.log(
-											`✏️ Typing note for ${ex.name}:`,
-											note,
-										);
+									onChange={(e) =>
 										setExerciseNotes((prev) => ({
 											...prev,
-											[ex.id]: note,
-										}));
-									}}
+											[ex.id]: e.target.value,
+										}))
+									}
 								/>
 							</CollapsibleContent>
 						</Collapsible>

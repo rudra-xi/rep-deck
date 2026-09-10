@@ -37,7 +37,7 @@ const bodyMetricsChartConfig = {
 	bodyFat: { label: "Body Fat (%)", color: "var(--chart-2)" },
 } satisfies ChartConfig;
 
-interface BodyMetricsCardProps {
+interface WeightBodyFatTrendProps {
 	initialData?: Array<{
 		date: string;
 		weight: number | null;
@@ -46,10 +46,10 @@ interface BodyMetricsCardProps {
 	loading?: boolean;
 }
 
-export function BodyMetricsCard({
+export function WeightBodyFatTrend({
 	initialData = [],
 	loading: propLoading = false,
-}: BodyMetricsCardProps) {
+}: WeightBodyFatTrendProps) {
 	const { data, loading, weightDiff, fatDiff, hasData } = useBodyMetrics(
 		initialData,
 		propLoading,
@@ -105,8 +105,8 @@ export function BodyMetricsCard({
 			size="sm"
 			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
 		>
-			<CardHeader className="space-y-0 pb-2 flex fcb">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
+			<CardHeader className="space-y-0 pb-2 flex items-center justify-between">
+				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
 					<PersonIcon
 						weight="bold"
 						className="text-popover-foreground"
@@ -114,7 +114,7 @@ export function BodyMetricsCard({
 					Body Composition
 				</CardTitle>
 
-				<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
+				<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
 					<HeartbeatIcon className="size-3.5" weight="bold" />
 				</div>
 			</CardHeader>

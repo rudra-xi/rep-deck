@@ -34,6 +34,7 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { useLastWorkout } from "@/hooks";
+import { WorkoutTableSkeleton } from "@/skeletons";
 
 export interface TopLift {
 	id: string | number;
@@ -62,22 +63,10 @@ export function LastWorkoutCard({
 }: LastWorkoutCardProps) {
 	const { prCount, prs } = useLastWorkout(data);
 
-	// 1. Loading State with Centered Spinner
+	// 1. Loading State
 	if (loading || data === undefined) {
-		return (
-			<Card
-				size="sm"
-				className="w-full border-secondary/50 bg-card/50 text-foreground"
-			>
-				<CardContent className="p-8 sm:p-12 text-center flex flex-col items-center justify-center space-y-3 min-h-[200px] sm:min-h-55">
-					<Spinner className="size-6" />
-					<p className="text-xs text-muted-foreground">
-						Loading session details...
-					</p>
-				</CardContent>
-			</Card>
-		);
-	}
+    return <WorkoutTableSkeleton rows={4} />;
+  }
 
 	// 2. Empty Data State with shadcn Empty
 	if (data === null || data.topLifts.length === 0) {

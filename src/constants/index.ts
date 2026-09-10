@@ -105,11 +105,6 @@ export const navigationData = [
 	},
 	{
 		id: 4,
-		label: "About",
-		href: "/about",
-	},
-	{
-		id: 5,
 		label: "Metrics",
 		href: "/metrics",
 	},

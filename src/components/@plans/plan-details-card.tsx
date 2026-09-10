@@ -6,17 +6,20 @@ import { CreateDayDialog, DeleteDayDialog } from "@/plan-dialogs";
 import { BlueprintIcon, CaretRightIcon } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PlanWithStructure } from "@/types/plans";
+import { PlanDetailsCardSkeleton } from "@/skeletons";
 
 interface PlanDetailsCardProps {
 	plan: PlanWithStructure;
 	selectedDayId: string;
 	onSelectDay: (dayId: string) => void;
+	loading?: boolean;
 }
 
 export function PlanDetailsCard({
 	plan,
 	selectedDayId,
 	onSelectDay,
+	loading = false,
 }: PlanDetailsCardProps) {
 	const router = useRouter();
 
@@ -40,6 +43,9 @@ export function PlanDetailsCard({
 			onSelectDay(dayId);
 		}
 	};
+
+	if (loading)
+		return <PlanDetailsCardSkeleton dayCount={plan.days?.length ?? 3} />;
 
 	return (
 		<Card

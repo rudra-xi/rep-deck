@@ -15,7 +15,6 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Spinner } from "@/components/ui/spinner";
 import {
 	Empty,
 	EmptyContent,
@@ -25,6 +24,7 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { useSessionHistory } from "@/hooks";
+import { SessionHistoryListSkeleton } from "@/skeletons";
 
 const sessionChartConfig = {
 	volume: { label: "Volume (kg)", color: "var(--chart-1)" },
@@ -43,35 +43,7 @@ export function SessionHistoryList({
 		useSessionHistory(initialData, propLoading);
 
 	// Loading State
-	if (loading) {
-		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-			>
-				<CardHeader className="space-y-0 pb-3 flex fcb">
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<ClockCounterClockwiseIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						Recent Session Volume
-					</CardTitle>
-					<div className="fc border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
-						<CalendarDotsIcon className="size-4" weight="bold" />
-					</div>
-				</CardHeader>
-				<CardContent className="space-y-4 pt-0">
-					<div className="flex flex-col items-center justify-center py-6 space-y-2">
-						<Spinner className="size-6" />
-						<p className="text-xs text-muted-foreground">
-							Loading session history...
-						</p>
-					</div>
-				</CardContent>
-			</Card>
-		);
-	}
+	if (loading) return <SessionHistoryListSkeleton rows={4} />;
 
 	// Empty State
 	if (!hasData) {

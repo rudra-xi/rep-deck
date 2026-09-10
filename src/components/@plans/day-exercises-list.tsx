@@ -22,12 +22,17 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import { DayExercisesListSkeleton } from "@/skeletons";
 
 interface DayExercisesListProps {
 	day?: DayWithExercises;
+	loading?: boolean;
 }
 
-export function DayExercisesList({ day }: DayExercisesListProps) {
+export function DayExercisesList({
+	day,
+	loading = false,
+}: DayExercisesListProps) {
 	const router = useRouter();
 
 	const handleAddExercise = async (data: {
@@ -60,6 +65,9 @@ export function DayExercisesList({ day }: DayExercisesListProps) {
 		await deleteExercise(exerciseId);
 		router.refresh();
 	};
+
+	if (loading)
+		return <DayExercisesListSkeleton rows={day?.exercises.length ?? 4} />;
 
 	// Empty state when no day is selected
 	if (!day) {

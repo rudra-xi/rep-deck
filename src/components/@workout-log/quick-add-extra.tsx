@@ -36,7 +36,6 @@ export function QuickAddExtra({
 	const weight = useFormField("");
 	const reps = useFormField("");
 	const rpe = useRangedInput("", 0, 10);
-	const [notes, setNotes] = useState(""); // ✅ Add notes state
 
 	const handleSelectExercise = (item: PresetExercise | string | null) => {
 		if (!item) return;
@@ -64,7 +63,7 @@ export function QuickAddExtra({
 				weight: weight.value.toString(),
 				reps: reps.value.toString(),
 				rpe: rpe.value.toString() || "",
-				notes: notes, // ✅ Add notes
+				notes: "", // Empty notes since we removed the field
 			});
 
 			toast.success("Extra set added", {
@@ -75,7 +74,6 @@ export function QuickAddExtra({
 			weight.setValue("");
 			reps.setValue("");
 			rpe.setValue("");
-			setNotes(""); // ✅ Reset notes
 		} catch {
 			toast.error("Failed to add set", {
 				description: "There was an error adding the extra set.",
@@ -181,14 +179,6 @@ export function QuickAddExtra({
 							className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
 						/>
 					</div>
-
-					{/* ✅ Add notes input */}
-					<Input
-						placeholder="Notes (optional)"
-						className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
-						value={notes}
-						onChange={(e) => setNotes(e.target.value)}
-					/>
 
 					<Button
 						type="submit"
