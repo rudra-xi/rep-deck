@@ -2,7 +2,6 @@
 
 import {
 	BarbellIcon,
-	InfoIcon,
 	ListIcon,
 	NotebookIcon,
 	PersonIcon,
@@ -20,6 +19,7 @@ import {
 	NavigationMenuList,
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { Separator } from "@/components/ui/separator";
 import {
 	Sheet,
 	SheetClose,
@@ -29,22 +29,20 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { navigationData } from "@/constants";
-import { Separator } from "@/components/ui/separator";
 
 // Phosphor React Icon Mapping
 const navIconMap: Record<number, React.ElementType> = {
 	1: NotebookIcon,
 	2: TrendUpIcon,
 	3: BarbellIcon,
-	4: InfoIcon,
-	5: PersonIcon,
+	4: PersonIcon,
 };
 
 export const Navigation = () => {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<div className="fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] max-w-full lg:max-w-6/10 top-4">
+		<div className="fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] max-w-full lg:max-w-3/6 top-4">
 			<header className="fcb rounded-xl border border-border/80 bg-background/60 px-3 py-2 shadow-xl backdrop-blur-md">
 				{/* --- Left Side: Always-Visible Logo & Brand --- */}
 				<Link
