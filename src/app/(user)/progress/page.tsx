@@ -1,7 +1,7 @@
 import {
-	getStrengthOverview,
 	getLiftDetails,
 	getRecentSessions,
+	getStrengthOverview,
 	getTrainingFrequency,
 } from "@/actions/progress";
 import ProgressClientPage from "./client-page";

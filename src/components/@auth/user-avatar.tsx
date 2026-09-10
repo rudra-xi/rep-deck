@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getDiceBearAvatarUrl } from "@/utils/dicebear/dicebear";
 import { Spinner } from "@/components/ui/spinner";
+import { AvatarSkeleton } from "@/skeletons";
 
 interface UserAvatarProps {
 	className?: string;
@@ -29,11 +30,7 @@ export function UserAvatar({ className = "", size = "lg" }: UserAvatarProps) {
 	}, []);
 
 	if (loading) {
-		return (
-			<Avatar size={size} className={`fc`}>
-				<Spinner />
-			</Avatar>
-		);
+		return <AvatarSkeleton size={size} />;
 	}
 
 	if (!user) return null;

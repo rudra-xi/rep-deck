@@ -21,6 +21,7 @@ import {
 import { FilePlusIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import type { LoggedSet } from "@/types";
 
 interface WorkoutLogClientViewProps {
 	initialPlan: any;
@@ -31,6 +32,7 @@ export default function WorkoutLogClientView({
 }: WorkoutLogClientViewProps) {
 	const {
 		loggedSets,
+		setLoggedSets,
 		notes,
 		setNotes,
 		selectedDayIndex,
@@ -56,9 +58,47 @@ export default function WorkoutLogClientView({
 		}
 	}, [initialPlan, selectedDayIndex, setSelectedDayIndex]);
 
+	// Batch add handler when "Done" is clicked on an exercise
+	const handleAddExerciseSets = (
+		newSets: Array<Omit<LoggedSet, "id"> & { templateId?: string }>,
+	) => {
+		if (!newSets.length) return;
+
+		const targetTemplateId = newSets[0].templateId;
+		const exerciseName = newSets[0].exerciseName;
+
+		setLoggedSets((prevSets) => {
+			// Remove previous sets for this template/exercise to avoid duplicates
+			const filtered = prevSets.filter((s) => {
+				if (targetTemplateId && s.templateId) {
+					return s.templateId !== targetTemplateId;
+				}
+				return (
+					s.exerciseName.trim().toLowerCase() !==
+					exerciseName.trim().toLowerCase()
+				);
+			});
+
+			// Assign unique IDs to the new sets
+			const formattedSets: LoggedSet[] = newSets.map((s, index) => ({
+				...s,
+				id: `${s.templateId || s.exerciseName}-${s.setNumber || index + 1}-${Date.now()}`,
+			}));
+
+			return [...filtered, ...formattedSets];
+		});
+	};
+
+	// Remove handler when an exercise is unmarked "Done"
+	const handleRemoveExerciseSets = (templateId: string) => {
+		setLoggedSets((prevSets) =>
+			prevSets.filter((s) => s.templateId !== templateId),
+		);
+	};
+
 	// Combined clear function - clears both draft and exercise inputs
 	const handleClearDraft = () => {
-		clearDraft(); // This now calls clearAllWorkoutData()
+		clearDraft(); // Clears workout draft state
 		clearInputs(); // Explicitly clear exercise inputs
 	};
 
@@ -123,7 +163,8 @@ export default function WorkoutLogClientView({
 				<SectionTitleCard title="Session Workflow" />
 				<PlannedExercises
 					exercises={currentDay?.exercises || []}
-					onAddSet={addSet}
+					onAddExerciseSets={handleAddExerciseSets}
+					onRemoveExerciseSets={handleRemoveExerciseSets}
 				/>
 			</div>
 

@@ -23,12 +23,17 @@ import {
 import { cn } from "@/lib/utils";
 import type { PlanWithStructure } from "@/types/plans";
 import { toast } from "sonner";
+import { PlanSettingsCardSkeleton } from "../@common/skeletons";
 
 interface PlanSettingsCardProps {
 	plan: PlanWithStructure;
+	isLoading?: boolean;
 }
 
-export function PlanSettingsCard({ plan }: PlanSettingsCardProps) {
+export function PlanSettingsCard({
+	plan,
+	isLoading = false,
+}: PlanSettingsCardProps) {
 	const router = useRouter();
 	const [name, setName] = useState(plan.name);
 	const [version, setVersion] = useState(plan.version);
@@ -65,6 +70,8 @@ export function PlanSettingsCard({ plan }: PlanSettingsCardProps) {
 
 		router.refresh();
 	};
+
+	if (isLoading) return <PlanSettingsCardSkeleton />;
 
 	return (
 		<Card

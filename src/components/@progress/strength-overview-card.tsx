@@ -30,6 +30,7 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { useStrengthOverview } from "@/hooks";
+import { ChartCardSkeleton } from "@/skeletons";
 
 const strengthChartConfig = {
 	squat: { label: "Squat", color: "var(--chart-1)" },
@@ -59,50 +60,12 @@ export function StrengthOverviewCard({
 	// Loading State
 	if (loading) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-			>
-				<CardHeader className="space-y-0 pb-2 flex fcb">
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<GaugeIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						Big 4 Strength Trend
-					</CardTitle>
-					<div className="flex items-center gap-2">
-						<div className="flex border border-border/50 p-0.5 bg-background">
-							{timeRanges.map((range) => (
-								<Button
-									key={range}
-									size="sm"
-									variant={
-										timeRange === range
-											? "default"
-											: "ghost"
-									}
-									className="h-5 px-1.5 text-[10px] rounded-none uppercase"
-									disabled
-								>
-									{range}
-								</Button>
-							))}
-						</div>
-						<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-							<TrendUpIcon className="size-3.5" weight="bold" />
-						</div>
-					</div>
-				</CardHeader>
-				<CardContent className="pt-0 space-y-3">
-					<div className="flex flex-col items-center justify-center py-6 space-y-2">
-						<Spinner className="size-6" />
-						<p className="text-xs text-muted-foreground">
-							Loading strength data...
-						</p>
-					</div>
-				</CardContent>
-			</Card>
+			<ChartCardSkeleton
+				height="h-[200px] sm:h-[220px]"
+				hasToggleRow
+				toggleCount={4}
+				titleWidth="w-40"
+			/>
 		);
 	}
 

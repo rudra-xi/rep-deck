@@ -30,6 +30,7 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { useLiftDetails } from "@/hooks";
+import { ChartCardSkeleton } from "@/skeletons";
 
 const liftChartConfig = {
 	weight: { label: "Working Wt (kg)", color: "var(--chart-1)" },
@@ -61,50 +62,12 @@ export function IndividualLiftDetailsCard({
 	// Loading State
 	if (loading) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-			>
-				<CardHeader className="space-y-0 pb-2 flex fcb">
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<GaugeIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						{liftLabels[selectedLift]} Performance
-					</CardTitle>
-					<div className="flex items-center gap-2">
-						<div className="flex border border-border/50 p-0.5 bg-background">
-							{liftTypes.map((key) => (
-								<Button
-									key={key}
-									size="sm"
-									variant={
-										selectedLift === key
-											? "default"
-											: "ghost"
-									}
-									className="h-5 px-1.5 text-[10px] rounded-none capitalize"
-									disabled
-								>
-									{key}
-								</Button>
-							))}
-						</div>
-						<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-							<BarbellIcon className="size-3.5" weight="bold" />
-						</div>
-					</div>
-				</CardHeader>
-				<CardContent className="space-y-3 pt-0">
-					<div className="flex flex-col items-center justify-center py-6 space-y-2">
-						<Spinner className="size-6" />
-						<p className="text-xs text-muted-foreground">
-							Loading lift data...
-						</p>
-					</div>
-				</CardContent>
-			</Card>
+			<ChartCardSkeleton
+				height="h-[200px] sm:h-[220px]"
+				hasToggleRow
+				toggleCount={4}
+				titleWidth="w-40"
+			/>
 		);
 	}
 

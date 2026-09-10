@@ -30,6 +30,7 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { useBodyMetrics } from "@/hooks";
+import { ChartCardSkeleton } from "@/skeletons";
 
 const bodyMetricsChartConfig = {
 	weight: { label: "Weight (kg)", color: "var(--chart-1)" },
@@ -56,33 +57,7 @@ export function BodyMetricsCard({
 
 	// Loading State
 	if (loading) {
-		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-			>
-				<CardHeader className="space-y-0 pb-2 flex fcb">
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<PersonIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						Body Composition
-					</CardTitle>
-					<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-						<HeartbeatIcon className="size-3.5" weight="bold" />
-					</div>
-				</CardHeader>
-				<CardContent className="space-y-3 pt-0">
-					<div className="flex flex-col items-center justify-center py-6 space-y-2">
-						<Spinner className="size-6" />
-						<p className="text-xs text-muted-foreground">
-							Loading body metrics...
-						</p>
-					</div>
-				</CardContent>
-			</Card>
-		);
+  return <ChartCardSkeleton height="h-[200px] sm:h-[220px]" titleWidth="w-40" />;
 	}
 
 	// Empty State

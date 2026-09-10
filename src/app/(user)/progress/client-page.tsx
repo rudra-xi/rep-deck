@@ -34,7 +34,7 @@ export default function ProgressClientPage({
 			{/* Page Header */}
 			<PageTitleCard
 				title="Progress"
-				subTitle="Deep dive into your strength, size, and body composition over time."
+				subTitle="Deep dive into your strength, size, and body composition over time"
 			/>
 
 			{/* Section 1: Body Metrics */}

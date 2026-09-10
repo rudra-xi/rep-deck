@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
 import { useKpiCards } from "@/hooks";
+import { KpiCardsSkeleton } from "@/skeletons";
 
 export interface KpiTrend {
 	direction: "up" | "down" | "neutral";
@@ -104,6 +105,9 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 			action: bodyWeight?.action,
 		},
 	];
+	
+	// Loading State
+	if (loading) return <KpiCardsSkeleton count={4} />;
 
 	return (
 		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -17,12 +17,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PlanWithStructure } from "@/types/plans";
 import { toast } from "sonner";
+import { PlansOverviewSkeleton } from "@/skeletons";
 
 interface PlansOverviewCardsProps {
 	plans: PlanWithStructure[];
 	selectedPlanId: string;
 	onSelectPlan: (id: string) => void;
 	onSetActivePlan: (id: string) => void;
+	loading?: boolean;
 }
 
 interface PlanCardItemProps {
@@ -196,6 +198,7 @@ export function PlansOverviewCards({
 	selectedPlanId,
 	onSelectPlan,
 	onSetActivePlan,
+	loading = false,
 }: PlansOverviewCardsProps) {
 	const activeIndex = useMemo(() => {
 		const idx = plans.findIndex((p) => p.active);
@@ -230,6 +233,7 @@ export function PlansOverviewCards({
 		}
 	};
 
+	if (loading) return <PlansOverviewSkeleton count={plans.length || 3} />;
 	return (
 		<div className="space-y-3">
 			{/* Mobile View */}

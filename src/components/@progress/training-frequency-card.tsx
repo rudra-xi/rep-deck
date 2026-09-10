@@ -32,6 +32,8 @@ import {
 } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
 import { useTrainingFrequency } from "@/hooks";
+import { Skeleton } from "../ui/skeleton";
+import { TrainingFrequencyCardSkeleton } from "../@common/skeletons";
 
 const chartConfig = {
 	sessions: {
@@ -63,35 +65,7 @@ export function TrainingFrequencyCard({
 	} = useTrainingFrequency(initialData, propLoading);
 
 	// Loading State
-	if (loading) {
-		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/50 bg-card/50 overflow-hidden"
-			>
-				<CardHeader className="p-4 pb-2 flex flex-row items-center justify-between space-y-0">
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
-						<ActivityIcon
-							className="size-4 text-primary"
-							weight="bold"
-						/>
-						Training Distribution
-					</CardTitle>
-					<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-						<CalendarCheckIcon className="size-3.5" weight="bold" />
-					</div>
-				</CardHeader>
-				<CardContent className="p-4 pt-0 space-y-3">
-					<div className="flex flex-col items-center justify-center py-6 space-y-2">
-						<Spinner className="size-6" />
-						<p className="text-xs text-muted-foreground">
-							Loading training frequency...
-						</p>
-					</div>
-				</CardContent>
-			</Card>
-		);
-	}
+	if (loading) return <TrainingFrequencyCardSkeleton />;
 
 	// Empty State
 	if (!hasData) {

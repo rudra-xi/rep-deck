@@ -5,6 +5,7 @@ import {
 	ClipboardTextIcon,
 	PulseIcon,
 	TrophyIcon,
+	ChatTextIcon,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +22,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "../ui/skeleton";
 
 interface ActiveSessionSummaryProps {
 	loggedSets: LoggedSet[];
@@ -36,6 +38,7 @@ interface ExerciseSummary {
 	sets: LoggedSet[];
 	isPR: boolean;
 	bestSet: LoggedSet | null;
+	exerciseNote?: string | null;
 }
 
 export function ActiveSessionSummary({
@@ -62,7 +65,6 @@ export function ActiveSessionSummary({
 	// Check for PRs and derive best performance set per exercise
 	const exerciseSummaries: ExerciseSummary[] = Object.entries(grouped).map(
 		([exercise, sets]) => {
-			// Find the best set using calculated 1RM (Epley formula: weight * (1 + reps / 30))
 			const bestSet = sets.reduce((best, current) => {
 				const currentWeight = Number(current.weight) || 0;
 				const currentReps = Number(current.reps) || 0;
@@ -75,21 +77,25 @@ export function ActiveSessionSummary({
 				return currentScore > bestScore ? current : best;
 			}, sets[0]);
 
-			// Check if any set is flagged as PR by DB or context
 			const isPR = sets.some(
 				(set) => (set as Record<string, unknown>).isPR === true,
 			);
+
+			// Find note attached to any set for this exercise
+			const exerciseNote =
+				sets.find((s) => s.notes && s.notes.trim() !== "")?.notes ||
+				null;
 
 			return {
 				exercise,
 				sets,
 				isPR,
 				bestSet,
+				exerciseNote,
 			};
 		},
 	);
 
-	// Fetch last session note for this day
 	useEffect(() => {
 		async function fetchLastSessionNote() {
 			if (!programId || dayIndex === undefined) return;
@@ -108,7 +114,6 @@ export function ActiveSessionSummary({
 		fetchLastSessionNote();
 	}, [programId, dayIndex]);
 
-	// Use the workout session hook
 	const { isSubmitting, submitWorkout } = useWorkoutSession({
 		programId,
 		dayIndex,
@@ -116,10 +121,9 @@ export function ActiveSessionSummary({
 			setNotes("");
 			onSuccess?.();
 
-			// Show PR celebration if any PRs were achieved
 			const prCount = exerciseSummaries.filter((ex) => ex.isPR).length;
 			if (prCount > 0) {
-				toast.success("🏆 New Personal Records!", {
+				toast.success("New Personal Records!", {
 					description: `You achieved ${prCount} PR${prCount > 1 ? "s" : ""} in this session!`,
 					duration: 5000,
 				});
@@ -192,7 +196,7 @@ export function ActiveSessionSummary({
 									render={
 										<Badge
 											variant="default"
-											className="h-4 px-1.5 text-[8px] font-bold uppercase tracking-wider bg-amber-500 hover:bg-amber-600 text-white border-0 cursor-pointer"
+											className="h-4 px-1.5 text-[8px] font-bold uppercase tracking-wider bg-primary hover:bg-primary text-primary-foreground border-0 cursor-pointer"
 										>
 											<TrophyIcon
 												className="size-2.5 mr-0.5"
@@ -263,7 +267,7 @@ export function ActiveSessionSummary({
 									<PopoverTrigger
 										nativeButton={false}
 										render={
-											<span className="text-amber-500 font-bold cursor-pointer hover:underline">
+											<span className="text-primary font-bold cursor-pointer hover:underline">
 												🏆 {prCount} PR
 												{prCount > 1 ? "s" : ""}
 											</span>
@@ -302,12 +306,18 @@ export function ActiveSessionSummary({
 
 						<div className="space-y-2.5">
 							{exerciseSummaries.map(
-								({ exercise, sets, isPR, bestSet }) => (
+								({
+									exercise,
+									sets,
+									isPR,
+									bestSet,
+									exerciseNote,
+								}) => (
 									<div
 										key={exercise}
 										className={`rounded-none border p-3 bg-background/50 space-y-2 ${
 											isPR
-												? "border-amber-500/50 bg-amber-500/5"
+												? "border-primary/50 bg-primary/5"
 												: "border-border/50"
 										}`}
 									>
@@ -323,18 +333,18 @@ export function ActiveSessionSummary({
 															render={
 																<Badge
 																	variant="default"
-																	className="h-4 px-1.5 text-[8px] font-bold uppercase tracking-wider bg-amber-500 hover:bg-amber-600 text-white border-0 cursor-pointer"
+																	className="h-4 px-1.5 text-[8px] font-bold uppercase tracking-wider bg-primary hover:bg-primary text-primary-foreground border-0 cursor-pointer"
 																>
 																	<TrophyIcon
 																		className="size-2.5 mr-0.5"
-																		weight="fill"
+																		weight="duotone"
 																	/>
 																	PR
 																</Badge>
 															}
 														/>
 														<PopoverContent className="w-auto p-2.5 text-xs">
-															<p className="font-semibold text-amber-500">
+															<p className="font-semibold text-primary">
 																New Personal
 																Record!
 															</p>
@@ -362,6 +372,20 @@ export function ActiveSessionSummary({
 												{sets.length > 1 ? "s" : ""}
 											</span>
 										</div>
+
+										{/* Display exercise level note if present */}
+										{exerciseNote && (
+											<div className="flex items-center gap-1.5 text-[11px] text-muted-foreground bg-accent/30 p-1.5 border border-border/30">
+												<ChatTextIcon
+													className="size-3.5 text-primary shrink-0"
+													weight="bold"
+												/>
+												<span className="italic truncate">
+													{exerciseNote}
+												</span>
+											</div>
+										)}
+
 										<div className="flex flex-wrap gap-1.5">
 											{sets.map((s, idx) => {
 												const isSetPR =
@@ -371,45 +395,62 @@ export function ActiveSessionSummary({
 															unknown
 														>
 													).isPR === true;
+												const hasSetNote = Boolean(
+													s.notes &&
+													s.notes.trim() !== "",
+												);
+
 												return (
 													<Popover key={s.id ?? idx}>
 														<PopoverTrigger
 															nativeButton={false}
 															render={
 																<span
-																	className={`text-xs font-mono px-2 py-0.5 rounded-none border cursor-pointer ${
+																	className={`text-xs font-mono px-2 py-0.5 rounded-none border cursor-pointer flex items-center gap-1 ${
 																		isSetPR
-																			? "bg-amber-500/20 border-amber-500/50 text-amber-700 dark:text-amber-400"
+																			? "bg-primary/20 border-primary/50 text-primary dark:text-primary"
 																			: "bg-accent/50 border-border/50 text-foreground"
 																	}`}
 																>
-																	Set{" "}
-																	{idx + 1}:{" "}
-																	{s.weight}kg
-																	× {s.reps}
-																	{s.rpe
-																		? ` @ RPE ${s.rpe}`
-																		: ""}
+																	<span>
+																		Set{" "}
+																		{idx +
+																			1}
+																		:{" "}
+																		{
+																			s.weight
+																		}
+																		kg ×{" "}
+																		{s.reps}
+																		{s.rpe
+																			? ` @ RPE ${s.rpe}`
+																			: ""}
+																	</span>
 																	{isSetPR &&
-																		" 🏆"}
+																		"🏆"}
 																</span>
 															}
 														/>
-														{isSetPR && (
-															<PopoverContent className="w-auto p-2 text-xs">
-																<p className="font-semibold text-amber-500">
+														<PopoverContent className="w-auto max-w-xs p-2 text-xs space-y-1">
+															{isSetPR && (
+																<p className="font-semibold text-primary">
 																	🏆 Personal
 																	Record!
 																</p>
-																<p className="text-muted-foreground mt-0.5">
-																	{s.weight}kg
-																	× {s.reps}
-																	{s.rpe
-																		? ` @ RPE ${s.rpe}`
-																		: ""}
+															)}
+															<p className="text-muted-foreground font-mono">
+																{s.weight}kg ×{" "}
+																{s.reps}
+																{s.rpe
+																	? ` @ RPE ${s.rpe}`
+																	: ""}
+															</p>
+															{hasSetNote && (
+																<p className="text-foreground italic pt-1 border-t border-border/40">
+																	"{s.notes}"
 																</p>
-															</PopoverContent>
-														)}
+															)}
+														</PopoverContent>
 													</Popover>
 												);
 											})}
@@ -444,9 +485,9 @@ export function ActiveSessionSummary({
 
 					{/* Loading state for note */}
 					{isLoadingNote && (
-						<div className="flex items-center gap-2 text-xs text-muted-foreground">
-							<Spinner className="size-3" />
-							<span>Loading last session note...</span>
+						<div className="rounded-none border border-primary/20 bg-primary/5 p-2.5 space-y-2">
+							<Skeleton className="h-3 w-24 rounded-sm" />
+							<Skeleton className="h-3 w-full rounded-sm" />
 						</div>
 					)}
 
