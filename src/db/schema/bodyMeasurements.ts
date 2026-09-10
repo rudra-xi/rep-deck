@@ -27,28 +27,36 @@ export const bodyMeasurements = pgTable(
 			scale: 2,
 			mode: "number",
 		}),
-		armsCm: decimal("arms_cm", { precision: 5, scale: 2, mode: "number" }),
-		forearmsCm: decimal("forearms_cm", {
+		armsIn: decimal("arms_in", {
 			precision: 5,
 			scale: 2,
 			mode: "number",
 		}),
-		thighsCm: decimal("thighs_cm", {
+		forearmsIn: decimal("forearms_in", {
 			precision: 5,
 			scale: 2,
 			mode: "number",
 		}),
-		chestCm: decimal("chest_cm", {
+		thighsIn: decimal("thighs_in", {
 			precision: 5,
 			scale: 2,
 			mode: "number",
 		}),
-		waistCm: decimal("waist_cm", {
+		chestIn: decimal("chest_in", {
 			precision: 5,
 			scale: 2,
 			mode: "number",
 		}),
-		hipsCm: decimal("hips_cm", { precision: 5, scale: 2, mode: "number" }),
+		waistIn: decimal("waist_in", {
+			precision: 5,
+			scale: 2,
+			mode: "number",
+		}),
+		hipsIn: decimal("hips_in", {
+			precision: 5,
+			scale: 2,
+			mode: "number",
+		}),
 		notes: text("notes"),
 		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
