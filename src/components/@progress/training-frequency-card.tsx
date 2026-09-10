@@ -33,7 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useTrainingFrequency } from "@/hooks";
 import { Skeleton } from "../ui/skeleton";
-import { TrainingFrequencyCardSkeleton } from "../@common/skeletons";
+import { TrainingFrequencyCardSkeleton } from "@/skeletons";
 
 const chartConfig = {
 	sessions: {

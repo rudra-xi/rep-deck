@@ -6,7 +6,7 @@ import { CreateDayDialog, DeleteDayDialog } from "@/plan-dialogs";
 import { BlueprintIcon, CaretRightIcon } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PlanWithStructure } from "@/types/plans";
-import { PlanDetailsCardSkeleton } from "../@common/skeletons";
+import { PlanDetailsCardSkeleton } from "@/skeletons";
 
 interface PlanDetailsCardProps {
 	plan: PlanWithStructure;

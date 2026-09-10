@@ -23,7 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { PlanWithStructure } from "@/types/plans";
 import { toast } from "sonner";
-import { PlanSettingsCardSkeleton } from "../@common/skeletons";
+import { PlanSettingsCardSkeleton } from "@/skeletons";
 
 interface PlanSettingsCardProps {
 	plan: PlanWithStructure;

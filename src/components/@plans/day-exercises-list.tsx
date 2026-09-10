@@ -22,7 +22,7 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import { DayExercisesListSkeleton } from "../@common/skeletons";
+import { DayExercisesListSkeleton } from "@/skeletons";
 
 interface DayExercisesListProps {
 	day?: DayWithExercises;
