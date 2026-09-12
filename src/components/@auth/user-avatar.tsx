@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import type { User } from "@supabase/supabase-js";
 import { getCurrentUser } from "@/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getDiceBearAvatarUrl } from "@/utils/dicebear/dicebear";
-import { Spinner } from "@/components/ui/spinner";
+import {
+	getDiceBearAvatarUrl,
+	DEFAULT_THEME,
+	type ThemeSlug,
+} from "@/utils/dicebear/dicebear";
 import { AvatarSkeleton } from "@/skeletons";
 
 interface UserAvatarProps {
@@ -14,6 +18,7 @@ interface UserAvatarProps {
 }
 
 export function UserAvatar({ className = "", size = "lg" }: UserAvatarProps) {
+	const { theme } = useTheme();
 	const [user, setUser] = useState<User | null>(null);
 	const [avatarSeed, setAvatarSeed] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -40,7 +45,13 @@ export function UserAvatar({ className = "", size = "lg" }: UserAvatarProps) {
 		user.email ||
 		"User";
 
-	const avatarUrl = getDiceBearAvatarUrl(avatarSeed || user.id || "default");
+	// next-themes returns undefined during SSR — fall back to default
+	const activeTheme = (theme as ThemeSlug) || DEFAULT_THEME;
+
+	const avatarUrl = getDiceBearAvatarUrl(
+		avatarSeed || user.id || "default",
+		activeTheme,
+	);
 
 	return (
 		<Avatar
