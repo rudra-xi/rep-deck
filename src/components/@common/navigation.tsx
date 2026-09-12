@@ -7,10 +7,9 @@ import {
 	PersonIcon,
 	TrendUpIcon,
 } from "@phosphor-icons/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Logo } from "@/assets/image";
+import { Logo } from "./logo";
 import { SignOutButton, UserAvatar } from "@/auth";
 import {
 	NavigationMenu,
@@ -50,11 +49,7 @@ export const Navigation = () => {
 					className="fcy sh0 gap-2 text-sm font-extrabold uppercase tracking-wider lg:text-base text-foreground hover:opacity-90 transition-opacity"
 				>
 					<div className="fc size-7">
-						<Image
-							src={Logo}
-							alt="Rep Deck Logo"
-							className="object-contain"
-						/>
+						<Logo className="size-full text-primary" />
 					</div>
 					<span>Rep Deck</span>
 				</Link>
@@ -82,12 +77,15 @@ export const Navigation = () => {
 								</NavigationMenuItem>
 							);
 						})}
-						
+
 						{/* Desktop Avatar and Sign Out Button */}
 						<NavigationMenuItem className="pl-6 fcy gap-4">
-						<Separator orientation="vertical"/>
+							<Separator orientation="vertical" />
 							<Link href="/account" title="Account">
-								<UserAvatar size="default" />
+								<UserAvatar
+									size="default"
+									className="outline-2 outline-primary/30"
+								/>
 							</Link>
 							<SignOutButton variant="icon" className="" />
 						</NavigationMenuItem>
@@ -116,11 +114,7 @@ export const Navigation = () => {
 								<SheetHeader className="text-left mb-6">
 									<SheetTitle className="fcy gap-2 text-base font-extrabold uppercase tracking-wider">
 										<div className="fc size-6 sh0">
-											<Image
-												src={Logo}
-												alt="Rep Deck Logo"
-												className="object-contain"
-											/>
+											<Logo className="size-full text-primary" />
 										</div>
 										Rep Deck
 									</SheetTitle>

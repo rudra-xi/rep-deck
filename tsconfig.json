@@ -29,6 +29,7 @@
 			"@/landing": ["./src/components/@landing"],
 			"@/dashboard": ["./src/components/@dashboard"],
 			"@/plans": ["./src/components/@plans"],
+			"@/account": ["./src/components/@account"],
 			"@/progress": ["./src/components/@progress"],
 			"@/workout-log": ["./src/components/@workout-log"]
 		}
