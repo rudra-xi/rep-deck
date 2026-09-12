@@ -7,7 +7,7 @@ import {
 } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { Logo } from "@/assets/image";
+import { Logo } from "@/common";
 import { socialLinksData } from "@/constants";
 
 // Icon mapping per Social Link ID
@@ -23,12 +23,8 @@ export const Footer = () => {
 			<div className="container max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
 				{/* Brand & Copyright */}
 				<div className="flex items-center gap-3">
-					<div className="size-6 flex items-center justify-center">
-						<Image
-							src={Logo}
-							alt="Rep Deck Logo"
-							className="object-contain"
-						/>
+					<div className="fc size-7">
+						<Logo className="size-full text-primary" />
 					</div>
 					<span className="font-extrabold uppercase tracking-wider text-sm">
 						Rep Deck
