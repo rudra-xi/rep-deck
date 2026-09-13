@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { HeartbeatIcon, PersonIcon } from "@phosphor-icons/react";
 import {
@@ -20,7 +21,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Spinner } from "@/components/ui/spinner";
+import { useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -31,11 +32,6 @@ import {
 } from "@/components/ui/empty";
 import { useBodyMetrics } from "@/hooks";
 import { ChartCardSkeleton } from "@/skeletons";
-
-const bodyMetricsChartConfig = {
-	weight: { label: "Weight (kg)", color: "var(--chart-1)" },
-	bodyFat: { label: "Body Fat (%)", color: "var(--chart-2)" },
-} satisfies ChartConfig;
 
 interface WeightBodyFatTrendProps {
 	initialData?: Array<{
@@ -50,14 +46,44 @@ export function WeightBodyFatTrend({
 	initialData = [],
 	loading: propLoading = false,
 }: WeightBodyFatTrendProps) {
+	// ✅ Hooks INSIDE the component
+	const { weightUnit, fmtWeight } = useUnits();
+
+	// ✅ Config built inside (memoized)
+	const bodyMetricsChartConfig = useMemo<ChartConfig>(
+		() => ({
+			weight: {
+				label: `Weight (${weightUnit})`,
+				color: "var(--chart-1)",
+			},
+			bodyFat: { label: "Body Fat (%)", color: "var(--chart-2)" },
+		}),
+		[weightUnit],
+	);
+
 	const { data, loading, weightDiff, fatDiff, hasData } = useBodyMetrics(
 		initialData,
 		propLoading,
 	);
 
+	// ✅ Convert chart data to user's unit
+	const convertedData = useMemo(
+		() =>
+			data.map((d) => ({
+				...d,
+				weight: d.weight != null ? fmtWeight(d.weight) : null,
+			})),
+		[data, fmtWeight],
+	);
+
 	// Loading State
 	if (loading) {
-  return <ChartCardSkeleton height="h-[200px] sm:h-[220px]" titleWidth="w-40" />;
+		return (
+			<ChartCardSkeleton
+				height="h-[200px] sm:h-[220px]"
+				titleWidth="w-40"
+			/>
+		);
 	}
 
 	// Empty State
@@ -125,7 +151,8 @@ export function WeightBodyFatTrend({
 						Total Progress:
 					</span>
 					<span className="font-bold text-foreground text-xs">
-						{weightDiff} kg ({fatDiff}% fat)
+						{weightDiff} {weightUnit} ({fatDiff}% fat){" "}
+						{/* ← dynamic unit */}
 					</span>
 				</div>
 
@@ -135,8 +162,8 @@ export function WeightBodyFatTrend({
 				>
 					<ComposedChart
 						accessibilityLayer
-						data={data}
-						margin={{ left: 0, right: 0, top: 8, bottom: 4 }}
+						data={convertedData} // ← use converted data
+						margin={{ left: 10, right: 2, top: 8, bottom: 4 }}
 					>
 						<defs>
 							<linearGradient
@@ -174,6 +201,7 @@ export function WeightBodyFatTrend({
 							orientation="left"
 							tickLine={false}
 							axisLine={false}
+							unit={weightUnit}
 							domain={["auto", "auto"]}
 							fontSize={10}
 							width={32}
@@ -184,6 +212,7 @@ export function WeightBodyFatTrend({
 							orientation="right"
 							tickLine={false}
 							axisLine={false}
+							unit={"%"}
 							domain={["auto", "auto"]}
 							fontSize={10}
 							width={32}

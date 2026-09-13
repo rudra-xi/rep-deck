@@ -12,6 +12,8 @@ import {
 } from "@/db/schema";
 import { getCurrentUser } from "@/actions/auth";
 import { toCapitalized } from "@/lib/to-capitalized";
+import { getUserPreferences } from "@/actions/account";
+import { parseWeightToKg } from "@/lib/units";
 
 export interface ExercisePerformanceSummary {
 	lastBest: {
@@ -160,7 +162,7 @@ export async function getExercisePerformanceHistory(
 			reps: number;
 			rpe?: number | null;
 		}) =>
-			`${set.weight}kg × ${set.reps}${set.rpe ? ` @ rpe ${set.rpe}` : ""}`;
+			`${set.weight} × ${set.reps}${set.rpe ? ` @ rpe ${set.rpe}` : ""}`;
 
 		const latestSessionId = allSets[0].sessionId;
 		const lastSessionSets = allSets.filter(
@@ -235,6 +237,8 @@ export async function finishWorkoutSession(data: {
 			return { success: false, error: "Unauthorized" };
 		}
 
+		const prefs = await getUserPreferences();
+
 		const missingTemplateNames = [
 			...new Set(
 				data.sets
@@ -295,6 +299,11 @@ export async function finishWorkoutSession(data: {
 							templateMap.get(normalizedName) ||
 							null;
 
+						const weightKg = parseWeightToKg(
+							Number(set.weight),
+							prefs.weightUnit as "kg" | "lb",
+						);
+
 						const isPR = await checkIfPR(
 							dbUser.id,
 							capitalizedName,
@@ -313,7 +322,7 @@ export async function finishWorkoutSession(data: {
 							exerciseName: capitalizedName,
 							templateId: resolvedTemplateId,
 							setNumber: set.setNumber,
-							weight: set.weight,
+							weight: weightKg,
 							reps: set.reps,
 							rpe: set.rpe || null,
 							notes: finalNote,

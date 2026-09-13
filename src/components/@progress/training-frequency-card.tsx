@@ -148,7 +148,7 @@ export function TrainingFrequencyCard({
 
 					<div className="flex items-center gap-2 bg-secondary/30 border border-secondary/60 p-2 rounded-md">
 						<TrophyIcon
-							className="size-4 text-primary-foreground shrink-0"
+							className="size-4 text-popover-foreground shrink-0"
 							weight="duotone"
 						/>
 						<div className="flex flex-col leading-tight">

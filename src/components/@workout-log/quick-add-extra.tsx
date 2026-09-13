@@ -17,6 +17,7 @@ import { useFormField, useRangedInput } from "@/hooks";
 import { toast } from "sonner";
 import { PRESET_EXERCISES, type PresetExercise } from "@/constants";
 import type { LoggedSet } from "@/types";
+import { useUnits } from "@/common";
 
 interface PlannedExerciseItem {
 	id: string;
@@ -36,6 +37,8 @@ export function QuickAddExtra({
 	const weight = useFormField("");
 	const reps = useFormField("");
 	const rpe = useRangedInput("", 0, 10);
+
+	const { weightUnit } = useUnits();
 
 	const handleSelectExercise = (item: PresetExercise | string | null) => {
 		if (!item) return;
@@ -67,7 +70,7 @@ export function QuickAddExtra({
 			});
 
 			toast.success("Extra set added", {
-				description: `Added 1 set of ${finalName} (${weight.value}kg × ${reps.value}).`,
+				description: `Added 1 set of ${finalName} (${weight.value}${weightUnit} × ${reps.value}).`,
 			});
 
 			setExerciseName("");
@@ -154,7 +157,7 @@ export function QuickAddExtra({
 
 					<div className="grid grid-cols-3 gap-2">
 						<Input
-							placeholder="kg"
+							placeholder={weightUnit}
 							type="number"
 							value={weight.value}
 							onChange={weight.onChange}

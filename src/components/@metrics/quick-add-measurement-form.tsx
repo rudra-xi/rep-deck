@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useQuickAddMeasurement } from "@/hooks";
 import { Spinner } from "@/components/ui/spinner";
+import { useUnits } from "@/common";
 
 export function QuickAddMeasurementForm() {
 	const {
@@ -27,6 +28,8 @@ export function QuickAddMeasurementForm() {
 		handleChange,
 		handleSubmit,
 	} = useQuickAddMeasurement();
+
+	const { weightLabel, measurementLabel } = useUnits();
 
 	return (
 		<Card className="border border-secondary/50 bg-card/50 rounded-none shadow-none transition-all duration-300 hover:border-primary/50">
@@ -78,7 +81,7 @@ export function QuickAddMeasurementForm() {
 					<div className="grid grid-cols-2 gap-3">
 						<div className="space-y-1">
 							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
-								Weight (kg)
+								Weight ({weightLabel})
 							</Label>
 							<Input
 								type="number"
@@ -110,7 +113,7 @@ export function QuickAddMeasurementForm() {
 					<div className="grid grid-cols-3 gap-3">
 						<div className="space-y-1">
 							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
-								Arms (in)
+								Arms ({measurementLabel})
 							</Label>
 							<Input
 								type="number"
@@ -124,7 +127,7 @@ export function QuickAddMeasurementForm() {
 						</div>
 						<div className="space-y-1">
 							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
-								Forearms (in)
+								Forearms ({measurementLabel})
 							</Label>
 							<Input
 								type="number"
@@ -138,7 +141,7 @@ export function QuickAddMeasurementForm() {
 						</div>
 						<div className="space-y-1">
 							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
-								Thighs (in)
+								Thighs ({measurementLabel})
 							</Label>
 							<Input
 								type="number"
@@ -156,7 +159,7 @@ export function QuickAddMeasurementForm() {
 					<div className="grid grid-cols-3 gap-3">
 						<div className="space-y-1">
 							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
-								Chest (in)
+								Chest ({measurementLabel})
 							</Label>
 							<Input
 								type="number"
@@ -170,7 +173,7 @@ export function QuickAddMeasurementForm() {
 						</div>
 						<div className="space-y-1">
 							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
-								Waist (in)
+								Waist ({measurementLabel})
 							</Label>
 							<Input
 								type="number"
@@ -184,7 +187,7 @@ export function QuickAddMeasurementForm() {
 						</div>
 						<div className="space-y-1">
 							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
-								Hips (in)
+								Hips ({measurementLabel})
 							</Label>
 							<Input
 								type="number"
@@ -223,7 +226,7 @@ export function QuickAddMeasurementForm() {
 					>
 						{loading ? (
 							<>
-								<Spinner/>
+								<Spinner />
 								Saving...
 							</>
 						) : success ? (

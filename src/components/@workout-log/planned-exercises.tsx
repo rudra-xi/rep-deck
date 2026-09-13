@@ -20,7 +20,6 @@ import {
 import { Input } from "@/components/ui/input";
 import type { LoggedSet } from "@/types";
 import { useExerciseInputs, useExercisePerformance } from "@/hooks";
-import { Spinner } from "@/components/ui/spinner";
 import {
 	Popover,
 	PopoverContent,
@@ -36,6 +35,7 @@ import {
 } from "@/components/ui/empty";
 import Link from "next/link";
 import { InlineStatSkeleton } from "@/skeletons";
+import { useUnits } from "@/common";
 
 interface ExerciseTemplate {
 	id: string;
@@ -47,7 +47,6 @@ interface ExerciseTemplate {
 
 interface PlannedExercisesProps {
 	exercises: ExerciseTemplate[];
-	// Replaced single set handler with batch submission/removal
 	onAddExerciseSets: (
 		sets: Array<Omit<LoggedSet, "id"> & { templateId?: string }>,
 	) => void;
@@ -68,6 +67,8 @@ export function PlannedExercises({
 	const { handleInputChange, getSetInput } = useExerciseInputs();
 	const { lastLogs, isLoading } = useExercisePerformance(exercises);
 
+	const { weightUnit, fmtWeightStr } = useUnits();
+
 	const handleToggleDone = (ex: ExerciseTemplate) => {
 		const isCurrentlyCompleted = !!completed[ex.id];
 		const nextCompletedState = !isCurrentlyCompleted;
@@ -78,7 +79,6 @@ export function PlannedExercises({
 		}));
 
 		if (nextCompletedState) {
-			// User marked as DONE -> Collect all valid set inputs for this exercise
 			const targetSetsCount = ex.targetSets || 1;
 			const validSets: Array<
 				Omit<LoggedSet, "id"> & { templateId?: string }
@@ -88,7 +88,6 @@ export function PlannedExercises({
 			for (let setNum = 1; setNum <= targetSetsCount; setNum++) {
 				const setData = getSetInput(ex.id, setNum);
 
-				// Only add sets that have both weight and reps filled out
 				if (setData?.weight && setData?.reps) {
 					validSets.push({
 						exerciseName: ex.name,
@@ -106,7 +105,6 @@ export function PlannedExercises({
 				onAddExerciseSets(validSets);
 			}
 		} else {
-			// User UNMARKED -> Remove logged sets for this exercise if handler exists
 			if (onRemoveExerciseSets) {
 				onRemoveExerciseSets(ex.id);
 			}
@@ -160,8 +158,22 @@ export function PlannedExercises({
 				const isCompleted = !!completed[ex.id];
 
 				const perfData = lastLogs[ex.id];
-				const lastBest = perfData?.lastBest?.formatted ?? null;
-				const overallBest = perfData?.overallBest?.formatted ?? null;
+				const lastBest = perfData?.lastBest
+					? `${fmtWeightStr(perfData.lastBest.weight)} × ${perfData.lastBest.reps}${
+							perfData.lastBest.rpe
+								? ` @ rpe ${perfData.lastBest.rpe}`
+								: ""
+						}`
+					: null;
+
+				const overallBest = perfData?.overallBest
+					? `${fmtWeightStr(perfData.overallBest.weight)} × ${perfData.overallBest.reps}${
+							perfData.overallBest.rpe
+								? ` @ rpe ${perfData.overallBest.rpe}`
+								: ""
+						}`
+					: null;
+
 				const lastNote = perfData?.lastNote ?? null;
 
 				return (
@@ -223,13 +235,14 @@ export function PlannedExercises({
 										</span>
 									</span>
 
+									{/* ✅ FIX: was showing overallBest */}
 									<span className="gap-1">
-										Last: PR:{" "}
+										Last:{" "}
 										<span className="text-foreground font-semibold tracking-wider">
 											{isLoading ? (
 												<InlineStatSkeleton />
 											) : (
-												overallBest || "—"
+												lastBest || "—"
 											)}
 										</span>
 									</span>
@@ -315,7 +328,9 @@ export function PlannedExercises({
 									<span className="col-span-3 text-left">
 										Set
 									</span>
-									<span className="col-span-3">Kg</span>
+									<span className="col-span-3">
+										{weightUnit}
+									</span>
 									<span className="col-span-3">Reps</span>
 									<span className="col-span-3">RPE</span>
 								</div>
@@ -337,7 +352,7 @@ export function PlannedExercises({
 											</span>
 
 											<Input
-												placeholder="kg"
+												placeholder={weightUnit}
 												type="number"
 												step="any"
 												disabled={isCompleted}
@@ -389,7 +404,6 @@ export function PlannedExercises({
 									);
 								})}
 
-								{/* Exercise Level Note Input */}
 								<Input
 									placeholder="Exercise note (e.g. seat height 4, felt easy)..."
 									disabled={isCompleted}

@@ -12,7 +12,6 @@ import {
 import { getCurrentUser } from "@/actions/auth";
 import { toCapitalized } from "@/lib/to-capitalized";
 
-// Define the StrengthTrendDataPoint type
 export interface StrengthTrendDataPoint {
 	date: string;
 	squat?: number;
@@ -27,6 +26,13 @@ export interface StrengthTrendDataPoint {
 	};
 }
 
+// ✅ Shared trend shape with raw diff
+export interface KpiTrendShape {
+	direction: "up" | "down" | "neutral";
+	value?: string;
+	rawDiffKg?: number;
+}
+
 export async function getDashboardData() {
 	try {
 		const { dbUser } = await getCurrentUser();
@@ -34,7 +40,8 @@ export async function getDashboardData() {
 
 		const userId = dbUser.id;
 
-		// 1. Fetch Active Program with details
+		/* ... unchanged sections 1 & 2 ... */
+
 		const [activeProgram] = await db
 			.select({
 				id: programTemplates.id,
@@ -50,19 +57,15 @@ export async function getDashboardData() {
 			)
 			.limit(1);
 
-		// Calculate sessions per week from program days
 		let sessionsPerWeek = 4;
-
 		if (activeProgram) {
 			const daysCount = await db
 				.select({ count: sql<number>`count(*)` })
 				.from(programDayTemplates)
 				.where(eq(programDayTemplates.programId, activeProgram.id));
-
 			sessionsPerWeek = Number(daysCount[0]?.count || 4);
 		}
 
-		// 2. Fetch Sessions Count for current week (Monday -> Sunday)
 		const now = new Date();
 		const dayOfWeek = now.getDay();
 		const startOfWeek = new Date(now);
@@ -83,7 +86,7 @@ export async function getDashboardData() {
 
 		const sessionsCount = Number(weeklySessions[0]?.count || 0);
 
-		// 3. Fetch Last Two Body Weight Records (for value + trend with diff)
+		// ✅ 3. Body weight trend — explicit KpiTrendShape typing
 		const recentWeights = await db
 			.select()
 			.from(bodyMeasurements)
@@ -94,9 +97,7 @@ export async function getDashboardData() {
 		const latestWeightRecord = recentWeights[0];
 		const previousWeightRecord = recentWeights[1];
 
-		let bodyWeightTrend:
-			| { direction: "up" | "down" | "neutral"; value?: string }
-			| undefined;
+		let bodyWeightTrend: KpiTrendShape | undefined;
 
 		if (latestWeightRecord && previousWeightRecord) {
 			const currentKg = Number(latestWeightRecord.weightKg);
@@ -108,21 +109,24 @@ export async function getDashboardData() {
 				bodyWeightTrend = {
 					direction: "up",
 					value: `+${absDiff.toFixed(1)} kg`,
+					rawDiffKg: absDiff,
 				};
 			} else if (currentKg < prevKg) {
 				bodyWeightTrend = {
 					direction: "down",
 					value: `-${absDiff.toFixed(1)} kg`,
+					rawDiffKg: absDiff,
 				};
 			} else {
 				bodyWeightTrend = {
 					direction: "neutral",
 					value: "0 kg",
+					rawDiffKg: 0,
 				};
 			}
 		}
 
-		// 4. Fetch Last Workout Session Snapshot with isPR
+		// ... 4. Last workout (unchanged) ...
 		const [lastSession] = await db
 			.select({
 				id: workoutSessions.id,
@@ -136,7 +140,6 @@ export async function getDashboardData() {
 			.limit(1);
 
 		let lastWorkoutData = null;
-
 		if (lastSession) {
 			const topLifts = await db
 				.select({
@@ -175,7 +178,7 @@ export async function getDashboardData() {
 			};
 		}
 
-		// 5. Dynamic Fetch for Best Lifts with Reps, RPE, and Trend (Last 30 Days)
+		// ✅ 5. Best lifts — dropdown options with rawWeightKg + rawDiffKg
 		const thirtyDaysAgo = new Date();
 		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -219,6 +222,8 @@ export async function getDashboardData() {
 						value: lift.value,
 						targetValue: "—",
 						subtext: "No records",
+						rawWeightKg: undefined,
+						trend: undefined,
 					};
 				}
 
@@ -233,23 +238,31 @@ export async function getDashboardData() {
 					? `${reps} ${reps === 1 ? "rep" : "reps"} @ RPE ${rpe}`
 					: `${reps} ${reps === 1 ? "rep" : "reps"}`;
 
-				let direction: "up" | "down" | "neutral" = "neutral";
-				let trendValue: string | undefined;
+				let trend: KpiTrendShape | undefined;
 
 				if (previousSet) {
 					const prevWeight = Number(previousSet.weight);
 					const diff = weightKg - prevWeight;
 					const absDiff = Math.abs(diff);
 
-					if (weightKg > prevWeight) {
-						direction = "up";
-						trendValue = `+${absDiff} kg`;
-					} else if (weightKg < prevWeight) {
-						direction = "down";
-						trendValue = `-${absDiff} kg`;
+					if (diff > 0) {
+						trend = {
+							direction: "up",
+							value: `+${absDiff} kg`,
+							rawDiffKg: absDiff,
+						};
+					} else if (diff < 0) {
+						trend = {
+							direction: "down",
+							value: `-${absDiff} kg`,
+							rawDiffKg: absDiff,
+						};
 					} else {
-						direction = "neutral";
-						trendValue = "0 kg";
+						trend = {
+							direction: "neutral",
+							value: "0 kg",
+							rawDiffKg: 0,
+						};
 					}
 				}
 
@@ -257,13 +270,14 @@ export async function getDashboardData() {
 					label: lift.label,
 					value: lift.value,
 					targetValue: `${weightKg} kg`,
+					rawWeightKg: weightKg,
 					subtext,
-					trend: { direction, value: trendValue },
+					trend,
 				};
 			}),
 		);
 
-		// 6. Fetch Strength Trend Data (Last 60 Days)
+		// ... 6. Strength trend (unchanged) ...
 		const sixtyDaysAgo = new Date();
 		sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
 
@@ -367,7 +381,7 @@ export async function getDashboardData() {
 				return dateA.getTime() - dateB.getTime();
 			});
 
-		// 7. Build Final KPI Object
+		// ✅ 7. KPI object
 		const kpis = {
 			program: {
 				id: "program",
@@ -388,6 +402,7 @@ export async function getDashboardData() {
 				id: "best-lift",
 				label: "Best Lift",
 				value: dropdownOptions[0]?.targetValue ?? "—",
+				rawWeightKg: dropdownOptions[0]?.rawWeightKg,
 				subtext: dropdownOptions[0]?.subtext ?? "No data logged",
 				trend: dropdownOptions[0]?.trend,
 				dropdownOptions,
@@ -398,6 +413,9 @@ export async function getDashboardData() {
 				value: latestWeightRecord?.weightKg
 					? `${latestWeightRecord.weightKg} kg`
 					: "—",
+				rawWeightKg: latestWeightRecord?.weightKg
+					? Number(latestWeightRecord.weightKg)
+					: undefined,
 				subtext: latestWeightRecord
 					? new Date(latestWeightRecord.date).toLocaleDateString(
 							"en-US",

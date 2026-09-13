@@ -1,20 +1,20 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
+import { BarbellIcon, HeartbeatIcon } from "@phosphor-icons/react";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-	ResponsiveContainer,
-	LineChart,
-	Line,
-	XAxis,
-	YAxis,
-	Tooltip,
-	CartesianGrid,
-	Legend,
-} from "recharts";
-import { BarbellIcon } from "@phosphor-icons/react";
-import { Spinner } from "@/components/ui/spinner";
+	type ChartConfig,
+	ChartContainer,
+	ChartLegend,
+	ChartLegendContent,
+	ChartTooltip,
+	ChartTooltipContent,
+} from "@/components/ui/chart";
+import { useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -26,30 +26,89 @@ import {
 import { useMuscleSizeTrend } from "@/hooks";
 import { ChartCardSkeleton } from "@/skeletons";
 
-interface MuscleSizeProps {
-	initialData: Array<{
+interface MuscleSizeTrendProps {
+	initialData?: Array<{
 		date: string;
 		arms: number | null;
 		forearms: number | null;
 		thighs: number | null;
 		chest: number | null;
-		waist: number | null;
 	}>;
 	loading?: boolean;
 }
 
 export function MuscleSizeTrend({
-	initialData,
-	loading = false,
-}: MuscleSizeProps) {
-	const { data, muscleColors, hasData } = useMuscleSizeTrend(initialData);
+	initialData = [],
+	loading: propLoading = false,
+}: MuscleSizeTrendProps) {
+	// ✅ Single source of truth for the display unit
+	const { measurementUnit, fmtMeasurement } = useUnits();
 
-	// Loading State
-	if (loading) {
-  return <ChartCardSkeleton height="h-[240px]" titleWidth="w-48" />;
+	const muscleSizeChartConfig = useMemo<ChartConfig>(
+		() => ({
+			arms: {
+				label: `Arms (${measurementUnit})`,
+				color: "var(--chart-1)",
+			},
+			forearms: {
+				label: `Forearms (${measurementUnit})`,
+				color: "var(--chart-2)",
+			},
+			thighs: {
+				label: `Thighs (${measurementUnit})`,
+				color: "var(--chart-3)",
+			},
+			chest: {
+				label: `Chest (${measurementUnit})`,
+				color: "var(--chart-4)",
+			},
+		}),
+		[measurementUnit],
+	);
+
+	const { data, hasData } = useMuscleSizeTrend(initialData);
+
+	// ✅ Convert chart data to user's unit
+	const convertedData = useMemo(
+		() =>
+			data.map((d) => ({
+				...d,
+				arms: d.arms != null ? fmtMeasurement(d.arms) : null,
+				forearms:
+					d.forearms != null ? fmtMeasurement(d.forearms) : null,
+				thighs: d.thighs != null ? fmtMeasurement(d.thighs) : null,
+				chest: d.chest != null ? fmtMeasurement(d.chest) : null,
+			})),
+		[data, fmtMeasurement],
+	);
+
+	// ✅ Growth computed from CONVERTED values, so it always matches the
+	//    displayed unit and re-computes on unit switch.
+	const growth = useMemo(() => {
+		if (convertedData.length < 2) return null;
+		const first = convertedData[0];
+		const last = convertedData[convertedData.length - 1];
+
+		const diff = (a: number | null, b: number | null) =>
+			a != null && b != null ? Number(b) - Number(a) : null;
+
+		return {
+			arms: diff(first.arms, last.arms),
+			forearms: diff(first.forearms, last.forearms),
+			thighs: diff(first.thighs, last.thighs),
+			chest: diff(first.chest, last.chest),
+		} as Record<keyof typeof muscleSizeChartConfig, number | null>;
+	}, [convertedData]);
+
+	if (propLoading) {
+		return (
+			<ChartCardSkeleton
+				height="h-[200px] sm:h-[220px]"
+				titleWidth="w-40"
+			/>
+		);
 	}
 
-	// Empty State — matches BodyMetricsCard
 	if (!hasData) {
 		return (
 			<Card
@@ -88,107 +147,128 @@ export function MuscleSizeTrend({
 		);
 	}
 
-	// Data State
 	return (
-		<Card className="border border-secondary/50 bg-card/50 rounded-none shadow-none transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
-			<CardHeader className="p-5 pb-2">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2.5">
-					<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-						<BarbellIcon className="size-4" weight="bold" />
-					</div>
-					Muscle Size Trends (in)
+		<Card
+			size="sm"
+			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
+		>
+			<CardHeader className="space-y-0 pb-2 flex items-center justify-between">
+				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
+					<BarbellIcon
+						weight="bold"
+						className="text-popover-foreground"
+					/>
+					Muscle Size
 				</CardTitle>
-			</CardHeader>
-			<CardContent className="p-5 pt-2">
-				<div className="h-[240px] w-full">
-					<ResponsiveContainer width="100%" height="100%">
-						<LineChart
-							data={data}
-							margin={{
-								top: 10,
-								right: 10,
-								left: -20,
-								bottom: 0,
-							}}
-						>
-							<CartesianGrid
-								strokeDasharray="3 3"
-								stroke="var(--border)"
-								opacity={0.2}
-							/>
-							<XAxis
-								dataKey="date"
-								tick={{
-									fontSize: 10,
-									fill: "var(--muted-foreground)",
-								}}
-								axisLine={{
-									stroke: "var(--border)",
-									opacity: 0.3,
-								}}
-								tickLine={false}
-							/>
-							<YAxis
-								domain={["dataMin - 2", "dataMax + 2"]}
-								tick={{
-									fontSize: 10,
-									fill: "var(--muted-foreground)",
-								}}
-								axisLine={{
-									stroke: "var(--border)",
-									opacity: 0.3,
-								}}
-								tickLine={false}
-							/>
-							<Tooltip
-								contentStyle={{
-									backgroundColor: "var(--background)",
-									borderColor: "var(--border)",
-									borderRadius: 0,
-									fontSize: "12px",
-									boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-									borderWidth: 1,
-								}}
-								labelStyle={{
-									fontWeight: 600,
-									color: "var(--foreground)",
-								}}
-							/>
-							<Legend
-								verticalAlign="top"
-								height={24}
-								iconSize={8}
-								iconType="circle"
-								wrapperStyle={{
-									fontSize: "10px",
-									fontWeight: 500,
-									color: "var(--muted-foreground)",
-								}}
-							/>
-							{Object.entries(muscleColors).map(
-								([key, color]) => (
-									<Line
+
+				<div className="flex items-center gap-1.5 shrink-0">
+					{growth &&
+						(
+							Object.entries(growth) as Array<
+								[
+									keyof typeof muscleSizeChartConfig,
+									number | null,
+								]
+							>
+						)
+							.filter(([, v]) => v != null)
+							.map(([key, value]) => {
+								const cfg = muscleSizeChartConfig[key];
+								if (!cfg || value == null) return null;
+
+								return (
+									<div
 										key={key}
-										type="monotone"
-										dataKey={key}
-										name={
-											key.charAt(0).toUpperCase() +
-											key.slice(1)
-										}
-										stroke={color}
-										strokeWidth={2}
-										dot={{
-											r: 2.5,
-											fill: color,
-											strokeWidth: 0,
+										className="flex items-center gap-1 px-1.5 py-0.5 border bg-background/50 h-5"
+										style={{
+											borderColor: `color-mix(in oklch, ${cfg.color} 40%, transparent)`,
+											backgroundColor: `color-mix(in oklch, ${cfg.color} 10%, transparent)`,
 										}}
-										activeDot={{ r: 4.5, strokeWidth: 0 }}
-									/>
-								),
-							)}
-						</LineChart>
-					</ResponsiveContainer>
+									>
+										<span
+											className="size-1.5 rounded-full shrink-0"
+											style={{
+												backgroundColor: cfg.color,
+											}}
+										/>
+										<span
+											className="text-[9px] font-mono uppercase tracking-wider font-bold"
+											style={{ color: cfg.color }}
+										>
+											{String(key).slice(0, 3)}
+										</span>
+										<span
+											className="text-[9px] font-mono tabular-nums font-bold"
+											style={{ color: cfg.color }}
+										>
+											{value > 0 ? "+" : ""}
+											{value.toFixed(1)}
+											{measurementUnit}
+										</span>
+									</div>
+								);
+							})}
+
+					<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
+						<HeartbeatIcon className="size-3.5" weight="bold" />
+					</div>
 				</div>
+			</CardHeader>
+
+			<CardContent className="space-y-3 pt-0">
+				<ChartContainer
+					config={muscleSizeChartConfig}
+					className="h-[200px] sm:h-[220px] w-full"
+				>
+					<LineChart
+						accessibilityLayer
+						data={convertedData}
+						margin={{ left: 10, right: 2, top: 8, bottom: 4 }}
+					>
+						<CartesianGrid vertical={false} strokeDasharray="3 3" />
+
+						<XAxis
+							dataKey="date"
+							tickLine={false}
+							axisLine={false}
+							fontSize={10}
+							tickMargin={6}
+						/>
+
+						<YAxis
+							tickLine={false}
+							axisLine={false}
+							unit={measurementUnit}
+							domain={["auto", "auto"]}
+							fontSize={10}
+							width={32}
+						/>
+
+						<ChartTooltip
+							content={<ChartTooltipContent indicator="dot" />}
+						/>
+						<ChartLegend content={<ChartLegendContent />} />
+
+						{Object.entries(muscleSizeChartConfig).map(
+							([key, cfg]) => (
+								<Line
+									key={key}
+									type="monotone"
+									dataKey={key}
+									stroke={cfg.color}
+									strokeWidth={2}
+									dot={{
+										r: 3,
+										fill: cfg.color,
+										strokeWidth: 0,
+									}}
+									activeDot={{ r: 5 }}
+									connectNulls
+								/>
+							),
+						)}
+					</LineChart>
+				</ChartContainer>
 			</CardContent>
 		</Card>
 	);

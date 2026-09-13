@@ -31,9 +31,10 @@ import {
 } from "@/components/ui/empty";
 import { useBodyMetrics } from "@/hooks";
 import { ChartCardSkeleton } from "@/skeletons";
+import { useUnits } from "@/common";
 
 const bodyMetricsChartConfig = {
-	weight: { label: "Weight (kg)", color: "var(--chart-1)" },
+	weight: { label: `"Weight (kg)"`, color: "var(--chart-1)" },
 	bodyFat: { label: "Body Fat (%)", color: "var(--chart-2)" },
 } satisfies ChartConfig;
 
@@ -50,6 +51,8 @@ export function BodyMetricsCard({
 	initialData = [],
 	loading: propLoading = false,
 }: BodyMetricsCardProps) {
+	const { weightUnit } = useUnits();
+
 	const { data, loading, weightDiff, fatDiff, hasData } = useBodyMetrics(
 		initialData,
 		propLoading,
@@ -57,7 +60,12 @@ export function BodyMetricsCard({
 
 	// Loading State
 	if (loading) {
-  return <ChartCardSkeleton height="h-[200px] sm:h-[220px]" titleWidth="w-40" />;
+		return (
+			<ChartCardSkeleton
+				height="h-[200px] sm:h-[220px]"
+				titleWidth="w-40"
+			/>
+		);
 	}
 
 	// Empty State
@@ -125,7 +133,7 @@ export function BodyMetricsCard({
 						Total Progress:
 					</span>
 					<span className="font-bold text-foreground text-xs">
-						{weightDiff} kg ({fatDiff}% fat)
+						{weightDiff} {weightUnit} ({fatDiff}% fat)
 					</span>
 				</div>
 
