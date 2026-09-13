@@ -5,7 +5,14 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { bodyMeasurements } from "@/db/schema";
 import { getCurrentUser } from "@/actions/auth";
+import { getUserPreferences } from "@/actions/account";
 import { subDays, format, differenceInDays } from "date-fns";
+import {
+	formatWeight,
+	formatMeasurement,
+	parseWeightToKg,
+	parseMeasurementToIn,
+} from "@/lib/units";
 
 export interface MeasurementFormData {
 	date: Date;
@@ -20,26 +27,56 @@ export interface MeasurementFormData {
 	notes?: string | null;
 }
 
+// ==========================================
+// CREATE MEASUREMENT
+// ==========================================
 export async function createMeasurement(formData: MeasurementFormData) {
 	try {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return { success: false, error: "Unauthorized" };
 
+		const prefs = await getUserPreferences();
+
+		// Convert incoming values to DB standards (KG for weight, IN for measurements)
+		const weightKg = formData.weightKg
+			? parseWeightToKg(formData.weightKg, prefs.weightUnit)
+			: null;
+
+		const armsIn = formData.armsIn
+			? parseMeasurementToIn(formData.armsIn, prefs.measurementUnit)
+			: null;
+		const forearmsIn = formData.forearmsIn
+			? parseMeasurementToIn(formData.forearmsIn, prefs.measurementUnit)
+			: null;
+		const thighsIn = formData.thighsIn
+			? parseMeasurementToIn(formData.thighsIn, prefs.measurementUnit)
+			: null;
+		const chestIn = formData.chestIn
+			? parseMeasurementToIn(formData.chestIn, prefs.measurementUnit)
+			: null;
+		const waistIn = formData.waistIn
+			? parseMeasurementToIn(formData.waistIn, prefs.measurementUnit)
+			: null;
+		const hipsIn = formData.hipsIn
+			? parseMeasurementToIn(formData.hipsIn, prefs.measurementUnit)
+			: null;
+
 		await db.insert(bodyMeasurements).values({
 			userId: dbUser.id,
 			date: formData.date,
-			weightKg: formData.weightKg ?? null,
+			weightKg,
 			bodyFatPercent: formData.bodyFatPercent ?? null,
-			armsIn: formData.armsIn ?? null,
-			forearmsIn: formData.forearmsIn ?? null,
-			thighsIn: formData.thighsIn ?? null,
-			chestIn: formData.chestIn ?? null,
-			waistIn: formData.waistIn ?? null,
-			hipsIn: formData.hipsIn ?? null,
+			armsIn,
+			forearmsIn,
+			thighsIn,
+			chestIn,
+			waistIn,
+			hipsIn,
 			notes: formData.notes ?? null,
 		});
 
 		revalidatePath("/metrics");
+		revalidatePath("/dashboard");
 		return { success: true };
 	} catch (error) {
 		console.error("Error creating measurement:", error);
@@ -47,20 +84,122 @@ export async function createMeasurement(formData: MeasurementFormData) {
 	}
 }
 
+// ==========================================
+// DELETE MEASUREMENT
+// ==========================================
+export async function deleteMeasurement(measurementId: string) {
+	try {
+		const { dbUser } = await getCurrentUser();
+		if (!dbUser) return { success: false, error: "Unauthorized" };
+
+		await db
+			.delete(bodyMeasurements)
+			.where(
+				and(
+					eq(bodyMeasurements.id, measurementId),
+					eq(bodyMeasurements.userId, dbUser.id),
+				),
+			);
+
+		revalidatePath("/metrics");
+		revalidatePath("/dashboard");
+		return { success: true };
+	} catch (error) {
+		console.error("Error deleting measurement:", error);
+		return { success: false, error: "Failed to delete measurement" };
+	}
+}
+
+// ==========================================
+// UPDATE MEASUREMENT
+// ==========================================
+export async function updateMeasurement(
+	measurementId: string,
+	formData: Partial<MeasurementFormData>,
+) {
+	try {
+		const { dbUser } = await getCurrentUser();
+		if (!dbUser) return { success: false, error: "Unauthorized" };
+
+		const prefs = await getUserPreferences();
+
+		const updates: Record<string, unknown> = {};
+
+		if (formData.date) updates.date = formData.date;
+
+		if (formData.weightKg !== undefined) {
+			updates.weightKg = formData.weightKg
+				? parseWeightToKg(formData.weightKg, prefs.weightUnit)
+				: null;
+		}
+
+		if (formData.bodyFatPercent !== undefined) {
+			updates.bodyFatPercent = formData.bodyFatPercent ?? null;
+		}
+
+		// Convert measurement fields
+		const measurementFields = [
+			"armsIn",
+			"forearmsIn",
+			"thighsIn",
+			"chestIn",
+			"waistIn",
+			"hipsIn",
+		] as const;
+
+		for (const field of measurementFields) {
+			if (formData[field] !== undefined) {
+				updates[field] = formData[field]
+					? parseMeasurementToIn(
+							formData[field] as number,
+							prefs.measurementUnit,
+						)
+					: null;
+			}
+		}
+
+		if (formData.notes !== undefined)
+			updates.notes = formData.notes ?? null;
+
+		await db
+			.update(bodyMeasurements)
+			.set(updates)
+			.where(
+				and(
+					eq(bodyMeasurements.id, measurementId),
+					eq(bodyMeasurements.userId, dbUser.id),
+				),
+			);
+
+		revalidatePath("/metrics");
+		revalidatePath("/dashboard");
+		return { success: true };
+	} catch (error) {
+		console.error("Error updating measurement:", error);
+		return { success: false, error: "Failed to update measurement" };
+	}
+}
+
+// ==========================================
+// GET METRICS DATA (with unit conversion)
+// ==========================================
 export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 	try {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return null;
 
+		const prefs = await getUserPreferences();
 		const daysMap = { "3M": 90, "6M": 180, "1Y": 365 };
 		const startDate = subDays(new Date(), daysMap[timeRange] || 90);
 
+		// Fetch all entries (desc for latest first)
 		const allEntries = await db
 			.select()
 			.from(bodyMeasurements)
 			.where(eq(bodyMeasurements.userId, dbUser.id))
 			.orderBy(desc(bodyMeasurements.date));
 
+		// Fetch entries within the time range (asc for chart)
 		const chartEntries = await db
 			.select()
 			.from(bodyMeasurements)
@@ -84,7 +223,7 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 				differenceInDays(new Date(), new Date(latest.date)),
 			);
 		} else {
-			daysSinceLastMeasurement = 999; // Indicates no measurements logged yet
+			daysSinceLastMeasurement = 999;
 		}
 
 		if (allEntries.length > 1) {
@@ -107,66 +246,151 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 			daysSinceLastMeasurement,
 			averageGapDays,
 		};
-		// -------------------------------------
 
+		// Find a baseline entry ~4 weeks ago for delta calculation
 		const fourWeeksAgoDate = subDays(new Date(), 28);
 		const pastEntry =
 			allEntries.find((e) => new Date(e.date) <= fourWeeksAgoDate) ||
 			allEntries[allEntries.length - 1] ||
 			null;
 
-		const calculateDelta = (curr?: number | null, prev?: number | null) => {
+		// Delta in DB units (kg / in)
+		const calculateDelta = (
+			curr?: number | string | null,
+			prev?: number | string | null,
+		) => {
 			if (curr == null || prev == null) return null;
-			return Number((curr - prev).toFixed(1));
+			const c = Number(curr);
+			const p = Number(prev);
+			if (isNaN(c) || isNaN(p)) return null;
+			return Number((c - p).toFixed(2));
 		};
+
+		// Convert deltas to user's preferred units for display
+		const convertWeightDelta = (delta: number | null) => {
+			if (delta === null) return null;
+			if (prefs.weightUnit === "lb") {
+				return Number((delta * 2.20462).toFixed(2));
+			}
+			return delta;
+		};
+
+		const convertMeasurementDelta = (delta: number | null) => {
+			if (delta === null) return null;
+			if (prefs.measurementUnit === "cm") {
+				return Number((delta * 2.54).toFixed(2));
+			}
+			return delta;
+		};
+
+		const weightDelta = convertWeightDelta(
+			calculateDelta(latest?.weightKg, pastEntry?.weightKg),
+		);
+		const bodyFatDelta = calculateDelta(
+			latest?.bodyFatPercent,
+			pastEntry?.bodyFatPercent,
+		);
+		const armsDelta = convertMeasurementDelta(
+			calculateDelta(latest?.armsIn, pastEntry?.armsIn),
+		);
+		const thighsDelta = convertMeasurementDelta(
+			calculateDelta(latest?.thighsIn, pastEntry?.thighsIn),
+		);
 
 		const stats = {
 			notes: latest?.notes ?? null,
 			weight: {
-				current: latest?.weightKg ?? null,
-				delta: calculateDelta(latest?.weightKg, pastEntry?.weightKg),
-				unit: "kg",
+				current: latest?.weightKg
+					? formatWeight(Number(latest.weightKg), prefs.weightUnit)
+					: null,
+				delta: weightDelta,
+				unit: prefs.weightUnit,
 			},
 			bodyFat: {
-				current: latest?.bodyFatPercent ?? null,
-				delta: calculateDelta(
-					latest?.bodyFatPercent,
-					pastEntry?.bodyFatPercent,
-				),
+				current: latest?.bodyFatPercent
+					? Number(latest.bodyFatPercent)
+					: null,
+				delta: bodyFatDelta,
 				unit: "%",
 			},
 			arms: {
-				current: latest?.armsIn ?? null,
-				delta: calculateDelta(latest?.armsIn, pastEntry?.armsIn),
-				unit: "in",
+				current: latest?.armsIn
+					? formatMeasurement(
+							Number(latest.armsIn),
+							prefs.measurementUnit,
+						)
+					: null,
+				delta: armsDelta,
+				unit: prefs.measurementUnit,
+			},
+			thighs: {
+				current: latest?.thighsIn
+					? formatMeasurement(
+							Number(latest.thighsIn),
+							prefs.measurementUnit,
+						)
+					: null,
+				delta: thighsDelta,
+				unit: prefs.measurementUnit,
 			},
 		};
 
+		// Chart data with unit conversion
 		const chartData = chartEntries.map((e) => ({
 			rawDate: e.date,
 			date: format(new Date(e.date), "MMM d"),
-			weight: e.weightKg ? Number(e.weightKg) : null,
+			weight: e.weightKg
+				? formatWeight(Number(e.weightKg), prefs.weightUnit)
+				: null,
 			bodyFat: e.bodyFatPercent ? Number(e.bodyFatPercent) : null,
-			arms: e.armsIn ? Number(e.armsIn) : null,
-			forearms: e.forearmsIn ? Number(e.forearmsIn) : null,
-			thighs: e.thighsIn ? Number(e.thighsIn) : null,
-			chest: e.chestIn ? Number(e.chestIn) : null,
-			waist: e.waistIn ? Number(e.waistIn) : null,
-			hips: e.hipsIn ? Number(e.hipsIn) : null,
+			arms: e.armsIn
+				? formatMeasurement(Number(e.armsIn), prefs.measurementUnit)
+				: null,
+			forearms: e.forearmsIn
+				? formatMeasurement(Number(e.forearmsIn), prefs.measurementUnit)
+				: null,
+			thighs: e.thighsIn
+				? formatMeasurement(Number(e.thighsIn), prefs.measurementUnit)
+				: null,
+			chest: e.chestIn
+				? formatMeasurement(Number(e.chestIn), prefs.measurementUnit)
+				: null,
+			waist: e.waistIn
+				? formatMeasurement(Number(e.waistIn), prefs.measurementUnit)
+				: null,
+			hips: e.hipsIn
+				? formatMeasurement(Number(e.hipsIn), prefs.measurementUnit)
+				: null,
 		}));
 
+		// Table data with unit conversion
 		const tableData = allEntries.map((e) => ({
 			id: e.id,
 			date: format(new Date(e.date), "MMM d, yyyy"),
 			rawDate: e.date,
-			weightKg: e.weightKg ?? null,
-			bodyFatPercent: e.bodyFatPercent ?? null,
-			armsIn: e.armsIn ?? null,
-			forearmsIn: e.forearmsIn ?? null,
-			thighsIn: e.thighsIn ?? null,
-			chestIn: e.chestIn ?? null,
-			waistIn: e.waistIn ?? null,
-			hipsIn: e.hipsIn ?? null,
+			weightKg: e.weightKg
+				? formatWeight(Number(e.weightKg), prefs.weightUnit)
+				: null,
+			bodyFatPercent: e.bodyFatPercent ? Number(e.bodyFatPercent) : null,
+			armsIn: e.armsIn
+				? formatMeasurement(Number(e.armsIn), prefs.measurementUnit)
+				: null,
+			forearmsIn: e.forearmsIn
+				? formatMeasurement(Number(e.forearmsIn), prefs.measurementUnit)
+				: null,
+			thighsIn: e.thighsIn
+				? formatMeasurement(Number(e.thighsIn), prefs.measurementUnit)
+				: null,
+			chestIn: e.chestIn
+				? formatMeasurement(Number(e.chestIn), prefs.measurementUnit)
+				: null,
+			waistIn: e.waistIn
+				? formatMeasurement(Number(e.waistIn), prefs.measurementUnit)
+				: null,
+			hipsIn: e.hipsIn
+				? formatMeasurement(Number(e.hipsIn), prefs.measurementUnit)
+				: null,
+			notes: e.notes ?? null,
 		}));
 
 		return {
@@ -175,9 +399,36 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 			tableData,
 			qualityMetrics,
 			latest,
+			preferences: prefs, // Return preferences so UI knows current units
 		};
 	} catch (error) {
 		console.error("Error fetching metrics data:", error);
+		return null;
+	}
+}
+
+// ==========================================
+// GET SINGLE MEASUREMENT
+// ==========================================
+export async function getMeasurementById(measurementId: string) {
+	try {
+		const { dbUser } = await getCurrentUser();
+		if (!dbUser) return null;
+
+		const [measurement] = await db
+			.select()
+			.from(bodyMeasurements)
+			.where(
+				and(
+					eq(bodyMeasurements.id, measurementId),
+					eq(bodyMeasurements.userId, dbUser.id),
+				),
+			)
+			.limit(1);
+
+		return measurement ?? null;
+	} catch (error) {
+		console.error("Error fetching measurement:", error);
 		return null;
 	}
 }

@@ -22,7 +22,8 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useUnits } from "@/common";
 
 interface ActiveSessionSummaryProps {
 	loggedSets: LoggedSet[];
@@ -52,6 +53,7 @@ export function ActiveSessionSummary({
 	const [lastSessionNote, setLastSessionNote] = useState<string | null>(null);
 	const [isLoadingNote, setIsLoadingNote] = useState(false);
 
+	const { weightUnit } = useUnits();
 	// Group sets by exercise name
 	const grouped = loggedSets.reduce<Record<string, LoggedSet[]>>(
 		(acc, set) => {
@@ -222,7 +224,7 @@ export function ActiveSessionSummary({
 														<strong className="text-foreground">
 															{ex.exercise}:
 														</strong>{" "}
-														{ex.bestSet?.weight}kg ×{" "}
+														{ex.bestSet?.weight}{weightUnit} ×{" "}
 														{ex.bestSet?.reps}
 														{ex.bestSet?.rpe
 															? ` @ RPE ${ex.bestSet.rpe}`
@@ -290,7 +292,7 @@ export function ActiveSessionSummary({
 																{ex.exercise}:
 															</strong>{" "}
 															{ex.bestSet?.weight}
-															kg ×{" "}
+															{weightUnit} ×{" "}
 															{ex.bestSet?.reps}
 															{ex.bestSet?.rpe
 																? ` @ RPE ${ex.bestSet.rpe}`
@@ -354,7 +356,7 @@ export function ActiveSessionSummary({
 																	{
 																		bestSet?.weight
 																	}
-																	kg ×{" "}
+																	{weightUnit} ×{" "}
 																	{
 																		bestSet?.reps
 																	}
@@ -412,7 +414,7 @@ export function ActiveSessionSummary({
 																			: "bg-accent/50 border-border/50 text-foreground"
 																	}`}
 																>
-																	<span>
+																	<span className="text-xs font-mono">
 																		Set{" "}
 																		{idx +
 																			1}
@@ -420,7 +422,10 @@ export function ActiveSessionSummary({
 																		{
 																			s.weight
 																		}
-																		kg ×{" "}
+																		{
+																			weightUnit
+																		}{" "}
+																		×{" "}
 																		{s.reps}
 																		{s.rpe
 																			? ` @ RPE ${s.rpe}`
@@ -439,7 +444,7 @@ export function ActiveSessionSummary({
 																</p>
 															)}
 															<p className="text-muted-foreground font-mono">
-																{s.weight}kg ×{" "}
+																{s.weight}{weightUnit} ×{" "}
 																{s.reps}
 																{s.rpe
 																	? ` @ RPE ${s.rpe}`

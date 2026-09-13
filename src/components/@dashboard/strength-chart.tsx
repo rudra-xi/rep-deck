@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";   // ✅ ADD
 import Link from "next/link";
 import { NumberSquareOneIcon, TrendUpIcon } from "@phosphor-icons/react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
@@ -16,7 +17,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Spinner } from "@/components/ui/spinner";
+import { useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -37,22 +38,10 @@ export interface StrengthTrendDataPoint {
 }
 
 const chartConfig = {
-	squat: {
-		label: "Squat",
-		color: "var(--chart-1)",
-	},
-	bench: {
-		label: "Bench Press",
-		color: "var(--chart-2)",
-	},
-	deadlift: {
-		label: "Deadlift",
-		color: "var(--chart-3)",
-	},
-	ohp: {
-		label: "OHP",
-		color: "var(--chart-4)",
-	},
+	squat: { label: "Squat", color: "var(--chart-1)" },
+	bench: { label: "Bench Press", color: "var(--chart-2)" },
+	deadlift: { label: "Deadlift", color: "var(--chart-3)" },
+	ohp: { label: "OHP", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 
 interface StrengthChartProps {
@@ -64,14 +53,38 @@ export function StrengthChart({
 	data = [],
 	loading = false,
 }: StrengthChartProps) {
+	const { weightUnit, fmtWeight } = useUnits();   // ✅ add fmtWeight
 	const { activeLifts, toggleLift, hasData } = useStrengthChart(data);
 
-	// 1. Loading State
+	// ✅ Convert every data point to user's unit
+	const convertedData = useMemo(
+		() =>
+			data.map((d) => ({
+				...d,
+				squat:
+					typeof d.squat === "number" ? fmtWeight(d.squat) : d.squat,
+				bench:
+					typeof d.bench === "number" ? fmtWeight(d.bench) : d.bench,
+				deadlift:
+					typeof d.deadlift === "number"
+						? fmtWeight(d.deadlift)
+						: d.deadlift,
+				ohp: typeof d.ohp === "number" ? fmtWeight(d.ohp) : d.ohp,
+			})),
+		[data, fmtWeight],
+	);
+
 	if (loading) {
-  return <ChartCardSkeleton height="h-55 lg:h-70" hasToggleRow toggleCount={4} titleWidth="w-24" />;
+		return (
+			<ChartCardSkeleton
+				height="h-55 lg:h-70"
+				hasToggleRow
+				toggleCount={4}
+				titleWidth="w-24"
+			/>
+		);
 	}
 
-	// 2. Empty Data State
 	if (!hasData) {
 		return (
 			<Card
@@ -115,7 +128,6 @@ export function StrengthChart({
 		);
 	}
 
-	// 3. Render Strength Chart
 	return (
 		<Card
 			size="sm"
@@ -167,7 +179,7 @@ export function StrengthChart({
 				>
 					<LineChart
 						accessibilityLayer
-						data={data}
+						data={convertedData}
 						margin={{
 							top: 10,
 							right: 10,
@@ -192,7 +204,7 @@ export function StrengthChart({
 							fontSize={10}
 							tickLine={false}
 							axisLine={false}
-							unit="kg"
+							unit={weightUnit}
 							width={38}
 							tickMargin={4}
 							domain={["auto", "auto"]}

@@ -25,10 +25,7 @@ import {
 } from "@/components/ui/empty";
 import { useSessionHistory } from "@/hooks";
 import { SessionHistoryListSkeleton } from "@/skeletons";
-
-const sessionChartConfig = {
-	volume: { label: "Volume (kg)", color: "var(--chart-1)" },
-} satisfies ChartConfig;
+import { useUnits } from "@/common";
 
 interface SessionHistoryListProps {
 	initialData?: any[];
@@ -39,8 +36,14 @@ export function SessionHistoryList({
 	initialData = [],
 	loading: propLoading = false,
 }: SessionHistoryListProps) {
+	const { weightUnit, fmtWeight } = useUnits();
+
 	const { sessions, chartData, loading, hasData, navigateToSession } =
 		useSessionHistory(initialData, propLoading);
+
+	const sessionChartConfig = {
+		volume: { label: `Volume (${weightUnit})`, color: "var(--chart-1)" },
+	} satisfies ChartConfig;
 
 	// Loading State
 	if (loading) return <SessionHistoryListSkeleton rows={4} />;
@@ -114,7 +117,7 @@ export function SessionHistoryList({
 						data={chartData.slice(0, 6).reverse()}
 						layout="vertical"
 						margin={{
-							left: -10,
+							left: 0,
 							right: 12,
 							top: 4,
 							bottom: 4,
@@ -127,6 +130,7 @@ export function SessionHistoryList({
 						<XAxis
 							type="number"
 							fontSize={10}
+							unit={weightUnit}
 							tickLine={false}
 							axisLine={false}
 						/>
@@ -185,7 +189,7 @@ export function SessionHistoryList({
 
 							<div className="flex items-center gap-3">
 								<span className="text-xs font-semibold text-foreground hidden sm:inline">
-									{session.totalVolume}
+									{fmtWeight(session.totalVolumeKg ?? 0).toLocaleString()} {weightUnit}
 								</span>
 								<CaretRightIcon className="size-4 text-muted-foreground" />
 							</div>

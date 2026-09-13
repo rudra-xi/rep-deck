@@ -181,6 +181,7 @@ export async function getRecentSessions(limit = 5) {
 			.from(workoutSets)
 			.where(inArray(workoutSets.sessionId, sessionIds));
 
+		// actions/progress.ts — getRecentSessions, last block
 		return sessions.map((s) => {
 			const sets = allSets.filter((set) => set.sessionId === s.id);
 
@@ -201,7 +202,7 @@ export async function getRecentSessions(limit = 5) {
 					s.dayIndex !== null ? `Day ${s.dayIndex + 1}` : "Custom",
 				keyLiftsSummary:
 					uniqueExercises.join(", ") || "No exercises logged",
-				totalVolume: `${totalVol.toLocaleString()} kg`,
+				totalVolumeKg: totalVol, // ✅ number, not string
 			};
 		});
 	} catch (error) {

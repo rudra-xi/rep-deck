@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { BarbellIcon, GaugeIcon, TrophyIcon } from "@phosphor-icons/react";
 import {
@@ -31,11 +32,7 @@ import {
 } from "@/components/ui/empty";
 import { useLiftDetails } from "@/hooks";
 import { ChartCardSkeleton } from "@/skeletons";
-
-const liftChartConfig = {
-	weight: { label: "Working Wt (kg)", color: "var(--chart-1)" },
-	estimated1RM: { label: "Est. 1RM (kg)", color: "var(--chart-2)" },
-} satisfies ChartConfig;
+import { useUnits } from "@/common";
 
 interface IndividualLiftDetailsCardProps {
 	initialData?: any[];
@@ -46,6 +43,24 @@ export function IndividualLiftDetailsCard({
 	initialData = [],
 	loading: propLoading = false,
 }: IndividualLiftDetailsCardProps) {
+	// ✅ Hooks INSIDE component
+	const { weightUnit, fmtWeight } = useUnits();
+
+	// ✅ Config inside (memoized)
+	const liftChartConfig = useMemo<ChartConfig>(
+		() => ({
+			weight: {
+				label: `Working Wt (${weightUnit})`,
+				color: "var(--chart-1)",
+			},
+			estimated1RM: {
+				label: `Est. 1RM (${weightUnit})`,
+				color: "var(--chart-2)",
+			},
+		}),
+		[weightUnit],
+	);
+
 	const {
 		selectedLift,
 		setSelectedLift,
@@ -58,6 +73,23 @@ export function IndividualLiftDetailsCard({
 		liftLabels,
 		liftTypes,
 	} = useLiftDetails(initialData, propLoading);
+
+	// ✅ Convert chart data to user's unit
+	const convertedData = useMemo(
+		() =>
+			data.map((d) => ({
+				...d,
+				weight:
+					typeof d.weight === "number"
+						? fmtWeight(d.weight)
+						: d.weight,
+				estimated1RM:
+					typeof d.estimated1RM === "number"
+						? fmtWeight(d.estimated1RM)
+						: d.estimated1RM,
+			})),
+		[data, fmtWeight],
+	);
 
 	// Loading State
 	if (loading) {
@@ -185,7 +217,10 @@ export function IndividualLiftDetailsCard({
 							Current
 						</span>
 						<span className="text-xs sm:text-sm font-bold text-foreground">
-							{latest ? `${latest.weight} kg` : "—"}
+							{/* ✅ dynamic unit */}
+							{latest
+								? `${fmtWeight(latest.weight)} ${weightUnit}`
+								: "—"}
 						</span>
 					</div>
 					<div className="p-2 bg-background/50 border border-border/40">
@@ -193,7 +228,10 @@ export function IndividualLiftDetailsCard({
 							Est. 1RM
 						</span>
 						<span className="text-xs sm:text-sm font-bold">
-							{latest ? `${latest.estimated1RM} kg` : "—"}
+							{/* ✅ dynamic unit */}
+							{latest
+								? `${fmtWeight(latest.estimated1RM)} ${weightUnit}`
+								: "—"}
 						</span>
 					</div>
 					<div className="p-2 bg-background/50 border border-border/40">
@@ -216,8 +254,8 @@ export function IndividualLiftDetailsCard({
 				>
 					<ComposedChart
 						accessibilityLayer
-						data={data}
-						margin={{ left: 0, right: 8, top: 4, bottom: 4 }}
+						data={convertedData} // ← use converted data
+						margin={{ left: 12, right: 8, top: 4, bottom: 4 }}
 					>
 						<CartesianGrid vertical={false} strokeDasharray="3 3" />
 						<XAxis
@@ -231,6 +269,7 @@ export function IndividualLiftDetailsCard({
 							tickLine={false}
 							axisLine={false}
 							tickMargin={4}
+							unit={weightUnit}
 							domain={["auto", "auto"]}
 							fontSize={10}
 							width={28}

@@ -22,16 +22,19 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { useKpiCards } from "@/hooks";
 import { KpiCardsSkeleton } from "@/skeletons";
+import { useUnits } from "@/common";
 
 export interface KpiTrend {
 	direction: "up" | "down" | "neutral";
 	value?: string;
+	rawDiffKg?: number;
 }
 
 export interface KpiCardOption {
 	label: string;
 	value: string;
 	targetValue: string;
+	rawWeightKg?: number;
 	subtext?: string;
 	trend?: KpiTrend;
 }
@@ -40,6 +43,7 @@ export interface KpiCardData {
 	id: string;
 	label: string;
 	value: string;
+	rawWeightKg?: number;
 	subtext: string;
 	action?: { href: string; label: string };
 	dropdownOptions?: KpiCardOption[];
@@ -57,6 +61,8 @@ interface KpiCardsProps {
 }
 
 export function KpiCards({ data, loading = false }: KpiCardsProps) {
+	const { fmtWeightStr, fmtWeight } = useUnits();
+
 	const program = data?.program;
 	const sessionsThisWeek = data?.sessionsThisWeek;
 	const bestLift = data?.bestLift;
@@ -66,6 +72,28 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 		useKpiCards(bestLift?.dropdownOptions);
 
 	const activeLiftOption = getActiveLiftOption(bestLift?.dropdownOptions);
+
+	// Dynamically format Best Lift value & trend
+	const formattedBestLiftValue = activeLiftOption?.rawWeightKg
+		? fmtWeightStr(activeLiftOption.rawWeightKg)
+		: (activeLiftOption?.targetValue ?? bestLift?.value ?? "—");
+
+	const activeLiftTrend = activeLiftOption?.trend;
+	const formattedLiftTrendValue =
+		activeLiftTrend?.rawDiffKg !== undefined
+			? `${activeLiftTrend.direction === "up" ? "+" : activeLiftTrend.direction === "down" ? "-" : ""}${fmtWeightStr(activeLiftTrend.rawDiffKg)}`
+			: activeLiftTrend?.value;
+	
+	// Dynamically format Body Weight value & trend
+	const formattedBodyWeightValue = bodyWeight?.rawWeightKg
+		? fmtWeightStr(bodyWeight.rawWeightKg)
+		: (bodyWeight?.value ?? "—");
+
+	const bodyWeightTrend = bodyWeight?.trend;
+	const formattedBodyWeightTrendValue =
+		bodyWeightTrend?.rawDiffKg !== undefined
+			? `${bodyWeightTrend.direction === "up" ? "+" : bodyWeightTrend.direction === "down" ? "-" : ""}${fmtWeightStr(bodyWeightTrend.rawDiffKg)}`
+			: bodyWeightTrend?.value;
 
 	const cards = [
 		{
@@ -86,26 +114,30 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 		{
 			id: bestLift?.id ?? "best-lift",
 			label: bestLift?.label ?? "Best Lift",
-			value: activeLiftOption?.targetValue ?? bestLift?.value ?? "—",
+			value: formattedBestLiftValue,
 			subtext:
 				activeLiftOption?.subtext ??
 				bestLift?.subtext ??
 				"No data logged",
-			trend: activeLiftOption?.trend ?? bestLift?.trend,
+			trend: activeLiftTrend
+				? { ...activeLiftTrend, value: formattedLiftTrendValue }
+				: undefined,
 			icon: TrophyIcon,
 			dropdownOptions: bestLift?.dropdownOptions,
 		},
 		{
 			id: bodyWeight?.id ?? "body-weight",
 			label: bodyWeight?.label ?? "Body weight",
-			value: bodyWeight?.value ?? "—",
+			value: formattedBodyWeightValue,
 			subtext: bodyWeight?.subtext ?? "No records yet",
-			trend: bodyWeight?.trend,
+			trend: bodyWeightTrend
+				? { ...bodyWeightTrend, value: formattedBodyWeightTrendValue }
+				: undefined,
 			icon: ScalesIcon,
 			action: bodyWeight?.action,
 		},
 	];
-	
+
 	// Loading State
 	if (loading) return <KpiCardsSkeleton count={4} />;
 
@@ -184,26 +216,39 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 												className="w-44"
 											>
 												{card.dropdownOptions.map(
-													(option) => (
-														<DropdownMenuItem
-															key={option.value}
-															onClick={() =>
-																setSelectedLiftValue(
-																	option.value,
-																)
-															}
-															className="text-xs flex justify-between cursor-pointer"
-														>
-															<span>
-																{option.label}
-															</span>
-															<span className="text-muted-foreground font-mono font-semibold ml-2">
-																{
-																	option.targetValue
+													(option) => {
+														const formattedOptionValue =
+															option.rawWeightKg
+																? fmtWeightStr(
+																		option.rawWeightKg,
+																	)
+																: option.targetValue;
+
+														return (
+															<DropdownMenuItem
+																key={
+																	option.value
 																}
-															</span>
-														</DropdownMenuItem>
-													),
+																onClick={() =>
+																	setSelectedLiftValue(
+																		option.value,
+																	)
+																}
+																className="text-xs flex justify-between cursor-pointer"
+															>
+																<span>
+																	{
+																		option.label
+																	}
+																</span>
+																<span className="text-muted-foreground font-mono font-semibold ml-2">
+																	{
+																		formattedOptionValue
+																	}
+																</span>
+															</DropdownMenuItem>
+														);
+													},
 												)}
 											</DropdownMenuContent>
 										</DropdownMenu>

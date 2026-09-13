@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/empty";
 import { useStrengthOverview } from "@/hooks";
 import { ChartCardSkeleton } from "@/skeletons";
+import { useUnits } from "@/common";
 
 const strengthChartConfig = {
 	squat: { label: "Squat", color: "var(--chart-1)" },
@@ -54,6 +55,8 @@ export function StrengthOverviewCard({
 	initialData = [],
 	loading: propLoading = false,
 }: StrengthOverviewCardProps) {
+	const { weightUnit } = useUnits();
+	
 	const { data, loading, isFetching, hasData, timeRanges } =
 		useStrengthOverview(initialData, propLoading, timeRange);
 
@@ -185,7 +188,7 @@ export function StrengthOverviewCard({
 					<LineChart
 						accessibilityLayer
 						data={data}
-						margin={{ left: 0, right: 8, top: 8, bottom: 4 }}
+						margin={{ left: 12, right: 8, top: 8, bottom: 4 }}
 					>
 						<CartesianGrid vertical={false} strokeDasharray="3 3" />
 						<XAxis
@@ -199,6 +202,7 @@ export function StrengthOverviewCard({
 							tickLine={false}
 							axisLine={false}
 							tickMargin={4}
+							unit={weightUnit}
 							domain={["auto", "auto"]}
 							fontSize={10}
 							width={28}

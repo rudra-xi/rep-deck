@@ -30,7 +30,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { BackButton } from "@/common";
+import { BackButton, useUnits } from "@/common";
 import { format, isSameDay } from "date-fns";
 
 interface WorkoutDetailProps {
@@ -49,10 +49,6 @@ interface WorkoutDetailProps {
 			isPR: boolean;
 		}>;
 	};
-	/**
-	 * Array of all sessions available for navigation.
-	 * Expected to be sorted chronologically (oldest at index 0, newest at last index).
-	 */
 	sessions?: Array<{ id: string; date: string }>;
 }
 
@@ -62,10 +58,12 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 		new Date(session.rawDate),
 	);
 
+	const { fmtWeight, weightUnit } = useUnits();
+
 	const { totalVolume, prCount, uniqueExercisesCount, exerciseGroups } =
 		useMemo(() => {
 			const volume = session.sets.reduce(
-				(sum, set) => sum + set.weightKg * set.reps,
+				(sum, set) => sum + fmtWeight(set.weightKg) * set.reps,
 				0,
 			);
 			const prs = session.sets.filter((set) => set.isPR).length;
@@ -85,9 +83,8 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 				uniqueExercisesCount: Object.keys(groups).length,
 				exerciseGroups: groups,
 			};
-		}, [session.sets]);
+		}, [session.sets, fmtWeight]);
 
-	// Sort sessions chronologically (Oldest -> Newest) to guarantee direction consistency
 	const sortedSessions = useMemo(() => {
 		return [...sessions].sort(
 			(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
@@ -96,9 +93,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 
 	const currentIndex = sortedSessions.findIndex((s) => s.id === session.id);
 
-	// Navigation targets:
-	// Left Arrow (<)  = Older Session (currentIndex - 1)
-	// Right Arrow (>) = Newer Session (currentIndex + 1)
 	const olderSession =
 		currentIndex > 0 ? sortedSessions[currentIndex - 1] : null;
 	const newerSession =
@@ -125,13 +119,11 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 
 	return (
 		<div className="container max-w-7xl mx-auto py-6 px-4 space-y-6">
-			{/* Top Bar with BackButton & Fixed Chronological Pagination */}
 			<div className="flex flex-wrap items-center justify-between gap-4">
 				<BackButton text="Dashboard" />
 
 				{sortedSessions.length > 1 && (
 					<div className="flex items-center gap-1.5 border border-secondary/50 bg-card/50 p-1 rounded-md shadow-sm">
-						{/* LEFT ARROW: Go to OLDER date */}
 						<Button
 							variant="ghost"
 							size="icon"
@@ -204,7 +196,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 							</PopoverContent>
 						</Popover>
 
-						{/* RIGHT ARROW: Go to NEWER date */}
 						<Button
 							variant="ghost"
 							size="icon"
@@ -230,7 +221,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 				)}
 			</div>
 
-			{/* Session Overview Header */}
 			<Card
 				size="sm"
 				className="border border-secondary/50 bg-card/50 transition-colors hover:border-primary/50"
@@ -268,7 +258,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 						</p>
 					</div>
 
-					{/* Summary KPIs Row */}
 					<div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-border pt-3 md:pt-0 md:pl-6">
 						<div className="space-y-0.5">
 							<span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
@@ -281,7 +270,8 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 							<p className="text-lg font-bold text-foreground">
 								{totalVolume.toLocaleString()}{" "}
 								<span className="text-xs font-normal text-muted-foreground">
-									kg
+									{/* ✅ was "kg" */}
+									{weightUnit}
 								</span>
 							</p>
 						</div>
@@ -319,7 +309,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 				</CardHeader>
 			</Card>
 
-			{/* Exercise Breakdown Cards Grid */}
 			<div className="space-y-3">
 				<h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground px-0.5">
 					Exercise Breakdown
@@ -350,7 +339,13 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 										variant="outline"
 										className="text-[10px] sh0 pt-1"
 									>
-								  Best: {Math.max(...sets.map(s => s.weightKg))}kg
+										Best:{" "}
+										{fmtWeight(
+											Math.max(
+												...sets.map((s) => s.weightKg),
+											),
+										)}
+										{weightUnit}
 									</Badge>
 								</CardHeader>
 
@@ -391,9 +386,11 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 														{idx + 1}
 													</TableCell>
 													<TableCell className="text-right text-xs font-medium text-foreground px-1">
-														{set.weightKg}{" "}
+														{fmtWeight(
+															set.weightKg,
+														)}{" "}
 														<span className="text-[10px] text-muted-foreground font-normal">
-															kg
+															{weightUnit}
 														</span>
 													</TableCell>
 													<TableCell className="text-right text-xs font-medium text-foreground px-1">
@@ -423,8 +420,9 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 															)}
 															<span>
 																{(
-																	set.weightKg *
-																	set.reps
+																	fmtWeight(
+																		set.weightKg,
+																	) * set.reps
 																).toLocaleString()}
 															</span>
 														</div>

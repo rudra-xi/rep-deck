@@ -24,7 +24,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Spinner } from "@/components/ui/spinner";
+import { useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -62,11 +62,12 @@ export function LastWorkoutCard({
 	loading = false,
 }: LastWorkoutCardProps) {
 	const { prCount, prs } = useLastWorkout(data);
+	const { fmtWeight, weightUnit } = useUnits();
 
 	// 1. Loading State
 	if (loading || data === undefined) {
-    return <WorkoutTableSkeleton rows={4} />;
-  }
+		return <WorkoutTableSkeleton rows={4} />;
+	}
 
 	// 2. Empty Data State with shadcn Empty
 	if (data === null || data.topLifts.length === 0) {
@@ -152,8 +153,9 @@ export function LastWorkoutCard({
 													<strong className="text-foreground">
 														{lift.exercise}:
 													</strong>{" "}
-													{lift.weightKg}kg ×{" "}
-													{lift.reps} reps
+													{fmtWeight(lift.weightKg)}
+													{weightUnit} × {lift.reps}{" "}
+													reps
 												</li>
 											))}
 										</ul>
@@ -254,7 +256,7 @@ export function LastWorkoutCard({
 												: "text-foreground"
 										}`}
 									>
-										{lift.weightKg} kg
+										{fmtWeight(lift.weightKg)} {weightUnit}
 									</TableCell>
 
 									{/* Reps Column */}
