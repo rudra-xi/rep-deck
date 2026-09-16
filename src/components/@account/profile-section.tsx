@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { format } from "date-fns";
 import {
 	CheckIcon,
@@ -15,44 +14,22 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
-import { updateProfile } from "@/actions/account";
 import { UserAvatar } from "@/auth";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import type { UserProfile } from "@/types";
+import { useProfileForm } from "@/hooks";
 
 interface ProfileSectionProps {
 	profile: UserProfile;
 }
 
 export function ProfileSection({ profile }: ProfileSectionProps) {
-	const [name, setName] = useState(profile.name || "");
-	const [isSaving, setIsSaving] = useState(false);
-
-	const handleSaveName = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!name.trim()) return;
-
-		setIsSaving(true);
-		try {
-			const res = await updateProfile({ name: name.trim() });
-			if (res.success) {
-				toast.success("Profile updated");
-			} else {
-				toast.error(res.error || "Failed to update profile");
-			}
-		} catch {
-			toast.error("An unexpected error occurred");
-		} finally {
-			setIsSaving(false);
-		}
-	};
+	const { name, setName, isSaving, hasNameChanged, handleSaveName } =
+		useProfileForm(profile);
 
 	const memberSince = profile.createdAt
 		? format(new Date(profile.createdAt), "MMM yyyy")
 		: "N/A";
-
-	const hasNameChanged = name.trim() !== (profile.name || "").trim();
 
 	return (
 		<Card className="border border-secondary/50 bg-card/50 rounded-none shadow-none transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
@@ -66,7 +43,6 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
 			</CardHeader>
 
 			<CardContent className="p-5 pt-0 space-y-5">
-				{/* Avatar & Member Info */}
 				<div className="flex items-center gap-4 p-3 border border-border/40 bg-background/50 rounded-none">
 					<div className="relative shrink-0">
 						<UserAvatar
@@ -90,9 +66,7 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
 					</div>
 				</div>
 
-				{/* Profile Form */}
 				<form onSubmit={handleSaveName} className="space-y-4">
-					{/* Display Name */}
 					<div className="space-y-1.5">
 						<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider flex items-center gap-1.5">
 							<PencilSimpleIcon
@@ -145,7 +119,6 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
 						)}
 					</div>
 
-					{/* Email (Read-only) */}
 					<div className="space-y-1.5">
 						<div className="flex items-center justify-between">
 							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider flex items-center gap-1.5">

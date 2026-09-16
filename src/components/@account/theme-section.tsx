@@ -1,11 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from "sonner";
 import {
 	PaintBrushIcon,
 	BuildingsIcon,
@@ -16,31 +13,19 @@ import {
 	FireIcon,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
+import { useThemeSelection, THEME_OPTIONS } from "@/hooks";
 
-const THEME_OPTIONS = [
-	{ value: "enterprise", label: "Enterprise", icon: BuildingsIcon },
-	{ value: "zen", label: "Zen", icon: MoonStarsIcon },
-	{ value: "opcl", label: "OPCL", icon: TargetIcon },
-	{ value: "qraft", label: "qrafthive", icon: DropIcon },
-	{ value: "rosepine", label: "Rose Pine", icon: FlowerIcon },
-	{ value: "barmell", label: "Barmell", icon: FireIcon },
-] as const;
+const THEME_ICONS = {
+	enterprise: BuildingsIcon,
+	zen: MoonStarsIcon,
+	opcl: TargetIcon,
+	qraft: DropIcon,
+	rosepine: FlowerIcon,
+	barmell: FireIcon,
+} as const;
 
 export function ThemeSection() {
-	const { theme, setTheme } = useTheme();
-	const [isMounted, setIsMounted] = useState(false);
-
-	// next-themes can't know the active theme during SSR — wait until mount
-	useEffect(() => {
-		setIsMounted(true);
-	}, []);
-
-	const handleThemeChange = (newTheme: string) => {
-		setTheme(newTheme);
-		const label =
-			THEME_OPTIONS.find((t) => t.value === newTheme)?.label ?? newTheme;
-		toast.success(`Theme set to ${label}`);
-	};
+	const { theme, isMounted, handleThemeChange } = useThemeSelection();
 
 	return (
 		<Card className="border border-secondary/50 bg-card/50 rounded-none shadow-none transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
@@ -60,7 +45,8 @@ export function ThemeSection() {
 						onValueChange={handleThemeChange}
 						className="grid grid-cols-2 sm:grid-cols-3 gap-2"
 					>
-						{THEME_OPTIONS.map(({ value, label, icon: Icon }) => {
+						{THEME_OPTIONS.map(({ value, label }) => {
+							const Icon = THEME_ICONS[value];
 							const isSelected = theme === value;
 							return (
 								<div key={value}>
@@ -97,18 +83,21 @@ export function ThemeSection() {
 					</RadioGroup>
 				) : (
 					<div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-						{THEME_OPTIONS.map(({ value, label, icon: Icon }) => (
-							<div
-								key={value}
-								className="group flex flex-col items-center justify-center gap-1.5 border p-4 rounded-none text-[10px] font-bold uppercase tracking-wider text-center border-border/50 bg-background/50 text-muted-foreground"
-							>
-								<Icon
-									className="size-5 text-muted-foreground"
-									weight="bold"
-								/>
-								{label}
-							</div>
-						))}
+						{THEME_OPTIONS.map(({ value, label }) => {
+							const Icon = THEME_ICONS[value];
+							return (
+								<div
+									key={value}
+									className="group flex flex-col items-center justify-center gap-1.5 border p-4 rounded-none text-[10px] font-bold uppercase tracking-wider text-center border-border/50 bg-background/50 text-muted-foreground"
+								>
+									<Icon
+										className="size-5 text-muted-foreground"
+										weight="bold"
+									/>
+									{label}
+								</div>
+							);
+						})}
 					</div>
 				)}
 			</CardContent>

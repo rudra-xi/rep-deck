@@ -1,3 +1,11 @@
+import { useMounted } from "./account-hook/use-mounted";
+import { usePreferences } from "./account-hook/use-preferences";
+import { useProfileForm } from "./account-hook/use-profile-form";
+import {
+	THEME_OPTIONS,
+	useThemeSelection,
+} from "./account-hook/use-theme-selection";
+
 import { useChallenge } from "./dashboard-hook/use-challenge";
 import { useDashboardData } from "./dashboard-hook/use-dashboard-data";
 import { useKpiCards } from "./dashboard-hook/use-kpi-cards";
@@ -50,4 +58,9 @@ export {
 	useMuscleSizeTrend,
 	useQuickAddMeasurement,
 	useQuickStats,
+	useThemeSelection,
+	THEME_OPTIONS,
+	usePreferences,
+	useMounted,
+	useProfileForm,
 };
