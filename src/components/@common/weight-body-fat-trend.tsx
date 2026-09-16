@@ -11,7 +11,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
 	type ChartConfig,
@@ -21,7 +21,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useUnits } from "@/common";
+import { CardsHeader, useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -46,10 +46,8 @@ export function WeightBodyFatTrend({
 	initialData = [],
 	loading: propLoading = false,
 }: WeightBodyFatTrendProps) {
-	// ✅ Hooks INSIDE the component
 	const { weightUnit, fmtWeight } = useUnits();
 
-	// ✅ Config built inside (memoized)
 	const bodyMetricsChartConfig = useMemo<ChartConfig>(
 		() => ({
 			weight: {
@@ -66,7 +64,6 @@ export function WeightBodyFatTrend({
 		propLoading,
 	);
 
-	// ✅ Convert chart data to user's unit
 	const convertedData = useMemo(
 		() =>
 			data.map((d) => ({
@@ -76,7 +73,6 @@ export function WeightBodyFatTrend({
 		[data, fmtWeight],
 	);
 
-	// Loading State
 	if (loading) {
 		return (
 			<ChartCardSkeleton
@@ -86,16 +82,12 @@ export function WeightBodyFatTrend({
 		);
 	}
 
-	// Empty State
 	if (!hasData) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none min-h-[220px]"
-			>
+			<Card size="sm" className="fcard-flat min-h-[220px]">
 				<Empty className="p-6 text-center w-full">
 					<EmptyHeader>
-						<EmptyMedia className="flex border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+						<EmptyMedia className="ficon-box-lg">
 							<PersonIcon
 								className="size-6 text-primary"
 								weight="bold"
@@ -104,7 +96,7 @@ export function WeightBodyFatTrend({
 						<EmptyTitle className="text-sm font-medium text-foreground">
 							No Body Measurements
 						</EmptyTitle>
-						<EmptyDescription className="text-xs text-muted-foreground max-w-sm mx-auto">
+						<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
 							Track your weight and body fat percentage over time
 							by logging your measurements.
 						</EmptyDescription>
@@ -125,34 +117,17 @@ export function WeightBodyFatTrend({
 		);
 	}
 
-	// Data State
 	return (
-		<Card
-			size="sm"
-			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-		>
-			<CardHeader className="space-y-0 pb-2 flex items-center justify-between">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
-					<PersonIcon
-						weight="bold"
-						className="text-popover-foreground"
-					/>
-					Body Composition
-				</CardTitle>
+		<Card size="sm" className="fcard-flat">
+			<CardsHeader icon={HeartbeatIcon} title="Body Composition" />
 
-				<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-					<HeartbeatIcon className="size-3.5" weight="bold" />
-				</div>
-			</CardHeader>
-
-			<CardContent className="space-y-3 pt-0">
-				<div className="p-2 border border-primary/30 bg-primary/5 text-xs flex items-center justify-between">
-					<span className="text-muted-foreground text-[11px] font-medium">
+			<CardContent className="p-4 pt-1 fcol3">
+				<div className="p-2 border border-primary/30 bg-primary/5 text-xs fcb">
+					<span className="ftext-xs2 fmuted font-medium">
 						Total Progress:
 					</span>
 					<span className="font-bold text-foreground text-xs">
-						{weightDiff} {weightUnit} ({fatDiff}% fat){" "}
-						{/* ← dynamic unit */}
+						{weightDiff} {weightUnit} ({fatDiff}% fat)
 					</span>
 				</div>
 
@@ -162,7 +137,7 @@ export function WeightBodyFatTrend({
 				>
 					<ComposedChart
 						accessibilityLayer
-						data={convertedData} // ← use converted data
+						data={convertedData}
 						margin={{ left: 10, right: 2, top: 8, bottom: 4 }}
 					>
 						<defs>
