@@ -1,14 +1,30 @@
 "use client";
 
 import {
+	ArrowUpRightIcon,
 	BugIcon,
 	ChatTextIcon,
 	EnvelopeSimpleIcon,
-	ArrowUpRightIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { buildMailtoUrl, GITHUB_ISSUES } from "@/lib/contact";
+
+const FEEDBACK_MAILTO = buildMailtoUrl({
+	subject: "Rep Deck Feedback",
+	body: [
+		"Hi Rudra,",
+		"",
+		"Here's my feedback on Rep Deck:",
+		"",
+		"— ",
+		"",
+		"---",
+		"App version: v0.1.0",
+		"Browser/OS: ",
+	].join("\n"),
+});
 
 export function FeedbackSection() {
 	return (
@@ -38,12 +54,11 @@ export function FeedbackSection() {
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 					<Button
 						nativeButton={false}
-
 						variant="outline"
 						size="sm"
 						className="h-9 px-3 text-xs font-semibold rounded-none border-border/60 gap-2 justify-start hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all duration-200 group"
 						render={
-							<Link href="mailto:support@repdeck.app?subject=Rep%20Deck%20Feedback">
+							<Link href={FEEDBACK_MAILTO}>
 								<div className="flex items-center justify-center border border-primary/20 bg-primary/5 p-1 text-primary rounded-md shrink-0 group-hover:bg-primary/10 transition-colors">
 									<EnvelopeSimpleIcon
 										className="size-3.5"
@@ -62,7 +77,7 @@ export function FeedbackSection() {
 						className="h-9 px-3 text-xs font-semibold rounded-none border-border/60 gap-2 justify-start hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all duration-200 group"
 						render={
 							<Link
-								href="https://github.com/rudra-xi/rep-deck/issues"
+								href={GITHUB_ISSUES}
 								target="_blank"
 								rel="noopener noreferrer"
 							>
