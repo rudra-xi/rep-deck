@@ -1,4 +1,8 @@
+import Dashboard from "public/dashboard.webp";
+import Metrics from "public/metrics.webp";
+import Plans from "public/plans.webp";
+import Progress from "public/progress.webp";
 import Logo from "public/rep-deck-logo.svg";
-import Sample from "public/sample.jpg";
+import Workout from "public/workout.webp";
 
-export { Sample, Logo };
+export { Logo, Dashboard, Plans, Workout, Progress, Metrics };
