@@ -55,13 +55,11 @@ export function EditExerciseDialog({
 }: EditExerciseDialogProps) {
 	const { open, setOpen, loading, setLoading } = useDialog();
 
-	// Initialize state with existing exercise values
 	const [exerciseName, setExerciseName] = useState(exercise.name || "");
 	const type = useFormField(exercise.type || "Chest");
 	const targetSets = useFormField(exercise.targetSets || 3);
 	const targetRepRange = useFormField(exercise.targetRepRange || "8-12");
 
-	// Sync state when dialog opens or exercise prop updates
 	useEffect(() => {
 		if (open) {
 			setExerciseName(exercise.name || "");
@@ -71,7 +69,6 @@ export function EditExerciseDialog({
 		}
 	}, [open, exercise]);
 
-	// Handle exercise selection from Combobox
 	const handleSelectExercise = (item: PresetExercise | string | null) => {
 		if (!item) return;
 
@@ -116,13 +113,13 @@ export function EditExerciseDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
+			{/* ✅ Removed nativeButton={true} — not needed on a ghost icon button */}
 			<DialogTrigger
-				nativeButton={true}
 				render={
 					<Button
-						size="sm"
+						size="icon"
 						variant="ghost"
-						className="size-7 p-0 text-muted-foreground hover:text-foreground"
+						className="size-7 rounded-none fmuted hover:text-foreground"
 					>
 						<PencilSimpleIcon className="size-3.5" />
 					</Button>
@@ -131,15 +128,14 @@ export function EditExerciseDialog({
 			<DialogContent className="sm:max-w-[425px] rounded-none border-secondary/50 bg-card">
 				<form onSubmit={handleSubmit}>
 					<DialogHeader>
-						<DialogTitle className="text-sm font-bold uppercase tracking-wider text-foreground">
+						<DialogTitle className="text-sm font-bold fupper text-foreground">
 							Edit Exercise
 						</DialogTitle>
 					</DialogHeader>
 
-					<div className="py-4 space-y-3">
-						{/* Combobox Exercise Input */}
+					<div className="py-4 fcol3">
 						<div className="space-y-1">
-							<span className="text-[11px] font-medium uppercase text-muted-foreground block">
+							<span className="ftext-xs2 font-medium fupper fmuted block">
 								Exercise Name
 							</span>
 							<Combobox
@@ -159,7 +155,7 @@ export function EditExerciseDialog({
 									autoFocus
 								/>
 								<ComboboxContent className="rounded-none border-secondary/50 bg-card max-h-48 overflow-y-auto">
-									<ComboboxEmpty className="text-xs text-muted-foreground p-2">
+									<ComboboxEmpty className="text-xs fmuted p-2">
 										No matching exercise found.
 									</ComboboxEmpty>
 									<ComboboxList>
@@ -167,10 +163,10 @@ export function EditExerciseDialog({
 											<ComboboxItem
 												key={item.name}
 												value={item}
-												className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer flex justify-between items-center"
+												className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer fcb"
 											>
 												<span>{item.name}</span>
-												<span className="text-[10px] text-muted-foreground uppercase">
+												<span className="ftext-2xs fmuted fupper">
 													{item.type}
 												</span>
 											</ComboboxItem>
@@ -179,18 +175,16 @@ export function EditExerciseDialog({
 								</ComboboxContent>
 							</Combobox>
 
-							{/* Custom exercise notification tag */}
 							{exerciseName.trim() && !isPreset && (
-								<p className="text-[10px] text-muted-foreground mt-1">
+								<p className="ftext-2xs fmuted mt-1">
 									Custom exercise: "{exerciseName.trim()}"
 								</p>
 							)}
 						</div>
 
-						{/* Sets, Reps, and Type Inputs */}
 						<div className="grid grid-cols-3 gap-2">
 							<div className="space-y-1">
-								<span className="text-[11px] font-medium uppercase text-muted-foreground block">
+								<span className="ftext-xs2 font-medium fupper fmuted block">
 									Type
 								</span>
 								<Input
@@ -202,7 +196,7 @@ export function EditExerciseDialog({
 							</div>
 
 							<div className="space-y-1">
-								<span className="text-[11px] font-medium uppercase text-muted-foreground block">
+								<span className="ftext-xs2 font-medium fupper fmuted block">
 									Sets
 								</span>
 								<Input
@@ -215,7 +209,7 @@ export function EditExerciseDialog({
 							</div>
 
 							<div className="space-y-1">
-								<span className="text-[11px] font-medium uppercase text-muted-foreground block">
+								<span className="ftext-xs2 font-medium fupper fmuted block">
 									Target Reps
 								</span>
 								<Combobox

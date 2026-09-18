@@ -14,14 +14,13 @@ import {
 	Radar,
 	RadarChart,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
 	type ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Spinner } from "@/components/ui/spinner";
 import {
 	Empty,
 	EmptyContent,
@@ -32,8 +31,8 @@ import {
 } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
 import { useTrainingFrequency } from "@/hooks";
-import { Skeleton } from "../ui/skeleton";
 import { TrainingFrequencyCardSkeleton } from "@/skeletons";
+import { CardsHeader } from "@/common";
 
 const chartConfig = {
 	sessions: {
@@ -64,19 +63,14 @@ export function TrainingFrequencyCard({
 		hasData,
 	} = useTrainingFrequency(initialData, propLoading);
 
-	// Loading State
 	if (loading) return <TrainingFrequencyCardSkeleton />;
 
-	// Empty State
 	if (!hasData) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none min-h-[280px]"
-			>
+			<Card size="sm" className="fcard-flat min-h-70">
 				<Empty className="p-6 text-center w-full">
 					<EmptyHeader>
-						<EmptyMedia className="flex border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+						<EmptyMedia className="ficon-box-lg">
 							<ActivityIcon
 								className="size-6 text-primary"
 								weight="bold"
@@ -85,7 +79,7 @@ export function TrainingFrequencyCard({
 						<EmptyTitle className="text-sm font-medium text-foreground">
 							No Training Data
 						</EmptyTitle>
-						<EmptyDescription className="text-xs text-muted-foreground max-w-sm mx-auto">
+						<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
 							Complete your first workout to see your training
 							frequency distribution.
 						</EmptyDescription>
@@ -106,53 +100,40 @@ export function TrainingFrequencyCard({
 		);
 	}
 
-	// Data State
 	return (
 		<Card
 			size="sm"
-			className="relative border border-secondary/50 bg-card/50 overflow-hidden"
+			className="fcard-flat overflow-hidden card-ease"
 		>
-			<CardHeader className="p-4 pb-2 flex flex-row items-center justify-between space-y-0">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
-					<ActivityIcon
-						className="size-4 text-primary"
-						weight="bold"
-					/>
-					Training Distribution
-				</CardTitle>
+			<CardsHeader icon={ActivityIcon} title="Training Distribution" />
 
-				<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-					<CalendarCheckIcon className="size-3.5" weight="bold" />
-				</div>
-			</CardHeader>
-
-			<CardContent className="p-4 pt-0 space-y-3">
-				<div className="grid grid-cols-2 gap-2 text-xs pt-1">
-					<div className="flex items-center gap-2 bg-secondary/30 border border-secondary/60 p-2 rounded-md">
+			<CardContent className="p-4 pt-1 fcol3">
+				<div className="grid grid-cols-2 gap-2 text-xs">
+					<div className="fcy gap-2 bg-secondary/30 border border-secondary/60 p-2 rounded-md">
 						<FlameIcon
-							className="size-4 text-primary shrink-0"
+							className="size-4 text-primary sh0"
 							weight="fill"
 						/>
-						<div className="flex flex-col leading-tight">
-							<span className="text-[9px] text-muted-foreground uppercase font-medium">
+						<div className="fcol leading-tight">
+							<span className="ftext-3xs fmuted fupper font-medium">
 								12-Wk Total
 							</span>
 							<span className="font-bold text-foreground font-mono">
 								{totalSessions}{" "}
-								<span className="text-[10px] font-normal text-muted-foreground">
+								<span className="ftext-2xs font-normal fmuted">
 									sessions
 								</span>
 							</span>
 						</div>
 					</div>
 
-					<div className="flex items-center gap-2 bg-secondary/30 border border-secondary/60 p-2 rounded-md">
+					<div className="fcy gap-2 bg-secondary/30 border border-secondary/60 p-2 rounded-md">
 						<TrophyIcon
-							className="size-4 text-popover-foreground shrink-0"
+							className="size-4 text-popover-foreground sh0"
 							weight="duotone"
 						/>
-						<div className="flex flex-col leading-tight">
-							<span className="text-[9px] text-muted-foreground uppercase font-medium">
+						<div className="fcol leading-tight">
+							<span className="ftext-3xs fmuted fupper font-medium">
 								Peak Day
 							</span>
 							<span className="font-bold text-foreground">
@@ -217,14 +198,14 @@ export function TrainingFrequencyCard({
 					</RadarChart>
 				</ChartContainer>
 
-				<div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2 border-t border-border/40">
-					<div className="flex items-center gap-1.5">
+				<div className="fcb ftext-2xs fmuted pt-2 border-t border-border/40">
+					<div className="fcy gap-1.5">
 						<span className="size-2 rounded-full bg-chart-1 inline-block" />
 						<span className="font-medium text-foreground">
 							Logged Sessions
 						</span>
 					</div>
-					<div className="flex items-center gap-1.5">
+					<div className="fcy gap-1.5">
 						<span className="size-2 rounded-full border border-dashed border-chart-4 inline-block" />
 						<span>12-Wk Target</span>
 					</div>

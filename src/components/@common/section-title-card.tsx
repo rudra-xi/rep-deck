@@ -1,17 +1,22 @@
-"use client";
-
 interface SectionTitleCardProps {
 	title: string;
+	/** Optional: suppress trailing "." */
+	noPeriod?: boolean;
 }
-export const SectionTitleCard = ({ title }: SectionTitleCardProps) => {
+
+const withDot = (s: string, skip: boolean) =>
+	skip || /[.!?]$/.test(s) ? s : `${s}.`;
+
+export const SectionTitleCard = ({
+	title,
+	noPeriod = false,
+}: SectionTitleCardProps) => {
 	return (
-		<div className="mb-4 ml-4">
-			<div className="fcy gap-2">
-				<div className="w-0.5 h-5 bg-primary"></div>
-				<h2 className="text-2xl font-bold tracking-wide capitalize">
-					{title}.
-				</h2>
-			</div>
+		<div className="fcy gap-2 mb-4 ml-4">
+			<div className="w-0.5 h-5 bg-primary" aria-hidden="true" />
+			<h2 className="text-2xl font-bold tracking-wide capitalize">
+				{withDot(title, noPeriod)}
+			</h2>
 		</div>
 	);
 };

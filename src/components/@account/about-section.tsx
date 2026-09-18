@@ -36,6 +36,8 @@ export function AboutSection() {
 								Built by{" "}
 								<Link
 									href="https://github.com/rudra-xi"
+									target="_blank"
+									rel="noopener noreferrer"
 									className="font-medium text-primary hover:underline inline-flex items-center gap-0.5 transition-colors"
 								>
 									rudra-xi

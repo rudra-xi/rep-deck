@@ -8,7 +8,7 @@ import {
 	ChatTextIcon,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import type { LoggedSet } from "@/types";
 import { useWorkoutSession } from "@/hooks";
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUnits } from "@/common";
+import { CardsHeader, useUnits } from "@/common";
 
 interface ActiveSessionSummaryProps {
 	loggedSets: LoggedSet[];
@@ -54,7 +54,7 @@ export function ActiveSessionSummary({
 	const [isLoadingNote, setIsLoadingNote] = useState(false);
 
 	const { weightUnit } = useUnits();
-	// Group sets by exercise name
+
 	const grouped = loggedSets.reduce<Record<string, LoggedSet[]>>(
 		(acc, set) => {
 			acc[set.exerciseName] = acc[set.exerciseName] || [];
@@ -64,7 +64,6 @@ export function ActiveSessionSummary({
 		{},
 	);
 
-	// Check for PRs and derive best performance set per exercise
 	const exerciseSummaries: ExerciseSummary[] = Object.entries(grouped).map(
 		([exercise, sets]) => {
 			const bestSet = sets.reduce((best, current) => {
@@ -83,7 +82,6 @@ export function ActiveSessionSummary({
 				(set) => (set as Record<string, unknown>).isPR === true,
 			);
 
-			// Find note attached to any set for this exercise
 			const exerciseNote =
 				sets.find((s) => s.notes && s.notes.trim() !== "")?.notes ||
 				null;
@@ -181,77 +179,19 @@ export function ActiveSessionSummary({
 	return (
 		<Card
 			size="sm"
-			className="relative border border-secondary/50 bg-card/50 base-ease hover:border-primary/50 rounded-none shadow-none space-y-0"
+			className="relative fcard-flat card-ease"
 		>
-			<CardHeader className="space-y-0 pb-3 flex fcb">
-				<div>
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<PulseIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						Session Summary
-						{prCount > 0 && (
-							<Popover>
-								<PopoverTrigger
-									nativeButton={false}
-									render={
-										<Badge
-											variant="default"
-											className="h-4 px-1.5 text-[8px] font-bold uppercase tracking-wider bg-primary hover:bg-primary text-primary-foreground border-0 cursor-pointer"
-										>
-											<TrophyIcon
-												className="size-2.5 mr-0.5"
-												weight="fill"
-											/>
-											{prCount} PR{prCount > 1 ? "s" : ""}
-										</Badge>
-									}
-								/>
-								<PopoverContent className="w-auto p-2.5 text-xs">
-									<div className="space-y-1.5">
-										<p className="font-semibold flex items-center gap-1">
-											<span>🏆</span> Personal Records
-										</p>
-										<ul className="space-y-1 text-muted-foreground">
-											{exerciseSummaries
-												.filter((ex) => ex.isPR)
-												.map((ex) => (
-													<li
-														key={ex.exercise}
-														className="text-xs"
-													>
-														<strong className="text-foreground">
-															{ex.exercise}:
-														</strong>{" "}
-														{ex.bestSet?.weight}{weightUnit} ×{" "}
-														{ex.bestSet?.reps}
-														{ex.bestSet?.rpe
-															? ` @ RPE ${ex.bestSet.rpe}`
-															: ""}
-													</li>
-												))}
-										</ul>
-									</div>
-								</PopoverContent>
-							</Popover>
-						)}
-					</CardTitle>
-				</div>
-				<div className="fc border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
-					<ClipboardTextIcon className="size-4" weight="bold" />
-				</div>
-			</CardHeader>
+			<CardsHeader icon={PulseIcon} title="Session Summary" />
 
-			<CardContent className="space-y-4">
+			<CardContent className="p-4 pt-1 fcol4">
 				{loggedSets.length === 0 ? (
-					<p className="text-xs text-muted-foreground italic py-1">
+					<p className="text-xs fmuted italic py-1">
 						No sets logged yet for this session. Add sets above or
 						through quick add.
 					</p>
 				) : (
 					<>
-						<div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+						<div className="fcb text-xs text-muted-foreground px-1">
 							<span>
 								Total Sets:{" "}
 								<strong className="text-foreground">
@@ -269,16 +209,24 @@ export function ActiveSessionSummary({
 									<PopoverTrigger
 										nativeButton={false}
 										render={
-											<span className="text-primary font-bold cursor-pointer hover:underline">
-												🏆 {prCount} PR
+											<span className="text-primary font-bold cursor-pointer hover:underline fcy gap-1">
+												<TrophyIcon
+													className="size-3.5"
+													weight="duotone"
+												/>
+												{prCount} PR
 												{prCount > 1 ? "s" : ""}
 											</span>
 										}
 									/>
 									<PopoverContent className="w-auto p-2.5 text-xs">
 										<div className="space-y-1.5">
-											<p className="font-semibold flex items-center gap-1">
-												<span>🏆</span> PR Achievements
+											<p className="font-semibold fcy gap-1">
+												<TrophyIcon
+													className="size-3.5"
+													weight="duotone"
+												/>
+												PR Achievements
 											</p>
 											<ul className="space-y-1 text-muted-foreground">
 												{exerciseSummaries
@@ -323,8 +271,8 @@ export function ActiveSessionSummary({
 												: "border-border/50"
 										}`}
 									>
-										<div className="flex items-center justify-between">
-											<div className="flex items-center gap-2">
+										<div className="fcb">
+											<div className="fcy gap-2">
 												<h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
 													{exercise}
 												</h3>
@@ -346,7 +294,11 @@ export function ActiveSessionSummary({
 															}
 														/>
 														<PopoverContent className="w-auto p-2.5 text-xs">
-															<p className="font-semibold text-primary">
+															<p className="font-semibold text-primary fcy gap-1">
+																<TrophyIcon
+																	className="size-3.5"
+																	weight="duotone"
+																/>
 																New Personal
 																Record!
 															</p>
@@ -356,7 +308,8 @@ export function ActiveSessionSummary({
 																	{
 																		bestSet?.weight
 																	}
-																	{weightUnit} ×{" "}
+																	{weightUnit}{" "}
+																	×{" "}
 																	{
 																		bestSet?.reps
 																	}
@@ -375,11 +328,10 @@ export function ActiveSessionSummary({
 											</span>
 										</div>
 
-										{/* Display exercise level note if present */}
 										{exerciseNote && (
-											<div className="flex items-center gap-1.5 text-[11px] text-muted-foreground bg-accent/30 p-1.5 border border-border/30">
+											<div className="fcy gap-1.5 text-[11px] text-muted-foreground bg-accent/30 p-1.5 border border-border/30">
 												<ChatTextIcon
-													className="size-3.5 text-primary shrink-0"
+													className="size-3.5 text-primary sh0"
 													weight="bold"
 												/>
 												<span className="italic truncate">
@@ -388,7 +340,7 @@ export function ActiveSessionSummary({
 											</div>
 										)}
 
-										<div className="flex flex-wrap gap-1.5">
+										<div className="fwrap gap-1.5">
 											{sets.map((s, idx) => {
 												const isSetPR =
 													(
@@ -408,7 +360,7 @@ export function ActiveSessionSummary({
 															nativeButton={false}
 															render={
 																<span
-																	className={`text-xs font-mono px-2 py-0.5 rounded-none border cursor-pointer flex items-center gap-1 ${
+																	className={`text-xs font-mono px-2 py-0.5 rounded-none border cursor-pointer fcy gap-1 ${
 																		isSetPR
 																			? "bg-primary/20 border-primary/50 text-primary dark:text-primary"
 																			: "bg-accent/50 border-border/50 text-foreground"
@@ -431,21 +383,31 @@ export function ActiveSessionSummary({
 																			? ` @ RPE ${s.rpe}`
 																			: ""}
 																	</span>
-																	{isSetPR &&
-																		"🏆"}
+																	{isSetPR && (
+																		<TrophyIcon
+																			className="size-2.5"
+																			weight="duotone"
+																		/>
+																	)}
 																</span>
 															}
 														/>
 														<PopoverContent className="w-auto max-w-xs p-2 text-xs space-y-1">
 															{isSetPR && (
-																<p className="font-semibold text-primary">
-																	🏆 Personal
+																<p className="font-semibold text-primary fcy gap-1">
+																	<TrophyIcon
+																		className="size-3.5"
+																		weight="duotone"
+																	/>
+																	Personal
 																	Record!
 																</p>
 															)}
 															<p className="text-muted-foreground font-mono">
-																{s.weight}{weightUnit} ×{" "}
-																{s.reps}
+																{s.weight}
+																{
+																	weightUnit
+																} × {s.reps}
 																{s.rpe
 																	? ` @ RPE ${s.rpe}`
 																	: ""}
@@ -468,15 +430,14 @@ export function ActiveSessionSummary({
 				)}
 
 				<div className="space-y-3 pt-1">
-					{/* Last Session Note */}
 					{lastSessionNote && (
 						<div className="rounded-none border border-primary/20 bg-primary/5 p-2.5">
-							<div className="flex items-start gap-2">
+							<div className="ft gap-2">
 								<ClipboardTextIcon
-									className="size-3.5 text-primary shrink-0 mt-0.5"
+									className="size-3.5 text-primary sh0 mt-0.5"
 									weight="bold"
 								/>
-								<div className="flex-1">
+								<div className="fgrow">
 									<span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
 										Last Session Note
 									</span>
@@ -488,7 +449,6 @@ export function ActiveSessionSummary({
 						</div>
 					)}
 
-					{/* Loading state for note */}
 					{isLoadingNote && (
 						<div className="rounded-none border border-primary/20 bg-primary/5 p-2.5 space-y-2">
 							<Skeleton className="h-3 w-24 rounded-sm" />
@@ -496,7 +456,6 @@ export function ActiveSessionSummary({
 						</div>
 					)}
 
-					{/* Current Session Note Input */}
 					<Textarea
 						placeholder="Workout notes (e.g., felt strong on bench, energy was high)..."
 						className="rounded-none text-xs resize-none h-20 border-border/50 bg-background/50 focus:border-primary/50"

@@ -6,8 +6,9 @@ import {
 	CheckCircleIcon,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
+import { CardsHeader } from "@/common";
 
 interface ProgramDay {
 	id: string;
@@ -29,7 +30,6 @@ export function DaySelector({
 	onSelectDay,
 }: DaySelectorProps) {
 	const handleDaySelect = (day: ProgramDay) => {
-		// Don't show toast if selecting the same day
 		if (day.dayIndex === selectedDayIndex) {
 			toast.info(`Already on ${day.label}`, {
 				description: `Day ${day.dayIndex} is currently selected.`,
@@ -38,50 +38,39 @@ export function DaySelector({
 			return;
 		}
 
-		// Show toast when switching days
 		toast.info(`Switched to ${day.label}`, {
 			description: `Day ${day.dayIndex} - ${day.label}`,
 			duration: 2500,
 			icon: <CalendarDotsIcon className="size-4" weight="bold" />,
 		});
 
-		// Call the parent handler
 		onSelectDay(day.dayIndex);
 	};
 
 	return (
 		<Card
 			size="sm"
-			className="relative border border-secondary/50 bg-card/50 base-ease hover:border-primary/50 rounded-none shadow-none"
+			className="fcard-flat card-ease"
 		>
-			<CardHeader className="space-y-0 pb-3 flex fcb">
-				<div>
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<BarbellIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						{programName}
-					</CardTitle>
-				</div>
-				<div className="fc border border-primary/30 bg-primary/10 p-2 text-primary sh0">
-					<CalendarDotsIcon className="size-4" weight="bold" />
-				</div>
-			</CardHeader>
+			<CardsHeader
+				icon={CalendarDotsIcon}
+				title={programName}
+				
+			/>
 
-			<CardContent className="space-y-3">
-				<div className="flex items-center justify-between">
-					<span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+			<CardContent className="p-4 pt-1 fcol3">
+				<div className="fcb">
+					<span className="ftext-xs2 font-medium fmuted fupper">
 						Select Training Day
 					</span>
 				</div>
 
 				{days.length === 0 ? (
-					<p className="text-xs text-muted-foreground italic py-1">
+					<p className="text-xs fmuted italic py-1">
 						No days configured for this program.
 					</p>
 				) : (
-					<div className="flex flex-wrap gap-2">
+					<div className="fwrap gap-2">
 						{days.map((day) => {
 							const isActive = day.dayIndex === selectedDayIndex;
 							return (
@@ -94,7 +83,7 @@ export function DaySelector({
 									className={`h-8 text-xs font-semibold gap-1.5 cursor-pointer transition-colors ${
 										isActive
 											? "border-primary bg-primary/10 text-foreground font-semibold"
-											: "border-border/40 bg-background/10 text-muted-foreground hover:text-foreground hover:border-primary/40"
+											: "border-border/40 bg-background/10 fmuted hover:text-foreground hover:border-primary/40"
 									}`}
 								>
 									{isActive && (
@@ -111,7 +100,8 @@ export function DaySelector({
 						})}
 					</div>
 				)}
-				<div className="flex items-center justify-end gap-3 text-xs text-muted-foreground">
+
+				<div className="fc justify-end gap-3 text-xs fmuted">
 					<span>
 						Total Days:{" "}
 						<strong className="text-foreground">

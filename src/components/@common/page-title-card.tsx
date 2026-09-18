@@ -1,19 +1,24 @@
-"use client";
-
 interface PageTitleCardProps {
 	title: string;
 	subTitle: string;
+	noPeriod?: boolean;
 }
 
-export const PageTitleCard = ({ title, subTitle }: PageTitleCardProps) => {
-	return (
-		<div className="mb-10">
-			<h1 className="text-4xl lg:text-5xl uppercase font-black tracking-wider">
-				{title}.
-			</h1>
+const withDot = (s: string, skip: boolean) =>
+	skip || /[.!?]$/.test(s) ? s : `${s}.`;
 
-			<p className="text-sm tracking-wide text-muted-foreground">
-				{subTitle}.
+export const PageTitleCard = ({
+	title,
+	subTitle,
+	noPeriod = false,
+}: PageTitleCardProps) => {
+	return (
+		<div className="fpage-head">
+			<h1 className="text-4xl lg:text-5xl fupper font-black">
+				{withDot(title, noPeriod)}
+			</h1>
+			<p className="text-sm tracking-wide fmuted">
+				{withDot(subTitle, noPeriod)}
 			</p>
 		</div>
 	);

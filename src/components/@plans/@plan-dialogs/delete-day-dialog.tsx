@@ -52,7 +52,7 @@ export function DeleteDayDialog({ dayLabel, onDelete }: DeleteDayDialogProps) {
 							e.stopPropagation();
 							setOpen(true);
 						}}
-						className="size-6 p-0 text-muted-foreground hover:text-destructive"
+						className="size-6 p-0 fmuted hover:text-destructive"
 					>
 						<TrashIcon className="size-3.5" />
 					</Button>
@@ -64,7 +64,7 @@ export function DeleteDayDialog({ dayLabel, onDelete }: DeleteDayDialogProps) {
 				className="rounded-none border-secondary/50 bg-card"
 			>
 				<AlertDialogHeader>
-					<AlertDialogTitle className="text-sm font-bold uppercase">
+					<AlertDialogTitle className="text-sm font-bold fupper">
 						Delete Training Day?
 					</AlertDialogTitle>
 					<AlertDialogDescription className="text-xs">

@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PlanWithStructure } from "@/types/plans";
 import { toast } from "sonner";
 import { PlansOverviewSkeleton } from "@/skeletons";
+import { Badge } from "@/components/ui/badge";
 
 interface PlansOverviewCardsProps {
 	plans: PlanWithStructure[];
@@ -127,36 +128,39 @@ function PlanCardItem({
 					});
 				}
 			}}
-			className={`relative cursor-pointer border bg-card/50 base-ease rounded-none shadow-none transition-all ${
+			className={`relative cursor-pointer border bg-card/50 base-ease ${
 				isSelected
 					? "border-primary ring-1 ring-primary/40"
 					: "border-secondary/50 hover:border-primary/50"
 			}`}
 		>
 			<CardHeader className="space-y-0 pb-2 flex fcb">
-				<div className="flex items-center gap-1.5">
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground">
+				<div className="fg1_5">
+					<CardTitle className="text-xs font-bold fupper text-foreground">
 						{plan.name}
 					</CardTitle>
-					<span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded-none bg-primary/10 text-primary border border-primary/20">
+					<Badge
+						variant="outline"
+						className="text-xs font-bold"
+					>
 						v{plan.version}
-					</span>
+					</Badge>
 				</div>
 
-				<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
+				<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md sh0">
 					<FolderStarIcon className="size-3.5" weight="bold" />
 				</div>
 			</CardHeader>
 
 			<CardContent className="space-y-3 pt-1">
-				<div className="flex items-center justify-between text-[11px] text-muted-foreground">
+				<div className="fcb text-[11px] text-muted-foreground">
 					<span>Started:</span>
 					<span className="font-semibold text-foreground">
 						{formattedStartDate}
 					</span>
 				</div>
 
-				<div className="flex items-center justify-between gap-2 border-t border-border/40 pt-2.5">
+				<div className="fcb gap-2 border-t border-border/40 pt-2.5">
 					<span
 						className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-none border base-ease ${
 							plan.active

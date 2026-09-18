@@ -10,7 +10,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
 	type ChartConfig,
@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/empty";
 import { useStrengthOverview } from "@/hooks";
 import { ChartCardSkeleton } from "@/skeletons";
-import { useUnits } from "@/common";
+import { CardsHeader, useUnits } from "@/common";
 
 const strengthChartConfig = {
 	squat: { label: "Squat", color: "var(--chart-1)" },
@@ -56,11 +56,10 @@ export function StrengthOverviewCard({
 	loading: propLoading = false,
 }: StrengthOverviewCardProps) {
 	const { weightUnit } = useUnits();
-	
+
 	const { data, loading, isFetching, hasData, timeRanges } =
 		useStrengthOverview(initialData, propLoading, timeRange);
 
-	// Loading State
 	if (loading) {
 		return (
 			<ChartCardSkeleton
@@ -72,44 +71,34 @@ export function StrengthOverviewCard({
 		);
 	}
 
-	// Empty State
+	// Time range toggle bar
+	const rangeToggle = (
+		<div className="flex border border-border/50 p-0.5 bg-background">
+			{timeRanges.map((range) => (
+				<Button
+					key={range}
+					size="sm"
+					variant={timeRange === range ? "default" : "ghost"}
+					onClick={() => onTimeRangeChange(range)}
+					className="h-5 px-1.5 text-[10px] rounded-none uppercase"
+				>
+					{range}
+				</Button>
+			))}
+		</div>
+	);
+
 	if (!hasData && !isFetching) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none min-h-[280px]"
-			>
-				<CardHeader className="space-y-0 pb-2 flex fcb">
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<GaugeIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						Big 4 Strength Trend
-					</CardTitle>
-					<div className="flex items-center gap-2">
-						<div className="flex border border-border/50 p-0.5 bg-background">
-							{timeRanges.map((range) => (
-								<Button
-									key={range}
-									size="sm"
-									variant={
-										timeRange === range
-											? "default"
-											: "ghost"
-									}
-									onClick={() => onTimeRangeChange(range)}
-									className="h-5 px-1.5 text-[10px] rounded-none uppercase"
-								>
-									{range}
-								</Button>
-							))}
-						</div>
-					</div>
-				</CardHeader>
+			<Card size="sm" className="fcard-flat min-h-[280px]">
+				<CardsHeader
+					icon={GaugeIcon}
+					title="Big 4 Strength Trend"
+					trailing={rangeToggle}
+				/>
 				<Empty className="p-6 text-center w-full">
 					<EmptyHeader>
-						<EmptyMedia className="flex border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+						<EmptyMedia className="ficon-box-lg">
 							<TrendUpIcon
 								className="size-6 text-primary"
 								weight="bold"
@@ -118,7 +107,7 @@ export function StrengthOverviewCard({
 						<EmptyTitle className="text-sm font-medium text-foreground">
 							No Strength Data
 						</EmptyTitle>
-						<EmptyDescription className="text-xs text-muted-foreground max-w-sm mx-auto">
+						<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
 							Log workouts with Squat, Bench Press, Deadlift, or
 							Overhead Press to see your strength progression over
 							time.
@@ -140,47 +129,22 @@ export function StrengthOverviewCard({
 		);
 	}
 
-	// Main Chart View
 	return (
-		<Card
-			size="sm"
-			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-		>
-			<CardHeader className="space-y-0 pb-2 flex fcb">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-					<GaugeIcon
-						weight="bold"
-						className="text-popover-foreground"
-					/>
-					Big 4 Strength Trend
-					{isFetching && (
-						<Spinner className="size-3 text-muted-foreground ml-1" />
-					)}
-				</CardTitle>
+		<Card size="sm" className="fcard-flat card-ease">
+			<CardsHeader
+				icon={GaugeIcon}
+				title={
+					<span>
+						Big 4 Strength Trend
+						{isFetching && (
+							<Spinner className="size-3 text-muted-foreground ml-1" />
+						)}
+					</span>
+				}
+				trailing={<span>{rangeToggle}</span>}
+			/>
 
-				<div className="flex items-center gap-2">
-					<div className="flex border border-border/50 p-0.5 bg-background">
-						{timeRanges.map((range) => (
-							<Button
-								key={range}
-								size="sm"
-								variant={
-									timeRange === range ? "default" : "ghost"
-								}
-								onClick={() => onTimeRangeChange(range)}
-								className="h-5 px-1.5 text-[10px] rounded-none uppercase"
-							>
-								{range}
-							</Button>
-						))}
-					</div>
-					<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-						<TrendUpIcon className="size-3.5" weight="bold" />
-					</div>
-				</div>
-			</CardHeader>
-
-			<CardContent className="pt-0 space-y-3">
+			<CardContent className="p-4 pt-1">
 				<ChartContainer
 					config={strengthChartConfig}
 					className="h-[200px] sm:h-[220px] w-full"

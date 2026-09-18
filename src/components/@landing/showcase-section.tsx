@@ -106,7 +106,7 @@ export const ShowcaseSection = () => {
 									key={bullet}
 									className="ft gap-2.5 text-sm text-foreground"
 								>
-									<span className="size-1.5 rounded-full bg-primary mt-2 shrink-0" />
+									<span className="size-1.5 rounded-full bg-primary mt-2 sh0" />
 									{bullet}
 								</li>
 							))}

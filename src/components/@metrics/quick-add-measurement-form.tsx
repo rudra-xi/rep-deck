@@ -32,12 +32,12 @@ export function QuickAddMeasurementForm() {
 	const { weightLabel, measurementLabel } = useUnits();
 
 	return (
-		<Card className="border border-secondary/50 bg-card/50 rounded-none shadow-none transition-all duration-300 hover:border-primary/50">
+		<Card className="fcard-flat card-ease">
 			<CardContent className="p-5">
-				<form onSubmit={handleSubmit} className="space-y-4">
-					{/* Date Picker */}
-					<div className="flex flex-col space-y-1.5">
-						<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+				<form onSubmit={handleSubmit} className="fcol4">
+					{/* Date */}
+					<div className="fcol1_5">
+						<Label className="ftext-2xs fupper font-semibold fmuted">
 							Date
 						</Label>
 						<Popover>
@@ -46,13 +46,12 @@ export function QuickAddMeasurementForm() {
 									<Button
 										variant="outline"
 										className={cn(
-											"h-9 text-xs rounded-none justify-start text-left font-normal px-3 border-border/50 hover:border-primary/50 transition-all duration-200",
-											!selectedDate &&
-												"text-muted-foreground",
+											"h-9 text-xs rounded-none justify-start text-left font-normal px-3 border-border/50 card-ease",
+											!selectedDate && "fmuted",
 										)}
 									>
 										<CalendarDotsIcon
-											className="mr-2 size-4 text-primary shrink-0"
+											className="mr-2 size-4 text-primary sh0"
 											weight="bold"
 										/>
 										{selectedDate ? (
@@ -79,22 +78,22 @@ export function QuickAddMeasurementForm() {
 
 					{/* Weight & Body Fat */}
 					<div className="grid grid-cols-2 gap-3">
-						<div className="space-y-1">
-							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+						<div className="fcol1">
+							<Label className="ftext-2xs fupper font-semibold fmuted">
 								Weight ({weightLabel})
 							</Label>
 							<Input
 								type="number"
 								step="0.1"
-								name="weightKg"
+								name="weight"
 								placeholder="e.g. 74.2"
 								value={formData.weightKg}
 								onChange={handleChange}
-								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
+								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 base-ease"
 							/>
 						</div>
-						<div className="space-y-1">
-							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+						<div className="fcol1">
+							<Label className="ftext-2xs fupper font-semibold fmuted">
 								Body Fat (%)
 							</Label>
 							<Input
@@ -104,15 +103,15 @@ export function QuickAddMeasurementForm() {
 								placeholder="e.g. 15.0"
 								value={formData.bodyFatPercent}
 								onChange={handleChange}
-								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
+								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 base-ease"
 							/>
 						</div>
 					</div>
 
 					{/* Arms, Forearms, Thighs */}
 					<div className="grid grid-cols-3 gap-3">
-						<div className="space-y-1">
-							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+						<div className="fcol1">
+							<Label className="ftext-2xs fupper font-semibold fmuted">
 								Arms ({measurementLabel})
 							</Label>
 							<Input
@@ -122,11 +121,11 @@ export function QuickAddMeasurementForm() {
 								placeholder="e.g. 14.5"
 								value={formData.armsIn}
 								onChange={handleChange}
-								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
+								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 base-ease"
 							/>
 						</div>
-						<div className="space-y-1">
-							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+						<div className="fcol1">
+							<Label className="ftext-2xs fupper font-semibold fmuted">
 								Forearms ({measurementLabel})
 							</Label>
 							<Input
@@ -136,11 +135,11 @@ export function QuickAddMeasurementForm() {
 								placeholder="e.g. 12.5"
 								value={formData.forearmsIn}
 								onChange={handleChange}
-								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
+								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 base-ease"
 							/>
 						</div>
-						<div className="space-y-1">
-							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+						<div className="fcol1">
+							<Label className="ftext-2xs fupper font-semibold fmuted">
 								Thighs ({measurementLabel})
 							</Label>
 							<Input
@@ -150,15 +149,15 @@ export function QuickAddMeasurementForm() {
 								placeholder="e.g. 22.5"
 								value={formData.thighsIn}
 								onChange={handleChange}
-								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
+								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 base-ease"
 							/>
 						</div>
 					</div>
 
 					{/* Chest, Waist, Hips */}
 					<div className="grid grid-cols-3 gap-3">
-						<div className="space-y-1">
-							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+						<div className="fcol1">
+							<Label className="ftext-2xs fupper font-semibold fmuted">
 								Chest ({measurementLabel})
 							</Label>
 							<Input
@@ -168,11 +167,11 @@ export function QuickAddMeasurementForm() {
 								placeholder="e.g. 40.0"
 								value={formData.chestIn}
 								onChange={handleChange}
-								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
+								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 base-ease"
 							/>
 						</div>
-						<div className="space-y-1">
-							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+						<div className="fcol1">
+							<Label className="ftext-2xs fupper font-semibold fmuted">
 								Waist ({measurementLabel})
 							</Label>
 							<Input
@@ -182,11 +181,11 @@ export function QuickAddMeasurementForm() {
 								placeholder="e.g. 32.0"
 								value={formData.waistIn}
 								onChange={handleChange}
-								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
+								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 base-ease"
 							/>
 						</div>
-						<div className="space-y-1">
-							<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+						<div className="fcol1">
+							<Label className="ftext-2xs fupper font-semibold fmuted">
 								Hips ({measurementLabel})
 							</Label>
 							<Input
@@ -196,14 +195,14 @@ export function QuickAddMeasurementForm() {
 								placeholder="e.g. 37.0"
 								value={formData.hipsIn}
 								onChange={handleChange}
-								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
+								className="h-9 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 base-ease"
 							/>
 						</div>
 					</div>
 
 					{/* Notes */}
-					<div className="space-y-1">
-						<Label className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+					<div className="fcol1">
+						<Label className="ftext-2xs fupper font-semibold fmuted">
 							Notes
 						</Label>
 						<Textarea
@@ -211,7 +210,7 @@ export function QuickAddMeasurementForm() {
 							placeholder="e.g. Fasted state, measured after morning cardio..."
 							value={formData.notes || ""}
 							onChange={handleChange}
-							className="min-h-[60px] text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200 resize-none"
+							className="min-h-15 text-xs rounded-none border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 base-ease resize-none"
 						/>
 					</div>
 

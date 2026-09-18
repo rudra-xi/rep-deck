@@ -32,40 +32,35 @@ function ChallengeCardItem({ variant, title, challenge }: ChallengeItemProps) {
 	return (
 		<Card
 			size="sm"
-			className={`w-full ${
+			className={`w-full fcard-flat border ${
 				isCurrent
-					? "border border-secondary/50 base-ease hover:border-primary/50 bg-card/50 text-foreground shadow-md ring-1 ring-primary/20"
-					: "border-border/50 bg-card/30 text-muted-foreground opacity-75"
+					? "border-secondary/50 card-ease shadow-md ring-1 ring-primary/20 text-foreground"
+					: "border-border/50 bg-card/30 fmuted opacity-75"
 			}`}
 		>
-			<CardHeader className="p-3.5 sm:p-4 pb-2 space-y-1">
+			<CardHeader className="p-3.5 sm:p-4 pb-2 fcol2">
 				<div className="fcb gap-1.5">
-					<div className="fcx gap-1.5">
+					<div className="fg1_5">
 						{isCurrent && (
 							<FireIcon
 								size={15}
 								weight="fill"
-								className="text-primary shrink-0"
+								className="text-primary sh0"
 							/>
 						)}
 						{isPast && (
 							<CheckCircleIcon
 								size={15}
 								weight="bold"
-								className="text-primary/70 shrink-0"
+								className="text-primary/70 sh0"
 							/>
 						)}
 						{!isCurrent && !isPast && (
-							<ClockIcon
-								size={15}
-								className="text-muted-foreground shrink-0"
-							/>
+							<ClockIcon size={15} className="fmuted sh0" />
 						)}
 						<CardTitle
 							className={`text-xs sm:text-sm font-bold ${
-								isCurrent
-									? "text-foreground"
-									: "text-muted-foreground"
+								isCurrent ? "text-foreground" : "fmuted"
 							}`}
 						>
 							{title}
@@ -74,10 +69,8 @@ function ChallengeCardItem({ variant, title, challenge }: ChallengeItemProps) {
 
 					<Badge
 						variant={isCurrent ? "secondary" : "ghost"}
-						className={`text-[9px] sm:text-[10px] px-1.5 py-0 font-semibold ${
-							isCurrent
-								? "text-primary-foreground"
-								: "text-muted-foreground"
+						className={`ftext-3xs sm:ftext-2xs px-1.5 py-0 font-semibold ${
+							isCurrent ? "text-primary-foreground" : "fmuted"
 						}`}
 					>
 						{challenge.category}
@@ -85,15 +78,15 @@ function ChallengeCardItem({ variant, title, challenge }: ChallengeItemProps) {
 				</div>
 
 				{isCurrent && (
-					<CardDescription className="text-[11px] text-muted-foreground pt-0.5">
+					<CardDescription className="ftext-xs2 fmuted pt-0.5">
 						Between-Set Bodyweight Challenges.
 					</CardDescription>
 				)}
 			</CardHeader>
 
-			<CardContent className="px-3.5 pb-3.5 sm:px-4 sm:pb-4 space-y-2.5">
+			<CardContent className="px-3.5 pb-3.5 sm:px-4 sm:pb-4 fcol2">
 				<div
-					className={`rounded-md p-2.5 border space-y-1 ${
+					className={`rounded-md p-2.5 border fcol1 ${
 						isCurrent
 							? "bg-primary/5 border-primary/20"
 							: "bg-muted/10 border-border/30"
@@ -103,29 +96,27 @@ function ChallengeCardItem({ variant, title, challenge }: ChallengeItemProps) {
 						className={`text-xs font-semibold ${
 							isCurrent
 								? "text-foreground"
-								: "text-muted-foreground line-through"
+								: "fmuted line-through"
 						}`}
 					>
 						{challenge.title}
 					</h4>
-					<p className="text-[11px] text-muted-foreground line-clamp-2 leading-tight">
+					<p className="ftext-xs2 fmuted line-clamp-2 leading-tight">
 						{challenge.description}
 					</p>
 				</div>
 
-				<div className="fcb gap-2 text-[11px]">
-					<span className="fcx gap-1 text-muted-foreground">
+				<div className="fcb gap-2 ftext-xs2">
+					<span className="fg1 fmuted">
 						<TimerIcon
 							size={12}
-							className={`sh-0 ${isCurrent ? "text-primary" : ""}`}
+							className={`sh0 ${isCurrent ? "text-primary" : ""}`}
 						/>
 						Target
 					</span>
 					<span
 						className={`font-semibold ${
-							isCurrent
-								? "text-foreground"
-								: "text-muted-foreground"
+							isCurrent ? "text-foreground" : "fmuted"
 						}`}
 					>
 						{challenge.target}
@@ -149,11 +140,11 @@ export function ChallengeCard() {
 
 	return (
 		<div>
-			{/* Mobile View: Single card with prev/next quick toggle */}
-			<div className="block md:hidden space-y-2">
+			{/* Mobile */}
+			<div className="block md:hidden fcol2">
 				<div className="fcb px-1">
 					<span />
-					<div className="fcx gap-1">
+					<div className="fg1">
 						<Button
 							variant="ghost"
 							size="icon"
@@ -163,7 +154,7 @@ export function ChallengeCard() {
 						>
 							<CaretLeftIcon size={14} />
 						</Button>
-						<span className="text-[11px] font-medium text-foreground w-16 text-center mt-1.5">
+						<span className="ftext-xs2 font-medium text-foreground w-16 text-center">
 							{mobileItems[mobileTab].title}
 						</span>
 						<Button
@@ -185,7 +176,7 @@ export function ChallengeCard() {
 				/>
 			</div>
 
-			{/* Desktop View: 3 Cards Grid */}
+			{/* Desktop */}
 			<div className="hidden md:grid md:grid-cols-3 gap-3">
 				<ChallengeCardItem
 					variant="past"

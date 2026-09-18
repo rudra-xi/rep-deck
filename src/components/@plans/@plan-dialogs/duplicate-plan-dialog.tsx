@@ -49,13 +49,6 @@ export function DuplicatePlanDialog({
 	const handleDuplicate = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		// Debugging log: Check browser console (F12) to ensure ID exists
-		console.log("Submitting Duplicate Form:", {
-			planId: plan?.id,
-			name,
-			version,
-		});
-
 		if (!plan?.id) {
 			toast.error("Error: Missing plan ID");
 			return;
@@ -72,8 +65,6 @@ export function DuplicatePlanDialog({
 				name: name.trim(),
 				version: Number(version) || 1,
 			});
-
-			console.log("Duplicate Action Response:", res);
 
 			if (res?.success) {
 				toast.success("Plan duplicated", {
@@ -112,7 +103,7 @@ export function DuplicatePlanDialog({
 							e.stopPropagation();
 							setOpen(true);
 						}}
-						className="rounded-none h-7 text-[11px] gap-1 border-border/50 text-muted-foreground hover:text-primary hover:bg-primary/10"
+						className="rounded-none h-7 gap-1 border-border/50 fmuted hover:text-primary hover:bg-primary/10"
 					>
 						<CopyIcon className="size-3" weight="bold" />
 					</Button>
@@ -121,7 +112,7 @@ export function DuplicatePlanDialog({
 
 			<DialogContent className="sm:max-w-md rounded-none border-secondary/50 bg-card">
 				<DialogHeader>
-					<DialogTitle className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 text-primary">
+					<DialogTitle className="text-sm font-bold fupper fcy gap-2 text-primary">
 						<CopyIcon className="size-4" weight="bold" />
 						Duplicate
 						<span className="text-foreground">{plan?.name}</span>
@@ -135,7 +126,7 @@ export function DuplicatePlanDialog({
 				<form onSubmit={handleDuplicate} className="space-y-4 pt-2">
 					{/* New Name Input */}
 					<div className="space-y-1">
-						<span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground block">
+						<span className="ftext-xs2 font-medium fupper fmuted block">
 							New Plan Name
 						</span>
 						<Input
@@ -150,7 +141,7 @@ export function DuplicatePlanDialog({
 
 					{/* New Version Input */}
 					<div className="space-y-1">
-						<span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground block">
+						<span className="ftext-xs2 font-medium fupper fmuted block">
 							Version Number
 						</span>
 						<Input

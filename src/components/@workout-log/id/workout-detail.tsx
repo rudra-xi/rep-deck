@@ -62,8 +62,9 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 
 	const { totalVolume, prCount, uniqueExercisesCount, exerciseGroups } =
 		useMemo(() => {
+			// ✅ Numeric accumulation — do NOT pass through fmtWeight
 			const volume = session.sets.reduce(
-				(sum, set) => sum + fmtWeight(set.weightKg) * set.reps,
+				(sum, set) => sum + set.weightKg * set.reps,
 				0,
 			);
 			const prs = session.sets.filter((set) => set.isPR).length;
@@ -83,7 +84,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 				uniqueExercisesCount: Object.keys(groups).length,
 				exerciseGroups: groups,
 			};
-		}, [session.sets, fmtWeight]);
+		}, [session.sets]);
 
 	const sortedSessions = useMemo(() => {
 		return [...sessions].sort(
@@ -118,16 +119,17 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 	};
 
 	return (
-		<div className="container max-w-7xl mx-auto py-6 px-4 space-y-6">
-			<div className="flex flex-wrap items-center justify-between gap-4">
+		<div className="fcontainer py-6 px-4 fcol6">
+			{/* ── Top bar: back + session navigator ── */}
+			<div className="fwrap gap-4 fcb">
 				<BackButton text="Dashboard" />
 
 				{sortedSessions.length > 1 && (
-					<div className="flex items-center gap-1.5 border border-secondary/50 bg-card/50 p-1 rounded-md shadow-sm">
+					<div className="fg1_5 border border-secondary/50 bg-card/50 p-1 rounded-none shadow-sm">
 						<Button
 							variant="ghost"
 							size="icon"
-							className="h-7 w-7 text-muted-foreground hover:text-foreground"
+							className="size-7 rounded-none fmuted hover:text-foreground"
 							onClick={() =>
 								olderSession && handleNavigate(olderSession.id)
 							}
@@ -143,7 +145,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 									<Button
 										variant="ghost"
 										size="sm"
-										className="h-7 px-2 text-xs font-medium gap-1.5 hover:bg-accent hover:text-accent-foreground"
+										className="h-7 px-2 text-xs font-medium gap-1.5 rounded-none hover:bg-accent hover:text-accent-foreground"
 									>
 										<CalendarDotsIcon
 											size={14}
@@ -160,7 +162,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 							/>
 
 							<PopoverContent
-								className="w-auto p-0 border border-secondary/50 bg-card transition-colors hover:border-primary/50"
+								className="w-auto p-0 rounded-none border border-secondary/50 bg-card"
 								align="end"
 							>
 								<Calendar
@@ -179,7 +181,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 									}}
 									modifiersClassNames={{
 										hasSession:
-											"bg-primary/50 text-primary-foreground font-bold hover:bg-primary hover:text-primary-foreground",
+											"bg-primary text-primary-foreground font-bold hover:bg-primary hover:text-primary-foreground",
 									}}
 									disabled={(date) =>
 										!sortedSessions.some((s) =>
@@ -189,7 +191,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 									className="p-3"
 								/>
 								<Separator />
-								<div className="p-2 text-[11px] text-muted-foreground text-center bg-muted">
+								<div className="p-2 ftext-xs2 fmuted text-center bg-muted">
 									<span className="inline-block size-2 rounded-full bg-primary mr-1.5 align-middle" />
 									Completed Sessions
 								</div>
@@ -199,7 +201,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 						<Button
 							variant="ghost"
 							size="icon"
-							className="h-7 w-7 text-muted-foreground hover:text-foreground"
+							className="size-7 rounded-none fmuted hover:text-foreground"
 							onClick={() =>
 								newerSession && handleNavigate(newerSession.id)
 							}
@@ -214,30 +216,29 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 							className="h-4 mx-1"
 						/>
 
-						<span className="px-1.5 text-[11px] font-medium text-muted-foreground">
+						<span className="px-1.5 ftext-xs2 font-medium fmuted">
 							{currentIndex + 1} / {sortedSessions.length}
 						</span>
 					</div>
 				)}
 			</div>
 
-			<Card
-				size="sm"
-				className="border border-secondary/50 bg-card/50 transition-colors hover:border-primary/50"
-			>
-				<CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4">
-					<div className="space-y-1.5">
-						<div className="flex items-center gap-2">
+			{/* ── Session summary card ── */}
+			<Card size="sm" className="fcard-flat card-ease">
+				<CardHeader className="fcol md:flex-row md:items-center justify-between gap-4 pb-4">
+					{/* Left: badges + program + date */}
+					<div className="fcol1_5">
+						<div className="fg2">
 							<Badge
 								variant="secondary"
-								className="bg-secondary text-secondary-foreground font-medium text-[10px] uppercase tracking-wider px-2 py-0.5"
+								className="ftext-2xs fupper font-medium"
 							>
 								{session.dayName}
 							</Badge>
 							{prCount > 0 && (
 								<Badge
 									variant="outline"
-									className="h-5 px-1.5 text-[9px] font-bold uppercase tracking-wider"
+									className="rounded-none font-bold fupper"
 								>
 									<TrophyIcon
 										className="size-3 mr-0.5"
@@ -252,15 +253,16 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 							{session.programName}
 						</CardTitle>
 
-						<p className="text-xs text-muted-foreground flex items-center gap-1.5">
+						<p className="text-xs fmuted fcy gap-1.5">
 							<CalendarDotsIcon className="size-3.5 text-primary" />
 							{session.date}
 						</p>
 					</div>
 
-					<div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-border pt-3 md:pt-0 md:pl-6">
+					{/* Right: KPI strip */}
+					<div className="fg4 border-t md:border-t-0 md:border-l border-border pt-3 md:pt-0 md:pl-6">
 						<div className="space-y-0.5">
-							<span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+							<span className="ftext-2xs font-medium fmuted fupper fcy gap-1">
 								<BarbellIcon
 									className="size-3.5 text-primary"
 									weight="bold"
@@ -269,8 +271,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 							</span>
 							<p className="text-lg font-bold text-foreground">
 								{totalVolume.toLocaleString()}{" "}
-								<span className="text-xs font-normal text-muted-foreground">
-									{/* ✅ was "kg" */}
+								<span className="text-xs font-normal fmuted">
 									{weightUnit}
 								</span>
 							</p>
@@ -279,7 +280,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 						<Separator orientation="vertical" className="h-8" />
 
 						<div className="space-y-0.5">
-							<span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+							<span className="ftext-2xs font-medium fmuted fupper fcy gap-1">
 								<HashIcon
 									className="size-3.5 text-primary"
 									weight="bold"
@@ -294,7 +295,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 						<Separator orientation="vertical" className="h-8" />
 
 						<div className="space-y-0.5">
-							<span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+							<span className="ftext-2xs font-medium fmuted fupper fcy gap-1">
 								<LightningIcon
 									className="size-3.5 text-primary"
 									weight="bold"
@@ -309,8 +310,9 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 				</CardHeader>
 			</Card>
 
-			<div className="space-y-3">
-				<h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground px-0.5">
+			{/* ── Exercise breakdown ── */}
+			<div className="fcol3">
+				<h2 className="text-xs font-medium fupper fmuted px-0.5">
 					Exercise Breakdown
 				</h2>
 
@@ -320,24 +322,24 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 							<Card
 								key={exerciseName}
 								size="sm"
-								className="border border-secondary/50 bg-card/50 transition-colors hover:border-primary/50 h-full"
+								className="fcard-flat card-ease h-full"
 							>
-								<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-									<div className="flex items-center gap-2 min-w-0 pr-2">
-										<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
+								<CardHeader className="fr items-center justify-between space-y-0 pb-3">
+									<div className="fg2 min-w-0 pr-2">
+										<div className="ficon-box-sm">
 											<BarbellIcon
 												className="size-3.5"
 												weight="bold"
 											/>
 										</div>
-										<CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground truncate">
+										<CardTitle className="text-xs font-medium fupper fmuted truncate">
 											{groupIdx + 1}. {exerciseName}
 										</CardTitle>
 									</div>
 
 									<Badge
 										variant="outline"
-										className="text-[10px] sh0 pt-1"
+										className="ftext-2xs sh0 pt-1"
 									>
 										Best:{" "}
 										{fmtWeight(
@@ -355,19 +357,19 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 									<Table>
 										<TableHeader>
 											<TableRow className="border-border hover:bg-transparent">
-												<TableHead className="w-8 text-[11px] font-medium text-muted-foreground pl-3">
+												<TableHead className="w-8 ftext-xs2 font-medium fmuted pl-3">
 													#
 												</TableHead>
-												<TableHead className="text-[11px] font-medium text-muted-foreground text-right px-1">
+												<TableHead className="ftext-xs2 font-medium fmuted text-right px-1">
 													Weight
 												</TableHead>
-												<TableHead className="text-[11px] font-medium text-muted-foreground text-right px-1">
+												<TableHead className="ftext-xs2 font-medium fmuted text-right px-1">
 													Reps
 												</TableHead>
-												<TableHead className="text-[11px] font-medium text-muted-foreground text-right px-1">
+												<TableHead className="ftext-xs2 font-medium fmuted text-right px-1">
 													RPE
 												</TableHead>
-												<TableHead className="text-[11px] font-medium text-muted-foreground text-right pr-3">
+												<TableHead className="ftext-xs2 font-medium fmuted text-right pr-3">
 													Vol
 												</TableHead>
 											</TableRow>
@@ -382,35 +384,29 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 															: "hover:bg-muted/50"
 													}`}
 												>
-													<TableCell className="pl-3 font-mono text-xs text-muted-foreground">
+													<TableCell className="pl-3 font-mono text-xs fmuted">
 														{idx + 1}
 													</TableCell>
 													<TableCell className="text-right text-xs font-medium text-foreground px-1">
 														{fmtWeight(
 															set.weightKg,
 														)}{" "}
-														<span className="text-[10px] text-muted-foreground font-normal">
+														<span className="ftext-2xs fmuted font-normal">
 															{weightUnit}
 														</span>
 													</TableCell>
 													<TableCell className="text-right text-xs font-medium text-foreground px-1">
 														{set.reps}
 													</TableCell>
-													<TableCell className="text-right text-xs text-muted-foreground px-1">
-														{set.rpe ? (
-															<span>
-																{set.rpe}
-															</span>
-														) : (
-															"—"
-														)}
+													<TableCell className="text-right text-xs fmuted px-1">
+														{set.rpe ?? "—"}
 													</TableCell>
 													<TableCell className="text-right pr-3 text-xs font-semibold text-foreground">
-														<div className="flex items-center justify-end">
+														<div className="fc justify-end">
 															{set.isPR && (
 																<Badge
 																	variant="ghost"
-																	className="h-5 px-1.5 text-[9px] font-bold uppercase tracking-wider"
+																	className="h-5 px-1.5 ftext-3xs font-bold fupper"
 																>
 																	<TrophyIcon
 																		className="size-2"

@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/popover";
 import { useDialogForm } from "@/hooks";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 export function CreatePlanDialog() {
 	const router = useRouter();
@@ -64,25 +65,28 @@ export function CreatePlanDialog() {
 				render={
 					<Card
 						size="sm"
-						className="relative cursor-pointer border border-dashed border-primary/40 bg-card/30 hover:bg-card/60 base-ease rounded-none shadow-none transition-all hover:border-primary group h-full flex flex-col justify-between"
+						className="relative cursor-pointer border border-dashed border-primary/40 bg-card/30 hover:bg-card/60 base-ease rounded-none shadow-none hover:border-primary group h-full fcol justify-between"
 					>
 						<CardHeader className="space-y-0 pb-2 flex fcb">
-							<div className="flex items-center gap-1.5">
-								<CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground group-hover:text-primary transition-colors">
+							<div className="fg1_5">
+								<CardTitle className="text-xs font-bold fupper fmuted group-hover:text-primary transition-colors">
 									New Plan
 								</CardTitle>
-								<span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded-none bg-primary/10 text-primary border border-primary/20">
+								<Badge
+									variant="outline"
+									className="rounded-none ftext-3xs font-extrabold fupper px-1 py-0 bg-primary/10 text-primary border-primary/20"
+								>
 									CREATE
-								</span>
+								</Badge>
 							</div>
 
-							<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0 group-hover:scale-105 transition-transform">
+							<div className="ficon-box-sm group-hover:scale-105 transition-transform">
 								<PlusIcon className="size-3.5" weight="bold" />
 							</div>
 						</CardHeader>
 
-						<CardContent className="space-y-3 pt-1 flex-1 flex flex-col justify-between">
-							<div className="flex flex-col items-center justify-center py-4 text-center border-t border-border/40">
+						<CardContent className="space-y-3 pt-1 fgrow fcol justify-between">
+							<div className="fcol items-center justify-center py-4 text-center border-t border-border/40">
 								<div className="fc p-2 rounded-full bg-primary/10 text-primary mb-1">
 									<PlusIcon
 										className="size-4"
@@ -92,7 +96,7 @@ export function CreatePlanDialog() {
 								<span className="text-xs font-semibold text-foreground">
 									Add Training Plan
 								</span>
-								<span className="text-[10px] text-muted-foreground">
+								<span className="ftext-2xs fmuted">
 									Click to configure details
 								</span>
 							</div>
@@ -105,7 +109,7 @@ export function CreatePlanDialog() {
 			<DialogContent className="sm:max-w-[425px] rounded-none border-secondary/50 bg-card">
 				<form onSubmit={handleFormSubmit}>
 					<DialogHeader>
-						<DialogTitle className="text-sm font-bold uppercase tracking-wider text-foreground">
+						<DialogTitle className="fupper">
 							Create New Training Plan
 						</DialogTitle>
 					</DialogHeader>
@@ -113,9 +117,10 @@ export function CreatePlanDialog() {
 					<div className="py-4 space-y-4">
 						{/* Plan Name Input */}
 						<div className="space-y-1">
-							<span className="text-[11px] font-medium uppercase text-muted-foreground">
+							<span className="ftext-xs2 font-medium fupper fmuted">
 								Plan Name
 							</span>
+
 							<Input
 								placeholder="e.g., Push Pull Legs, Hypertrophy Split"
 								value={name}
@@ -126,8 +131,8 @@ export function CreatePlanDialog() {
 						</div>
 
 						{/* Shadcn Calendar Date Picker */}
-						<div className="space-y-1 flex flex-col">
-							<span className="text-[11px] font-medium uppercase text-muted-foreground">
+						<div className="space-y-1 fcol">
+							<span className="ftext-xs2 font-medium fupper fmuted">
 								Start Date
 							</span>
 							<Popover>
@@ -136,8 +141,7 @@ export function CreatePlanDialog() {
 										<Button
 											variant="outline"
 											className={`w-full justify-start text-left font-normal h-8 text-xs rounded-none border-border/50 bg-background/50 ${
-												!startDate &&
-												"text-muted-foreground"
+												!startDate && "fmuted"
 											}`}
 										>
 											<CalendarIcon className="mr-2 size-3.5" />

@@ -34,7 +34,7 @@ export function CreateDayDialog({ onAddDay }: CreateDayDialogProps) {
 			});
 			label.reset();
 			setOpen(false);
-		} catch (error) {
+		} catch {
 			toast.error("Failed to add day", {
 				description: "There was an error adding the day.",
 			});
@@ -60,13 +60,13 @@ export function CreateDayDialog({ onAddDay }: CreateDayDialogProps) {
 			<DialogContent className="sm:max-w-[425px] rounded-none border-secondary/50 bg-card">
 				<form onSubmit={handleSubmit}>
 					<DialogHeader>
-						<DialogTitle className="text-sm font-bold uppercase tracking-wider text-foreground">
+						<DialogTitle className="text-sm font-bold fupper text-foreground">
 							Add Training Day
 						</DialogTitle>
 					</DialogHeader>
 
 					<div className="py-4 space-y-1">
-						<span className="text-[11px] font-medium uppercase text-muted-foreground">
+						<span className="ftext-xs2 font-medium fupper fmuted">
 							Day Label
 						</span>
 						<Input

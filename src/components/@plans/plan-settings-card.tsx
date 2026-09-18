@@ -7,13 +7,12 @@ import { format } from "date-fns";
 import {
 	CalendarDotsIcon,
 	FloppyDiskIcon,
-	GearFineIcon,
 	GearIcon,
 } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
 	Popover,
@@ -24,6 +23,7 @@ import { cn } from "@/lib/utils";
 import type { PlanWithStructure } from "@/types/plans";
 import { toast } from "sonner";
 import { PlanSettingsCardSkeleton } from "@/skeletons";
+import { CardsHeader } from "@/common";
 
 interface PlanSettingsCardProps {
 	plan: PlanWithStructure;
@@ -42,7 +42,6 @@ export function PlanSettingsCard({
 	);
 	const [loading, setLoading] = useState(false);
 
-	// Reset local input state whenever the selected plan prop changes
 	useEffect(() => {
 		setName(plan.name);
 		setVersion(plan.version);
@@ -74,24 +73,13 @@ export function PlanSettingsCard({
 	if (isLoading) return <PlanSettingsCardSkeleton />;
 
 	return (
-		<Card
-			size="sm"
-			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-		>
-			<CardHeader className="space-y-0 pb-3 flex fcb">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-					<GearIcon
-						weight="bold"
-						className="text-popover-foreground"
-					/>
-					Configuration: {plan.name} (v{plan.version})
-				</CardTitle>
-				<div className="fc border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
-					<GearFineIcon className="size-4" weight="bold" />
-				</div>
-			</CardHeader>
+		<Card size="sm" className="fcard-flat card-ease">
+			<CardsHeader
+				icon={GearIcon}
+				title={`Configuration: ${plan.name} (v${plan.version})`}
+			/>
 
-			<CardContent className="space-y-4">
+			<CardContent className="p-4 pt-1 fcol4">
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
 					{/* Plan Name */}
 					<div className="space-y-1">
@@ -118,7 +106,7 @@ export function PlanSettingsCard({
 						/>
 					</div>
 
-					{/* Start Date Shadcn Calendar Popover */}
+					{/* Start Date */}
 					<div className="space-y-1">
 						<span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground block">
 							Start Date
@@ -157,7 +145,7 @@ export function PlanSettingsCard({
 					</div>
 				</div>
 
-				<div className="flex items-center justify-end gap-2 pt-2 border-t border-border/40">
+				<div className="fcy justify-end gap-2 pt-2 border-t border-border/40">
 					<Button
 						size="sm"
 						variant="default"

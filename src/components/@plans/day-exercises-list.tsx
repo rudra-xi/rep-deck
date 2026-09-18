@@ -12,7 +12,7 @@ import {
 	EditExerciseDialog,
 } from "@/plan-dialogs";
 import { SunDimIcon } from "@phosphor-icons/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import type { DayWithExercises } from "@/types/plans";
 import {
 	Empty,
@@ -23,6 +23,7 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { DayExercisesListSkeleton } from "@/skeletons";
+import { CardsHeader } from "@/common";
 
 interface DayExercisesListProps {
 	day?: DayWithExercises;
@@ -72,13 +73,10 @@ export function DayExercisesList({
 	// Empty state when no day is selected
 	if (!day) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none h-full min-h-50  w-full"
-			>
+			<Card size="sm" className="fcard-flat h-full min-h-50 w-full">
 				<Empty className="p-8 text-center w-full">
 					<EmptyHeader>
-						<EmptyMedia className="fc border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+						<EmptyMedia className="ficon-box-lg">
 							<SunDimIcon
 								className="size-6 text-primary"
 								weight="bold"
@@ -98,27 +96,19 @@ export function DayExercisesList({
 	}
 
 	return (
-		<Card
-			size="sm"
-			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-		>
-			<CardHeader className="space-y-0 pb-3 flex fcb">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-					<SunDimIcon
-						weight="bold"
-						className="text-popover-foreground"
+		<Card size="sm" className="fcard-flat card-ease">
+			<CardsHeader
+				icon={SunDimIcon}
+				title={`Day ${day.dayIndex} – ${day.label}`}
+				trailing={
+					<CreateExerciseDialog
+						programDayId={day.id}
+						onAddExercise={handleAddExercise}
 					/>
-					Day {day.dayIndex} – {day.label}
-				</CardTitle>
+				}
+			/>
 
-				{/* Modularized Create Exercise Dialog */}
-				<CreateExerciseDialog
-					programDayId={day.id}
-					onAddExercise={handleAddExercise}
-				/>
-			</CardHeader>
-
-			<CardContent className="space-y-3">
+			<CardContent className="p-4 pt-1">
 				{day.exercises.length === 0 ? (
 					<p className="text-xs text-muted-foreground py-4 text-center">
 						No exercises configured for this day.
@@ -159,15 +149,13 @@ export function DayExercisesList({
 										{ex.targetRepRange || "-"}
 									</td>
 									<td className="py-2.5 px-2 text-right">
-										<div className="flex items-center justify-end gap-1">
-											{/* Modularized Edit Exercise Dialog */}
+										<div className="fcy justify-end gap-1">
 											<EditExerciseDialog
 												exercise={ex}
 												onEditExercise={
 													handleEditExercise
 												}
 											/>
-											{/* Modularized Delete Exercise Dialog */}
 											<DeleteExerciseDialog
 												exerciseName={ex.name}
 												onDelete={() =>

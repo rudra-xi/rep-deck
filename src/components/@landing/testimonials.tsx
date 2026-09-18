@@ -65,7 +65,7 @@ export const Testimonials = () => {
 							</p>
 
 							<div className="fcy gap-3 pt-2 border-t border-border/40">
-								<div className="fc size-9 rounded-full bg-primary/10 border border-primary/30 text-primary font-bold text-xs shrink-0">
+								<div className="fc size-9 rounded-full bg-primary/10 border border-primary/30 text-primary font-bold text-xs sh0">
 									{t.initials}
 								</div>
 								<div className="min-w-0">
