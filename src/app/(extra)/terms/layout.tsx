@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: ReactNode }) {
-	return <section>{children}</section>;
+	return <section className="main-padding">{children}</section>;
 }

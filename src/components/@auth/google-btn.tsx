@@ -69,7 +69,7 @@ export function GoogleBtn({
 			disabled={loading}
 			variant="default"
 			size="lg"
-			className={`w-full sm:w-auto font-medium gap-2 shadow-sm transition-all ${className}`}
+			className={`w-full sm:w-auto font-medium gap-2 shadow-sm base-ease ${className}`}
 		>
 			{loading ? (
 				<>

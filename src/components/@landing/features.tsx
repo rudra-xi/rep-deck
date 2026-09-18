@@ -6,6 +6,7 @@ import {
 	FolderSimpleIcon,
 	LayoutIcon,
 	TrendUpIcon,
+	TrophyIcon,
 } from "@phosphor-icons/react";
 import {
 	Card,
@@ -21,6 +22,7 @@ const iconMap = {
 	3: FolderSimpleIcon,
 	4: TrendUpIcon,
 	5: LayoutIcon,
+	6: TrophyIcon,
 };
 
 export const Features = () => {
@@ -33,31 +35,29 @@ export const Features = () => {
 						Built for lifters.
 					</h2>
 					<p className="text-muted-foreground text-base sm:text-lg">
-						Everything you need to plan, log, and optimize your
-						training blocks without the bloat.
+						Everything you need to plan, log, and review your
+						training — without the bloat.
 					</p>
 				</div>
 
 				{/* Features Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					{featuresData.map((item, index) => {
+					{featuresData.map((item) => {
 						const IconComponent =
 							iconMap[item.id as keyof typeof iconMap] ||
 							BarbellIcon;
-						const isLastItem = index === featuresData.length - 1;
 
 						return (
 							<Card
 								size="sm"
 								key={item.id}
-								className={` border border-border/80 bg-card/60 hover:border-primary/50 hover:-translate-y-2 base-ease ${
-									isLastItem
-										? "md:col-span-2 lg:col-span-1"
-										: ""
-								}`}
+								className="relative border border-border/80 bg-card/60 hover:border-primary/50 hover:-translate-y-2 base-ease"
 							>
-								<CardHeader className="space-y-4">
-									<div className="size-11 fcc border border-primary/30 bg-primary/10 text-primary ">
+								{/* Accent glow */}
+								<div className="absolute top-0 right-0 size-24 bg-primary/5 blur-2xl pointer-events-none" />
+
+								<CardHeader className="space-y-4 relative">
+									<div className="size-11 fcc border border-primary/30 bg-primary/10 text-primary">
 										<IconComponent
 											className="size-6"
 											weight="bold"

@@ -1,235 +1,328 @@
 "use client";
 
-import { ArrowLeftIcon, FileTextIcon } from "@phosphor-icons/react";
-import Link from "next/link";
+import { EnvelopeSimpleIcon, FileTextIcon } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+	BackButton,
+	CardsHeader,
+	PageTitleCard,
+	SectionTitleCard,
+} from "@/common";
+
+const SECTIONS = [
+	{ id: "acceptance", num: "01", title: "Acceptance of terms" },
+	{ id: "description", num: "02", title: "Description of service" },
+	{ id: "accounts", num: "03", title: "User accounts" },
+	{ id: "content", num: "04", title: "User content" },
+	{ id: "use", num: "05", title: "Acceptable use" },
+	{ id: "disclaimers", num: "06", title: "Disclaimers" },
+	{ id: "liability", num: "07", title: "Limitation of liability" },
+	{ id: "changes", num: "08", title: "Changes to the service" },
+	{ id: "termination", num: "09", title: "Termination" },
+	{ id: "law", num: "10", title: "Governing law" },
+	{ id: "contact", num: "11", title: "Contact" },
+];
+
+const LAST_UPDATED = "06 August 2026";
+const SUPPORT_EMAIL = "xi.rudra.code@gmail.com";
+
+function BulletList({ items }: { items: React.ReactNode[] }) {
+	return (
+		<ul className="fcol2_5">
+			{items.map((item, i) => (
+				<li key={i} className="ft gap-3">
+					<span className="size-1.5 rounded-full bg-primary shrink-0 mt-2" />
+					<span className="text-sm text-muted-foreground leading-relaxed">
+						{item}
+					</span>
+				</li>
+			))}
+		</ul>
+	);
+}
 
 export default function Terms() {
 	return (
-		<main className="w-full min-h-screen py-24 px-6 bg-background text-foreground">
-			<div className="container max-w-4xl mx-auto space-y-12">
-				{/* Top Back Navigation */}
-				<div>
-					<Link
-						href="/dashboard"
-						className="inline-flex items-center gap-2 text-xs uppercase tracking-wider font-semibold text-muted-foreground hover:text-primary transition-colors"
+		<main className="w-full">
+			<div className="container max-w-4xl mx-auto fcol6">
+				{/* Back nav */}
+				<BackButton text="Back" />
+
+				{/* Page header */}
+				<div className="fcol3">
+					<Badge
+						variant="outline"
+						className="px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-primary border-primary/30 bg-primary/5 w-fit rounded-none"
 					>
-						<ArrowLeftIcon className="size-4" weight="bold" />
-						<span>Back to Home</span>
-					</Link>
+						Legal Agreement
+					</Badge>
+
+					<PageTitleCard
+						title="Terms of Service"
+						subTitle="The ground rules for using Rep Deck"
+						noPeriod
+					/>
 				</div>
 
-				{/* Header Section */}
-				<div className="space-y-4 border-b border-border/60 pb-8">
-					<div className="flex items-center gap-2">
-						<Badge
-							variant="outline"
-							className="px-3 py-1 text-xs uppercase tracking-wider border-foreground/30 text-primary rounded-none"
-						>
-							Legal Agreement
-						</Badge>
-					</div>
-
-					<h1 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-wider flex items-center gap-3">
-						<FileTextIcon
-							className="size-8 sm:size-10 text-primary shrink-0"
-							weight="bold"
-						/>
-						<span>Terms of Service</span>
-					</h1>
-
-					<p className="text-muted-foreground text-sm font-mono pt-1">
-						Last updated: 06 August 2026
-					</p>
-				</div>
-
-				{/* Document Content */}
-				<article className="prose prose-neutral dark:prose-invert max-w-none space-y-10 text-muted-foreground leading-relaxed text-sm sm:text-base">
-					{/* Section 1 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							1. Acceptance of terms
-						</h2>
-						<p>
-							By accessing or using Rep Deck (the “app” or
-							“service”), you agree to these Terms of Service. If
-							you do not agree, please do not use the app.
+				{/* Meta + TOC card */}
+				<Card className="fcard-flat">
+					<CardsHeader
+						icon={FileTextIcon}
+						title="Overview"
+						trailing={
+							<span className="ftext-2xs fmuted font-mono">
+								Updated {LAST_UPDATED}
+							</span>
+						}
+					/>
+					<CardContent className="p-4 pt-1 fcol4">
+						<p className="text-sm text-muted-foreground leading-relaxed">
+							By using Rep Deck, you agree to these terms. Please
+							read them carefully — they cover your account, your
+							data, and your responsibilities.
 						</p>
-					</section>
 
-					{/* Section 2 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							2. Description of service
-						</h2>
-						<p>
-							Rep Deck is a workout tracking and progress
-							visualization tool. It allows users to:
-						</p>
-						<ul className="list-disc pl-6 space-y-2">
-							<li>Log workouts, sets, reps, and weight.</li>
-							<li>Manage training program versions (v1–v4).</li>
-							<li>
-								Track body metrics and view progress charts.
-							</li>
-						</ul>
-					</section>
-
-					{/* Section 3 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							3. User accounts
-						</h2>
-						<ul className="list-disc pl-6 space-y-2">
-							<li>
-								You must create an account (for example, via
-								Google login) to use core features.
-							</li>
-							<li>
-								You are responsible for maintaining the security
-								of your account.
-							</li>
-							<li>
-								You agree to provide accurate and complete
-								information when registering.
-							</li>
-						</ul>
-					</section>
-
-					{/* Section 4 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							4. User content
-						</h2>
-						<ul className="list-disc pl-6 space-y-2">
-							<li>
-								You own the workout data and notes you add to
-								Rep Deck.
-							</li>
-							<li>
-								You grant Rep Deck a license to store, display,
-								and process that content to provide the service.
-							</li>
-							<li>
-								You agree not to upload harmful, illegal, or
-								infringing content.
-							</li>
-						</ul>
-					</section>
-
-					{/* Section 5 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							5. Acceptable use
-						</h2>
-						<p>You agree not to:</p>
-						<ul className="list-disc pl-6 space-y-2">
-							<li>Use Rep Deck for any illegal purpose.</li>
-							<li>
-								Attempt to bypass security, access other users’
-								data, or disrupt the service.
-							</li>
-							<li>
-								Use automated tools to scrape or abuse the app.
-							</li>
-						</ul>
-					</section>
-
-					{/* Section 6 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							6. Disclaimers
-						</h2>
-						<ul className="list-disc pl-6 space-y-2">
-							<li>
-								Rep Deck is provided “as is” and “as available”
-								without warranties of any kind, express or
-								implied.
-							</li>
-							<li>
-								We do not guarantee that the app will be
-								error-free, uninterrupted, or completely secure.
-							</li>
-							<li>
-								<strong className="text-foreground">
-									Medical Disclaimer:
-								</strong>{" "}
-								Rep Deck is not medical advice. Consult a
-								qualified professional before starting any new
-								training program.
-							</li>
-						</ul>
-					</section>
-
-					{/* Section 7 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							7. Limitation of liability
-						</h2>
-						<p>
-							To the maximum extent permitted by law, Rep Deck and
-							its creator are not liable for any indirect,
-							incidental, special, or consequential damages
-							arising from your use of the app, including injury,
-							data loss, or training-related issues.
-						</p>
-					</section>
-
-					{/* Section 8 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							8. Changes to the service and terms
-						</h2>
-						<ul className="list-disc pl-6 space-y-2">
-							<li>
-								We may modify or discontinue Rep Deck at any
-								time.
-							</li>
-							<li>
-								We may update these Terms; continued use after
-								changes means you accept the updated terms.
-							</li>
-						</ul>
-					</section>
-
-					{/* Section 9 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							9. Termination
-						</h2>
-						<p>
-							We may suspend or terminate your access to Rep Deck
-							at our discretion, especially if you violate these
-							Terms.
-						</p>
-					</section>
-
-					{/* Section 10 */}
-					<section className="space-y-3">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							10. Governing law
-						</h2>
-						<p>
-							These Terms are governed by the laws of the
-							jurisdiction where the app creator is based, unless
-							local law requires otherwise.
-						</p>
-					</section>
-
-					{/* Section 11 */}
-					<section className="space-y-3 border-t border-border/60 pt-8">
-						<h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-foreground">
-							11. Contact
-						</h2>
-						<p>For questions about these Terms, contact:</p>
-						<div className="p-4 border border-border/80 bg-card/50 font-mono text-sm space-y-1">
-							<p className="font-semibold text-foreground">
-								rudra-xi
+						{/* TOC */}
+						<div className="hidden sm:block">
+							<p className="ftext-2xs fmuted fupper font-bold tracking-widest mb-2">
+								On this page
 							</p>
-							<p>Email: xi.rudra.code@gmail.com</p>
+							<div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+								{SECTIONS.map((s) => (
+									<a
+										key={s.id}
+										href={`#${s.id}`}
+										className="ftext-xs2 fmuted hover:text-primary transition-colors fcy gap-2"
+									>
+										<span className="font-mono text-primary/60">
+											{s.num}.
+										</span>
+										<span className="truncate">
+											{s.title}
+										</span>
+									</a>
+								))}
+							</div>
 						</div>
-					</section>
-				</article>
+					</CardContent>
+				</Card>
+
+				<Separator />
+
+				{/* ── Sections (unchanged) ─────────────────────────── */}
+				<section id="acceptance" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="Acceptance of terms" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5">
+							<p className="text-sm text-muted-foreground leading-relaxed">
+								By accessing or using Rep Deck (the
+								&ldquo;app&rdquo; or &ldquo;service&rdquo;), you
+								agree to these Terms of Service. If you do not
+								agree, please do not use the app.
+							</p>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="description" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="Description of service" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5 fcol4">
+							<p className="text-sm text-muted-foreground">
+								Rep Deck is a workout tracking and progress
+								visualization tool. It allows users to:
+							</p>
+							<BulletList
+								items={[
+									"Log workouts, sets, reps, and weight.",
+									"Manage training program versions (v1–v4).",
+									"Track body metrics and view progress charts.",
+								]}
+							/>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="accounts" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="User accounts" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5">
+							<BulletList
+								items={[
+									"You must create an account (for example, via Google login) to use core features.",
+									"You are responsible for maintaining the security of your account.",
+									"You agree to provide accurate and complete information when registering.",
+								]}
+							/>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="content" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="User content" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5">
+							<BulletList
+								items={[
+									"You own the workout data and notes you add to Rep Deck.",
+									"You grant Rep Deck a license to store, display, and process that content to provide the service.",
+									"You agree not to upload harmful, illegal, or infringing content.",
+								]}
+							/>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="use" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="Acceptable use" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5 fcol4">
+							<p className="text-sm text-muted-foreground">
+								You agree not to:
+							</p>
+							<BulletList
+								items={[
+									"Use Rep Deck for any illegal purpose.",
+									"Attempt to bypass security, access other users' data, or disrupt the service.",
+									"Use automated tools to scrape or abuse the app.",
+								]}
+							/>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="disclaimers" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="Disclaimers" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5">
+							<BulletList
+								items={[
+									'Rep Deck is provided "as is" and "as available" without warranties of any kind, express or implied.',
+									"We do not guarantee that the app will be error-free, uninterrupted, or completely secure.",
+									<>
+										<strong className="text-foreground">
+											Medical Disclaimer:
+										</strong>{" "}
+										Rep Deck is not medical advice. Consult
+										a qualified professional before starting
+										any new training program.
+									</>,
+								]}
+							/>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="liability" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="Limitation of liability" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5">
+							<p className="text-sm text-muted-foreground leading-relaxed">
+								To the maximum extent permitted by law, Rep Deck
+								and its creator are not liable for any indirect,
+								incidental, special, or consequential damages
+								arising from your use of the app, including
+								injury, data loss, or training-related issues.
+							</p>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="changes" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="Changes to the service and terms" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5">
+							<BulletList
+								items={[
+									"We may modify or discontinue Rep Deck at any time.",
+									"We may update these Terms; continued use after changes means you accept the updated terms.",
+								]}
+							/>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="termination" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="Termination" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5">
+							<p className="text-sm text-muted-foreground leading-relaxed">
+								We may suspend or terminate your access to Rep
+								Deck at our discretion, especially if you
+								violate these Terms.
+							</p>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="law" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="Governing law" />
+					<Card className="fcard-flat">
+						<CardContent className="p-5">
+							<p className="text-sm text-muted-foreground leading-relaxed">
+								These Terms are governed by the laws of the
+								jurisdiction where the app creator is based,
+								unless local law requires otherwise.
+							</p>
+						</CardContent>
+					</Card>
+				</section>
+
+				<section id="contact" className="fcol3 scroll-mt-24">
+					<SectionTitleCard title="Contact" />
+					<Card className="fcard-flat">
+						<CardsHeader
+							icon={EnvelopeSimpleIcon}
+							title="Get in touch"
+						/>
+						<CardContent className="p-5 pt-1 fcol4">
+							<p className="text-sm text-muted-foreground">
+								For questions about these Terms:
+							</p>
+
+							<div className="fcol2_5">
+								<div className="fcy gap-3 p-3 border border-border/40 bg-background/50">
+									<div className="ficon-box-sm">
+										<EnvelopeSimpleIcon
+											className="size-4"
+											weight="bold"
+										/>
+									</div>
+									<div className="min-w-0 fgrow">
+										<p className="ftext-2xs fmuted fupper font-bold tracking-widest">
+											Email
+										</p>
+										<a
+											href={`mailto:${SUPPORT_EMAIL}`}
+											className="text-sm text-foreground hover:text-primary transition-colors font-mono truncate block"
+										>
+											{SUPPORT_EMAIL}
+										</a>
+									</div>
+								</div>
+
+								<div className="fcy gap-3 p-3 border border-border/40 bg-background/50">
+									<div className="ficon-box-sm">
+										<FileTextIcon
+											className="size-4"
+											weight="bold"
+										/>
+									</div>
+									<div className="min-w-0 fgrow">
+										<p className="ftext-2xs fmuted fupper font-bold tracking-widest">
+											Maintainer
+										</p>
+										<p className="text-sm text-foreground font-mono">
+											r udra-xi
+										</p>
+									</div>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</section>
 			</div>
 		</main>
 	);
