@@ -14,7 +14,7 @@ function NavigationMenu({
 		<NavigationMenuPrimitive.Root
 			data-slot="navigation-menu"
 			className={cn(
-				"group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+				"group/navigation-menu relative flex max-w-max fgrow items-center justify-center",
 				className,
 			)}
 			{...props}
@@ -33,7 +33,7 @@ function NavigationMenuList({
 		<NavigationMenuPrimitive.List
 			data-slot="navigation-menu-list"
 			className={cn(
-				"group flex flex-1 list-none items-center justify-center gap-0",
+				"group flex fgrow list-none items-center justify-center gap-0",
 				className,
 			)}
 			{...props}
@@ -131,7 +131,7 @@ function NavigationMenuLink({
 		<NavigationMenuPrimitive.Link
 			data-slot="navigation-menu-link"
 			className={cn(
-				"flex items-center gap-2 rounded-none p-2 text-xs transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-1 focus-visible:ring-ring/50 focus-visible:outline-1 in-data-[slot=navigation-menu-content]:rounded-none data-active:bg-muted/50 data-active:hover:bg-muted data-active:focus:bg-muted [&_svg:not([class*='size-'])]:size-4",
+				"fcy gap-2 rounded-none p-2 text-xs transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-1 focus-visible:ring-ring/50 focus-visible:outline-1 in-data-[slot=navigation-menu-content]:rounded-none data-active:bg-muted/50 data-active:hover:bg-muted data-active:focus:bg-muted [&_svg:not([class*='size-'])]:size-4",
 				className,
 			)}
 			{...props}
