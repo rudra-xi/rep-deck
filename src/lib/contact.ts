@@ -9,7 +9,42 @@ export function buildMailtoUrl({
 	subject: string;
 	body?: string;
 }) {
-	const params = new URLSearchParams({ subject });
-	if (body) params.set("body", body);
-	return `mailto:${SUPPORT_EMAIL}?${params.toString()}`;
+	const parts = [`subject=${encodeURIComponent(subject)}`];
+	if (body) parts.push(`body=${encodeURIComponent(body)}`);
+	return `mailto:${SUPPORT_EMAIL}?${parts.join("&")}`;
+}
+
+/**
+ * Builds a prefilled feedback email with the Rep Deck template.
+ * Uses \r\n for line breaks — encodeURIComponent turns them into %0D%0A,
+ * the RFC 6068 spec, which every mail client respects.
+ */
+export function buildFeedbackMailtoUrl({
+	appVersion = "v0.1.0",
+	userAgent,
+}: {
+	appVersion?: string;
+	userAgent?: string;
+} = {}) {
+	const ua =
+		userAgent ??
+		(typeof navigator !== "undefined" ? navigator.userAgent : "");
+
+	const body = [
+		"Hi Rudra,",
+		"",
+		"Here's my feedback on Rep Deck:",
+		"",
+		"—",
+		"",
+		"",
+		"---",
+		`App version: ${appVersion}`,
+		`Browser/OS: ${ua}`,
+	].join("\r\n");
+
+	return buildMailtoUrl({
+		subject: "Rep Deck — Feedback",
+		body,
+	});
 }

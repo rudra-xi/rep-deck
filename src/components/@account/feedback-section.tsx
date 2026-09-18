@@ -8,7 +8,8 @@ import {
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { CardsHeader } from "@/common";
 import { buildMailtoUrl, GITHUB_ISSUES } from "@/lib/contact";
 
 const FEEDBACK_MAILTO = buildMailtoUrl({
@@ -28,17 +29,10 @@ const FEEDBACK_MAILTO = buildMailtoUrl({
 
 export function FeedbackSection() {
 	return (
-		<Card className="border border-secondary/50 bg-card/50 rounded-none shadow-none transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
-			<CardHeader className="p-5 pb-3 flex flex-row items-center justify-between space-y-0">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2.5">
-					<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-						<ChatTextIcon className="size-4" weight="bold" />
-					</div>
-					Feedback
-				</CardTitle>
-			</CardHeader>
+		<Card className="fcard-flat card-ease hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
+			<CardsHeader icon={ChatTextIcon} title="Feedback" />
 
-			<CardContent className="p-5 pt-0 space-y-3">
+			<CardContent className="p-5 pt-1 fcol3">
 				{/* Description */}
 				<div className="p-3 border border-border/40 bg-background/50 rounded-none">
 					<p className="text-xs font-bold text-foreground">
@@ -56,10 +50,10 @@ export function FeedbackSection() {
 						nativeButton={false}
 						variant="outline"
 						size="sm"
-						className="h-9 px-3 text-xs font-semibold rounded-none border-border/60 gap-2 justify-start hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all duration-200 group"
+						className="h-9 px-3 text-xs font-semibold rounded-none border-border/60 gap-2 justify-start hover:border-primary/50 hover:bg-primary/5 hover:text-primary base-ease group"
 						render={
 							<Link href={FEEDBACK_MAILTO}>
-								<div className="flex items-center justify-center border border-primary/20 bg-primary/5 p-1 text-primary rounded-md shrink-0 group-hover:bg-primary/10 transition-colors">
+								<div className="fc border border-primary/20 bg-primary/5 p-1 text-primary rounded-md sh0 group-hover:bg-primary/10 transition-colors">
 									<EnvelopeSimpleIcon
 										className="size-3.5"
 										weight="bold"
@@ -74,14 +68,14 @@ export function FeedbackSection() {
 						nativeButton={false}
 						variant="outline"
 						size="sm"
-						className="h-9 px-3 text-xs font-semibold rounded-none border-border/60 gap-2 justify-start hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all duration-200 group"
+						className="h-9 px-3 text-xs font-semibold rounded-none border-border/60 gap-2 justify-start hover:border-primary/50 hover:bg-primary/5 hover:text-primary base-ease group"
 						render={
 							<Link
 								href={GITHUB_ISSUES}
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								<div className="flex items-center justify-center border border-primary/20 bg-primary/5 p-1 text-primary rounded-md shrink-0 group-hover:bg-primary/10 transition-colors">
+								<div className="fc border border-primary/20 bg-primary/5 p-1 text-primary rounded-md sh0 group-hover:bg-primary/10 transition-colors">
 									<BugIcon
 										className="size-3.5"
 										weight="bold"
