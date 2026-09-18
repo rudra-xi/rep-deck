@@ -7,6 +7,7 @@ import { signOut } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
 
 interface SignOutButtonProps {
 	className?: string;
@@ -29,7 +30,6 @@ export function SignOutButton({
 
 		try {
 			const result = await signOut();
-
 			toast.dismiss(toastId);
 
 			if (result?.success) {
@@ -69,13 +69,16 @@ export function SignOutButton({
 				onClick={handleSignOut}
 				disabled={loading}
 				aria-label="Sign out"
-				className={`fc shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors ${className}`}
 				title="Sign out"
+				className={cn(
+					"fc sh0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors",
+					className,
+				)}
 			>
 				{loading ? (
 					<Spinner className="size-4" />
 				) : (
-					<SignOutIcon weight="bold" className="size-4 shrink-0" />
+					<SignOutIcon weight="bold" className="size-4 sh0" />
 				)}
 			</Button>
 		);
@@ -83,20 +86,26 @@ export function SignOutButton({
 
 	return (
 		<Button
-			variant="destructive"
+			variant="outline"
 			onClick={handleSignOut}
 			disabled={loading}
-			className={`fcy justify-center font-medium gap-2 ${className}`}
+			className={cn(
+				"w-full h-10 justify-start gap-3 px-3",
+				"text-sm font-medium text-muted-foreground",
+				"hover:bg-destructive/10 hover:text-destructive",
+				"transition-colors",
+				className,
+			)}
 		>
 			{loading ? (
 				<>
-					<Spinner className="size-3.5" />
-					<span>Signing out...</span>
+					<Spinner className="size-3.5 sh0" />
+					<span>Signing out…</span>
 				</>
 			) : (
 				<>
-					<SignOutIcon className="size-3.5 shrink-0" weight="bold" />
-					<span>Sign Out</span>
+					<SignOutIcon className="size-3.5 sh0" weight="bold" />
+					<span>Sign out</span>
 				</>
 			)}
 		</Button>
