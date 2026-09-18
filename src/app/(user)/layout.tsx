@@ -1,6 +1,5 @@
-// app/(user)/layout.tsx
 import type { ReactNode } from "react";
-import { getUserPreferences } from "@/actions/account";
+import { getUserPreferences, getUserProfile } from "@/actions/account";
 import { UnitProvider, Navigation } from "@/common";
 
 export default async function UserLayout({
@@ -8,11 +7,14 @@ export default async function UserLayout({
 }: {
 	children: ReactNode;
 }) {
-	const preferences = await getUserPreferences();
+	const [preferences, profile] = await Promise.all([
+		getUserPreferences(),
+		getUserProfile(),
+	]);
 
 	return (
 		<UnitProvider preferences={preferences}>
-			<Navigation />
+			<Navigation userName={profile.name} />
 			<main className="main-padding">{children}</main>
 		</UnitProvider>
 	);
