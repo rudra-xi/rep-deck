@@ -3,7 +3,7 @@
 import {
 	CheckCircleIcon,
 	CurrencyDollarIcon,
-	DatabaseIcon,
+	RulerIcon,
 	GoogleLogoIcon,
 	PencilSimpleLineIcon,
 	QuestionIcon,
@@ -17,13 +17,13 @@ import {
 } from "@/components/ui/accordion";
 import { faqData } from "@/constants";
 
-// Icon mapping per FAQ ID
+// Icon mapping per FAQ ID — updated to match new questions
 const faqIconMap = {
-	1: CurrencyDollarIcon,
-	2: PencilSimpleLineIcon,
-	3: SwapIcon,
-	4: GoogleLogoIcon,
-	5: DatabaseIcon,
+	1: CurrencyDollarIcon, // Is Rep Deck free?
+	2: PencilSimpleLineIcon, // Do I need to set up my program?
+	3: SwapIcon, // Can I switch between programs?
+	4: GoogleLogoIcon, // How does Google login work?
+	5: RulerIcon, // What units does Rep Deck use?  ← was DatabaseIcon
 };
 
 export const FAQ = () => {

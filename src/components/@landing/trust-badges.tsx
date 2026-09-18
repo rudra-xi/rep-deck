@@ -38,11 +38,11 @@ export const TrustBadges = () => {
 					{BADGES.map(({ icon: Icon, label, description }, index) => (
 						<div
 							key={label}
-							className={`flex items-center gap-3.5 p-3 ${
+							className={`fcy gap-3.5 p-3 ${
 								index !== 0 ? "pt-4 sm:pt-3 sm:pl-6" : ""
 							}`}
 						>
-							<div className="size-9 border border-primary/20 bg-primary/10 flex items-center justify-center sh0">
+							<div className="size-9 border border-primary/20 bg-primary/10 fc sh0">
 								<Icon
 									className="size-4.5 text-primary"
 									weight="bold"

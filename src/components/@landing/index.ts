@@ -4,5 +4,18 @@ import { Features } from "./features";
 import { Hero } from "./hero";
 import { HowItWorks } from "./how-it-works";
 import { Social } from "./social";
+import { ShowcaseSection } from "./showcase-section";
+import { StatsBar } from "./stats-bar";
+import { TrustBadges } from "./trust-badges";
 
-export { Hero, HowItWorks, Features, FAQ, CTA, Social };
+export {
+	Hero,
+	HowItWorks,
+	Features,
+	FAQ,
+	CTA,
+	Social,
+	ShowcaseSection,
+	StatsBar,
+	TrustBadges,
+};

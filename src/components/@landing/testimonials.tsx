@@ -64,7 +64,7 @@ export const Testimonials = () => {
 								"{t.quote}"
 							</p>
 
-							<div className="flex items-center gap-3 pt-2 border-t border-border/40">
+							<div className="fcy gap-3 pt-2 border-t border-border/40">
 								<div className="fc size-9 rounded-full bg-primary/10 border border-primary/30 text-primary font-bold text-xs shrink-0">
 									{t.initials}
 								</div>
