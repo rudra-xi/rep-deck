@@ -105,7 +105,7 @@
 	@apply flex flex-wrap items-center justify-around;
 }
 
-/* --- 6. Flex Gaps (Row & Column) --- */
+/* --- 6. Flex Gaps (Row) --- */
 @utility fg1 {
 	@apply flex items-center gap-1;
 }
@@ -121,6 +121,8 @@
 @utility fg6 {
 	@apply flex items-center gap-6;
 }
+
+/* --- 7. Flex Gaps (Column, centered) --- */
 @utility fcg1 {
 	@apply flex flex-col items-center gap-1;
 }
@@ -137,7 +139,24 @@
 	@apply flex flex-col items-center gap-6;
 }
 
-/* --- 7. Item Sizing & Self Alignment --- */
+/* --- 8. Column Stacks (left-aligned, gap only) --- */
+@utility fcol1 {
+	@apply flex flex-col gap-1;
+}
+@utility fcol2 {
+	@apply flex flex-col gap-2;
+}
+@utility fcol3 {
+	@apply flex flex-col gap-3;
+}
+@utility fcol4 {
+	@apply flex flex-col gap-4;
+}
+@utility fcol6 {
+	@apply flex flex-col gap-6;
+}
+
+/* --- 9. Item Sizing & Self Alignment --- */
 @utility fgrow {
 	@apply flex-1;
 }
@@ -160,7 +179,7 @@
 	@apply self-auto;
 }
 
-/* --- 8. Common Patterns & Layout Blocks --- */
+/* --- 10. Common Patterns & Layout Blocks --- */
 @utility fcard {
 	@apply flex flex-col items-center justify-center;
 }
@@ -183,7 +202,7 @@
 	@apply flex flex-wrap items-center gap-4;
 }
 
-/* --- 9. Responsive Layouts --- */
+/* --- 11. Responsive Layouts --- */
 @utility fresp {
 	@apply flex flex-col md:flex-row items-center justify-between gap-4;
 }
@@ -194,7 +213,7 @@
 	@apply flex flex-col md:flex-row items-start justify-start gap-4;
 }
 
-/* --- 10. Inline Flex & Absolute Positioning --- */
+/* --- 12. Inline Flex & Absolute Positioning --- */
 @utility fi {
 	@apply inline-flex items-center justify-center;
 }
@@ -211,5 +230,112 @@
 	@apply flex items-center justify-center h-full;
 }
 @utility fac {
-	@apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center;
+	@apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+	       flex items-center justify-center;
+}
+
+/* ==========================================================================
+   TEXT & TYPOGRAPHY UTILITIES
+   ========================================================================== */
+
+@utility fupper {
+	@apply uppercase tracking-wider;
+}
+@utility fmuted {
+	@apply text-muted-foreground;
+}
+@utility ftruncate {
+	@apply truncate;
+}
+@utility ftext-balance {
+	@apply text-balance;
+}
+
+/* Font sizes below Tailwind's `text-xs` — add as named utilities */
+@utility ftext-3xs {
+	font-size: 0.5625rem;
+	line-height: 0.75rem;
+} /* 9px  */
+@utility ftext-2xs {
+	font-size: 0.625rem;
+	line-height: 0.875rem;
+} /* 10px */
+@utility ftext-xs2 {
+	font-size: 0.6875rem;
+	line-height: 1rem;
+} /* 11px */
+
+/* ==========================================================================
+   LAYOUT & PAGE CHROME
+   ========================================================================== */
+
+@utility fcontainer {
+	@apply container max-w-6xl mx-auto;
+}
+@utility fpage-head {
+	@apply flex flex-col gap-1 mb-14;
+}
+@utility fdivider-t {
+	@apply w-full border-t border-border/80;
+}
+
+/* Section header with accent bar */
+@utility fsection-head {
+	@apply flex items-center gap-2 mb-4 ml-4;
+}
+@utility faccent-bar {
+	@apply w-0.5 h-5 bg-primary shrink-0;
+}
+
+/* ==========================================================================
+   CARD / COMPONENT PRESETS
+   ========================================================================== */
+
+/* Matches the site's flat card language */
+@utility fcard-flat {
+	@apply rounded-none border border-secondary/50 bg-card/50 shadow-none;
+}
+
+/* Small uppercase card label (KPI title, eyebrow) */
+@utility fcard-label {
+	@apply text-xs font-medium uppercase tracking-wider text-muted-foreground;
+}
+
+/* Icon boxes — used in empty states, KPI cards, feature tiles */
+@utility ficon-box {
+	@apply fc size-8 shrink-0 rounded-md
+	       border border-primary/30 bg-primary/10 text-primary;
+}
+@utility ficon-box-lg {
+	@apply fc size-12 shrink-0 rounded-md
+	       border border-primary/30 bg-primary/10 text-primary;
+}
+
+/* --- 27. Fine-grained gap row/column helpers --- */
+@utility fg1_5 {
+	@apply flex items-center gap-1.5;
+}
+@utility fg2_5 {
+	@apply flex items-center gap-2.5;
+}
+
+@utility fcol1_5 {
+	@apply flex flex-col gap-1.5;
+}
+@utility fcol2_5 {
+	@apply flex flex-col gap-2.5;
+}
+@utility fcol3_5 {
+	@apply flex flex-col gap-3.5;
+}
+
+/* --- 28. Small inline icon box (already have size-8; add tiny variant) --- */
+@utility ficon-box-sm {
+	@apply fc size-7 rounded-md border border-primary/30 bg-primary/10 text-primary shrink-0;
+}
+@utility ficon-box-xs {
+	@apply fc size-6 rounded-md border border-primary/30 bg-primary/10 text-primary shrink-0;
+}
+@utility ficon-box-2xs {
+	@apply fc size-5 rounded-md border border-primary/30 bg-primary/10 text-primary shrink-0;
 }

@@ -9,47 +9,53 @@ const TIME_RANGES: TimeRange[] = ["2M", "3M", "6M", "1Y"];
 export function useStrengthOverview(
 	initialData: any[] = [],
 	propLoading: boolean = false,
-	defaultRange: TimeRange = "3M",
+	timeRange: TimeRange = "3M", // ← receive from parent
 ) {
-	const [timeRange, setTimeRange] = useState<TimeRange>(defaultRange);
 	const [cache, setCache] = useState<Record<string, any[]>>({});
-	const [loading, setLoading] = useState(
-		initialData.length === 0 && !propLoading,
-	);
+	const [loading, setLoading] = useState(initialData.length === 0);
 	const [isFetching, setIsFetching] = useState(false);
 
+	// Seed the cache with initial data under its own range key
 	useEffect(() => {
 		if (initialData.length > 0) {
-			setCache((prev) => ({ ...prev, [defaultRange]: initialData }));
-			setLoading(false);
+			setCache((prev) =>
+				prev[timeRange] ? prev : { ...prev, [timeRange]: initialData },
+			);
 		}
-	}, [initialData, defaultRange]);
+	}, [initialData, timeRange]);
 
+	// Fetch whenever timeRange changes and isn't cached
 	useEffect(() => {
 		if (propLoading) {
 			setLoading(true);
 			return;
 		}
 
+		// Already cached — done
 		if (cache[timeRange]) {
 			setLoading(false);
 			return;
 		}
 
+		let isMounted = true;
 		setIsFetching(true);
+
 		getStrengthOverview(timeRange).then((res) => {
+			if (!isMounted) return;
 			setCache((prev) => ({ ...prev, [timeRange]: res || [] }));
 			setIsFetching(false);
 			setLoading(false);
 		});
-	}, [timeRange, propLoading, cache]);
+
+		return () => {
+			isMounted = false;
+		};
+	}, [timeRange, propLoading, cache]); // `cache` still in deps, but guarded
 
 	const data = cache[timeRange] || [];
 	const hasData = data.some((d) => d.squat || d.bench || d.deadlift || d.ohp);
 
 	return {
-		timeRange,
-		setTimeRange,
 		data,
 		loading,
 		isFetching,

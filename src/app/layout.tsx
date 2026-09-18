@@ -81,7 +81,7 @@ export default function RootLayout({
 				oxanium.variable,
 			)}
 		>
-			<body className="min-h-screen flex flex-col dark">
+			<body className="min-h-screen fcol">
 				<LayoutProvider>{children}</LayoutProvider>
 			</body>
 		</html>

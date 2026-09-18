@@ -2,9 +2,9 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
-import { BarbellIcon, HeartbeatIcon } from "@phosphor-icons/react";
+import { HeartbeatIcon, BarbellIcon } from "@phosphor-icons/react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
 	type ChartConfig,
@@ -14,7 +14,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useUnits } from "@/common";
+import { CardsHeader, useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -41,7 +41,6 @@ export function MuscleSizeTrend({
 	initialData = [],
 	loading: propLoading = false,
 }: MuscleSizeTrendProps) {
-	// ✅ Single source of truth for the display unit
 	const { measurementUnit, fmtMeasurement } = useUnits();
 
 	const muscleSizeChartConfig = useMemo<ChartConfig>(
@@ -68,7 +67,6 @@ export function MuscleSizeTrend({
 
 	const { data, hasData } = useMuscleSizeTrend(initialData);
 
-	// ✅ Convert chart data to user's unit
 	const convertedData = useMemo(
 		() =>
 			data.map((d) => ({
@@ -82,8 +80,6 @@ export function MuscleSizeTrend({
 		[data, fmtMeasurement],
 	);
 
-	// ✅ Growth computed from CONVERTED values, so it always matches the
-	//    displayed unit and re-computes on unit switch.
 	const growth = useMemo(() => {
 		if (convertedData.length < 2) return null;
 		const first = convertedData[0];
@@ -111,13 +107,10 @@ export function MuscleSizeTrend({
 
 	if (!hasData) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none min-h-[220px]"
-			>
+			<Card size="sm" className="fcard-flat min-h-55">
 				<Empty className="p-6 text-center w-full">
 					<EmptyHeader>
-						<EmptyMedia className="flex border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+						<EmptyMedia className="ficon-box-lg">
 							<BarbellIcon
 								className="size-6 text-primary"
 								weight="bold"
@@ -126,7 +119,7 @@ export function MuscleSizeTrend({
 						<EmptyTitle className="text-sm font-medium text-foreground">
 							No Muscle Size Data
 						</EmptyTitle>
-						<EmptyDescription className="text-xs text-muted-foreground max-w-sm mx-auto">
+						<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
 							Track your arms, forearms, thighs, and chest
 							measurements over time by logging your measurements.
 						</EmptyDescription>
@@ -148,74 +141,64 @@ export function MuscleSizeTrend({
 	}
 
 	return (
-		<Card
-			size="sm"
-			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-		>
-			<CardHeader className="space-y-0 pb-2 flex items-center justify-between">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
-					<BarbellIcon
-						weight="bold"
-						className="text-popover-foreground"
-					/>
-					Muscle Size
-				</CardTitle>
+		<Card size="sm" className="relative fcard-flat card-ease">
+			<CardsHeader
+				icon={HeartbeatIcon}
+				title="Muscle Size"
+				trailing={
+					growth && (
+						<div>
+							{(
+								Object.entries(growth) as Array<
+									[
+										keyof typeof muscleSizeChartConfig,
+										number | null,
+									]
+								>
+							)
+								.filter(([, v]) => v != null)
+								.map(([key, value]) => {
+									const cfg = muscleSizeChartConfig[key];
+									if (!cfg || value == null) return null;
 
-				<div className="flex items-center gap-1.5 shrink-0">
-					{growth &&
-						(
-							Object.entries(growth) as Array<
-								[
-									keyof typeof muscleSizeChartConfig,
-									number | null,
-								]
-							>
-						)
-							.filter(([, v]) => v != null)
-							.map(([key, value]) => {
-								const cfg = muscleSizeChartConfig[key];
-								if (!cfg || value == null) return null;
-
-								return (
-									<div
-										key={key}
-										className="flex items-center gap-1 px-1.5 py-0.5 border bg-background/50 h-5"
-										style={{
-											borderColor: `color-mix(in oklch, ${cfg.color} 40%, transparent)`,
-											backgroundColor: `color-mix(in oklch, ${cfg.color} 10%, transparent)`,
-										}}
-									>
-										<span
-											className="size-1.5 rounded-full shrink-0"
+									return (
+										<div
+											key={key}
+											className="fcy gap-1 px-1.5 py-0.5 border bg-background/50 h-5"
 											style={{
-												backgroundColor: cfg.color,
+												borderColor: `color-mix(in oklch, ${cfg.color} 40%, transparent)`,
+												backgroundColor: `color-mix(in oklch, ${cfg.color} 10%, transparent)`,
 											}}
-										/>
-										<span
-											className="text-[9px] font-mono uppercase tracking-wider font-bold"
-											style={{ color: cfg.color }}
 										>
-											{String(key).slice(0, 3)}
-										</span>
-										<span
-											className="text-[9px] font-mono tabular-nums font-bold"
-											style={{ color: cfg.color }}
-										>
-											{value > 0 ? "+" : ""}
-											{value.toFixed(1)}
-											{measurementUnit}
-										</span>
-									</div>
-								);
-							})}
+											<span
+												className="size-1.5 rounded-full sh0"
+												style={{
+													backgroundColor: cfg.color,
+												}}
+											/>
+											<span
+												className="ftext-3xs font-mono fupper font-bold"
+												style={{ color: cfg.color }}
+											>
+												{String(key).slice(0, 3)}
+											</span>
+											<span
+												className="ftext-3xs font-mono tabular-nums font-bold"
+												style={{ color: cfg.color }}
+											>
+												{value > 0 ? "+" : ""}
+												{value.toFixed(1)}
+												{measurementUnit}
+											</span>
+										</div>
+									);
+								})}
+						</div>
+					)
+				}
+			/>
 
-					<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-						<HeartbeatIcon className="size-3.5" weight="bold" />
-					</div>
-				</div>
-			</CardHeader>
-
-			<CardContent className="space-y-3 pt-0">
+			<CardContent className="p-4 pt-1 fcol3">
 				<ChartContainer
 					config={muscleSizeChartConfig}
 					className="h-[200px] sm:h-[220px] w-full"

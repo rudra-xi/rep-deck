@@ -1,21 +1,21 @@
 export const onboardingSteps = [
 	{
 		step: 1,
-		title: "Pick your program",
+		title: "Build your plan",
 		description:
-			"Choose the training block you’re currently following — v1, v2, v3, or v4. Rep Deck keeps your plan organized so you always know what workout comes next.",
+			"Create a training block with days and exercises. Or duplicate an existing plan and version it up — v1, v2, v3 — without losing your history.",
 	},
 	{
 		step: 2,
 		title: "Log every set",
 		description:
-			"Enter your weight, reps, and notes right after each set. The app remembers your previous session so you can train with context, not guesswork.",
+			"Your active plan pre-fills the workout screen. Enter weight, reps, and RPE set by set. Last session's numbers sit right beside the input so you always know what to beat.",
 	},
 	{
 		step: 3,
-		title: "Track real progress",
+		title: "Watch it compound",
 		description:
-			"Watch your strength, measurements, and body composition improve over time. When your program changes, your history stays intact and your progress stays visible.",
+			"Estimated 1RM trends, body measurements, and training frequency update as you log. Everything is preserved, even when you switch to a new block.",
 	},
 ];
 
@@ -24,31 +24,37 @@ export const featuresData = [
 		id: 1,
 		title: "Workout logging",
 		description:
-			"Log sets, reps, weight, and notes in seconds. Rep Deck is built to make in-gym tracking fast and frictionless.",
+			"Log sets, reps, weight, RPE, and notes in seconds. Built for the gym floor — not for a spreadsheet.",
 	},
 	{
 		id: 2,
 		title: "Last session memory",
 		description:
-			"See what you lifted last time before you start today’s workout. No more guessing your bench, squat, or deadlift numbers.",
+			"Every exercise shows your previous best and PR inline. No more guessing what you lifted last week.",
 	},
 	{
 		id: 3,
-		title: "Program-based training",
+		title: "Versioned programs",
 		description:
-			"Switch between plan versions like v1, v2, v3, and v4 without losing your history. Your workouts stay organized even when your split changes.",
+			"Create reusable plan templates with days and exercises. Duplicate, version up, and switch blocks — your history stays intact.",
 	},
 	{
 		id: 4,
 		title: "Progress charts",
 		description:
-			"Track strength, measurements, and bodyweight trends over time. Watch your growth with clean charts instead of scrolling through old notes.",
+			"Estimated 1RM for the Big 4, upper/lower body measurements, session volume, and weekly training distribution — all in one place.",
 	},
 	{
 		id: 5,
-		title: "Clean, distraction-free dashboard",
+		title: "Body metrics tracking",
 		description:
-			"Get a quick snapshot of your training without extra noise. Everything important is right where you need it.",
+			"Weight, body fat, and six body measurements with automatic kg/lb and cm/in conversion. Data quality warnings keep your trendlines honest.",
+	},
+	{
+		id: 6,
+		title: "Personal records",
+		description:
+			"Every PR is detected automatically using estimated 1RM. Celebrate new bests with inline badges and a session-level PR summary.",
 	},
 ];
 
@@ -56,27 +62,27 @@ export const faqData = [
 	{
 		id: 1,
 		question: "Is Rep Deck free?",
-		answer: "Rep Deck can start as a free app with core workout logging and progress tracking. You can add premium features later if you want.",
+		answer: "Core logging, plans, and progress tracking are free. You can start with a free account and only pay if you want advanced features later.",
 	},
 	{
 		id: 2,
-		question: "Do I need to manually enter every workout?",
-		answer: "Only once per program setup. After that, you just pick your current plan and log sets quickly as you train.",
+		question: "Do I need to set up my program before logging?",
+		answer: "No — you can log ad-hoc sets any time. But creating a plan unlocks the planned-exercise workflow, which pre-fills targets and shows last session's numbers for each lift.",
 	},
 	{
 		id: 3,
-		question: "Can I switch from one program to another?",
-		answer: "Yes. You can create and switch between versions like v1, v2, v3, and v4 without losing your old workout history.",
+		question: "Can I switch between programs without losing history?",
+		answer: "Yes. Create multiple plan versions (v1, v2, v3) and set any one as active. All past sessions, PRs, and trends stay tied to your account — nothing is deleted when you switch.",
 	},
 	{
 		id: 4,
-		question: "Does Rep Deck support Google login?",
-		answer: "Yes, Google login can be added so your progress stays synced and easy to access across devices.",
+		question: "How does Google login work?",
+		answer: "Sign in with Google in one click. Your progress syncs across devices automatically — no passwords to remember.",
 	},
 	{
 		id: 5,
-		question: "Will my old workouts disappear when I change plans?",
-		answer: "No. Your history stays saved, even if you start a new training block or swap exercises.",
+		question: "What units does Rep Deck use?",
+		answer: "Everything is stored in metric (kg and inches) behind the scenes, and converted to your preferred units on the fly. Toggle kg/lb and cm/in any time from your account preferences.",
 	},
 ];
 
@@ -87,28 +93,105 @@ export const ctaData = {
 	buttonText: "Start Tracking",
 };
 
+export const showcaseTabs = [
+	{
+		id: "log",
+		label: "Workout Log",
+		title: "Log every set without friction",
+		description:
+			"Pre-filled targets from your active program. Last session's numbers right beside the input. Mark done and move on.",
+		bullets: [
+			"Previous session shown inline",
+			"Auto-calculated estimated 1RM",
+			"Per-set RPE and notes",
+			"Extra/ad-hoc sets supported",
+		],
+	},
+	{
+		id: "metrics",
+		label: "Metrics",
+		title: "Body composition, tracked properly",
+		description:
+			"Weight, body fat, and 6 body measurements with unit conversion, data quality warnings, and reminders.",
+		bullets: [
+			"kg/lb + cm/in auto-conversion",
+			"Data quality scoring",
+			"Measurement reminders",
+			"7 measurement points",
+		],
+	},
+	{
+		id: "progress",
+		label: "Progress",
+		title: "See the trend, not just the number",
+		description:
+			"Estimated 1RM trends for the Big 4, upper/lower body measurements, and session volume — all in one place.",
+		bullets: [
+			"Big 4 strength trends",
+			"Upper/lower body charts",
+			"Weekly training distribution",
+			"Personal record tracking",
+		],
+	},
+	{
+		id: "plans",
+		label: "Plans",
+		title: "Programs that evolve with you",
+		description:
+			"Build reusable templates with days and exercises. Duplicate, version, and switch blocks without losing history.",
+		bullets: [
+			"Multi-day program templates",
+			"Duplicate & version control",
+			"Switch active plan anytime",
+			"Full history preserved",
+		],
+	},
+] as const;
+
+export type ShowcaseTabId = (typeof showcaseTabs)[number]["id"];
+
 export const navigationData = [
 	{
-		id: 1,
-		label: "Plans",
-		href: "/plans",
-	},
-	{
-		id: 2,
-		label: "Progress",
-		href: "/progress",
-	},
-	{
-		id: 3,
-		label: "Workout Log",
+		id: "log",
 		href: "/workout-log",
+		label: "Workout Log",
+		shortLabel: "Log",
+		description: "Log today's session",
+		group: "Do",
 	},
 	{
-		id: 4,
-		label: "Metrics",
+		id: "metrics",
 		href: "/metrics",
+		label: "Metrics",
+		shortLabel: "Metrics",
+		description: "Body measurements",
+		group: "Track",
 	},
-];
+	{
+		id: "progress",
+		href: "/progress",
+		label: "Progress",
+		shortLabel: "Progress",
+		description: "Strength & size trends",
+		group: "Review",
+	},
+	{
+		id: "plans",
+		href: "/plans",
+		label: "Plans",
+		shortLabel: "Plans",
+		description: "Build & version programs",
+		group: "Configure",
+	},
+] as const;
+
+/** Order in which groups render in the mobile drawer */
+export const navigationGroupOrder = [
+	"Do",
+	"Track",
+	"Review",
+	"Configure",
+] as const;
 
 export const socialLinksData = [
 	{
@@ -345,11 +428,38 @@ export const PRESET_REP_RANGES = [
 ];
 
 export const TWELVE_WEEK_BENCHMARK: Record<string, number> = {
-	Mon: 12, 
+	Mon: 12,
 	Tue: 12,
-	Wed: 12, 
+	Wed: 12,
 	Thu: 12,
-	Fri: 12, 
-	Sat: 12, 
+	Fri: 12,
+	Sat: 12,
 	Sun: 0,
 };
+
+export const GUIDE_ITEMS = [
+	{
+		label: "Weight",
+		instruction: "Morning, after bathroom, before food, minimal clothing.",
+	},
+	{
+		label: "Body Fat",
+		instruction: "Same time of day, same device (2–3 readings averaged).",
+	},
+	{
+		label: "Arms",
+		instruction: "Midpoint between shoulder and elbow, arm relaxed.",
+	},
+	{
+		label: "Forearms",
+		instruction: "At the thickest part near the elbow.",
+	},
+	{
+		label: "Thighs",
+		instruction: "Midpoint between hip and knee, legs relaxed.",
+	},
+	{
+		label: "Waist",
+		instruction: "Narrowest point or at belly button, exhale normally.",
+	},
+];

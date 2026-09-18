@@ -83,7 +83,7 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 		activeLiftTrend?.rawDiffKg !== undefined
 			? `${activeLiftTrend.direction === "up" ? "+" : activeLiftTrend.direction === "down" ? "-" : ""}${fmtWeightStr(activeLiftTrend.rawDiffKg)}`
 			: activeLiftTrend?.value;
-	
+
 	// Dynamically format Body Weight value & trend
 	const formattedBodyWeightValue = bodyWeight?.rawWeightKg
 		? fmtWeightStr(bodyWeight.rawWeightKg)
@@ -108,7 +108,7 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 			id: sessionsThisWeek?.id ?? "sessions",
 			label: sessionsThisWeek?.label ?? "Sessions this week",
 			value: sessionsThisWeek?.value ?? "0",
-			subtext: sessionsThisWeek?.subtext ?? "Target: 4",
+			subtext: sessionsThisWeek?.subtext ?? "Target: 0",
 			icon: CalendarCheckIcon,
 		},
 		{
@@ -150,51 +150,39 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 					<Card
 						key={card.id}
 						size="sm"
-						className="relative border border-secondary/50 bg-card/50 transition-colors hover:border-primary/50"
+						className="relative fcard-flat base-ease"
 					>
-						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+						<CardHeader className="flex fr items-center justify-between space-y-0 pb-2">
+							<CardTitle className="fcard-label">
 								{card.label}
 							</CardTitle>
-
-							<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+							<div className="ficon-box">
 								<Icon className="size-4" weight="bold" />
 							</div>
 						</CardHeader>
 
 						<CardContent>
 							<div className="flex items-baseline justify-between gap-2 min-h-8">
-								{/* Main Value Display */}
-								{loading ? (
-									<div className="flex items-center h-8">
-										<Spinner className="size-4" />
-									</div>
-								) : (
-									<div className="text-2xl font-bold tracking-tight text-foreground truncate">
-										{card.value}
-									</div>
+								{/* remove the loading ? branch — already handled above */}
+								<div className="text-2xl font-bold tracking-tight text-foreground truncate">
+									{card.value}
+								</div>
+
+								{card.action && !card.dropdownOptions && (
+									<Button
+										nativeButton={false}
+										variant="link"
+										size="sm"
+										className="h-auto p-0 fmuted hover:text-primary text-xs"
+										render={
+											<Link href={card.action.href}>
+												{card.action.label}
+											</Link>
+										}
+									/>
 								)}
 
-								{/* Static Link Action */}
-								{!loading &&
-									card.action &&
-									!card.dropdownOptions && (
-										<Button
-											nativeButton={false}
-											variant="link"
-											size="sm"
-											className="h-auto p-0 text-muted-foreground hover:text-primary text-xs"
-											render={
-												<Link href={card.action.href}>
-													{card.action.label}
-												</Link>
-											}
-										/>
-									)}
-
-								{/* Dropdown Action for Variant Lifts */}
-								{!loading &&
-									card.dropdownOptions &&
+								{card.dropdownOptions &&
 									card.dropdownOptions.length > 0 && (
 										<DropdownMenu>
 											<DropdownMenuTrigger
@@ -202,7 +190,7 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 													<Button
 														variant="ghost"
 														size="sm"
-														className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 border border-border/50"
+														className="h-7 px-2 text-xs fmuted hover:text-foreground fg1 border border-border/50"
 													>
 														{activeLiftOption?.label ??
 															"Select"}
@@ -210,7 +198,6 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 													</Button>
 												}
 											/>
-
 											<DropdownMenuContent
 												align="end"
 												className="w-44"
@@ -223,7 +210,6 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 																		option.rawWeightKg,
 																	)
 																: option.targetValue;
-
 														return (
 															<DropdownMenuItem
 																key={
@@ -241,7 +227,7 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 																		option.label
 																	}
 																</span>
-																<span className="text-muted-foreground font-mono font-semibold ml-2">
+																<span className="fmuted font-mono font-semibold ml-2">
 																	{
 																		formattedOptionValue
 																	}
@@ -255,57 +241,44 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 									)}
 							</div>
 
-							{/* Subtext and Trend Indicator */}
-							<div className="flex items-center mt-1.5 gap-1.5 text-xs h-4">
-								{loading ? (
-									<div className="flex items-center gap-1.5 text-muted-foreground">
-										<Spinner className="size-3" />
-									</div>
-								) : (
-									<>
-										{card.trend && (
-											<span
-												className={`flex items-center gap-0.5 font-medium ${
-													card.trend.direction ===
-													"up"
-														? "text-primary"
-														: card.trend
-																	.direction ===
-															  "down"
-															? "text-destructive"
-															: "text-muted-foreground"
-												}`}
-											>
-												{card.trend.direction ===
-												"up" ? (
-													<TrendUpIcon
-														className="size-3"
-														weight="bold"
-													/>
-												) : card.trend.direction ===
-												  "down" ? (
-													<TrendDownIcon
-														className="size-3"
-														weight="bold"
-													/>
-												) : (
-													<DotOutlineIcon
-														className="size-3"
-														weight="bold"
-													/>
-												)}
-												{card.trend.value && (
-													<span className="ml-0.5">
-														{card.trend.value}
-													</span>
-												)}
+							<div className="fg1_5 mt-1.5 text-xs h-4">
+								{card.trend && (
+									<span
+										className={`fcy gap-0.5 font-medium ${
+											card.trend.direction === "up"
+												? "text-primary"
+												: card.trend.direction ===
+													  "down"
+													? "text-destructive"
+													: "fmuted"
+										}`}
+									>
+										{card.trend.direction === "up" ? (
+											<TrendUpIcon
+												className="size-3"
+												weight="bold"
+											/>
+										) : card.trend.direction === "down" ? (
+											<TrendDownIcon
+												className="size-3"
+												weight="bold"
+											/>
+										) : (
+											<DotOutlineIcon
+												className="size-3"
+												weight="bold"
+											/>
+										)}
+										{card.trend.value && (
+											<span className="ml-0.5">
+												{card.trend.value}
 											</span>
 										)}
-										<span className="text-muted-foreground truncate">
-											{card.subtext}
-										</span>
-									</>
+									</span>
 								)}
+								<span className="fmuted truncate">
+									{card.subtext}
+								</span>
 							</div>
 						</CardContent>
 					</Card>

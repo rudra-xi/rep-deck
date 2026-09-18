@@ -55,14 +55,13 @@ export function QuickStats({ stats, loading = false }: QuickStatsProps) {
 					<Card
 						key={card.label}
 						size="sm"
-						className="relative border border-secondary/50 bg-card/50 transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.15)]"
+						className="relative fcard-flat hover:border-primary/50 hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.15)] base-ease"
 					>
-						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+						<CardHeader className="fr items-center justify-between space-y-0 pb-2">
+							<CardTitle className="fcard-label">
 								{card.label}
 							</CardTitle>
-
-							<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+							<div className="ficon-box">
 								<Icon className="size-4" weight="bold" />
 							</div>
 						</CardHeader>
@@ -83,9 +82,9 @@ export function QuickStats({ stats, loading = false }: QuickStatsProps) {
 								)}
 							</div>
 
-							<div className="flex items-center mt-1.5 gap-1.5 text-xs h-4">
+							<div className="fcy mt-1.5 gap-1.5 text-xs h-4">
 								{isNotes ? (
-									<span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+									<span className="ftext-2xs fmuted fupper">
 										Latest Log Entry
 									</span>
 								) : (
@@ -93,12 +92,12 @@ export function QuickStats({ stats, loading = false }: QuickStatsProps) {
 										{card.trend && (
 											<span
 												className={cn(
-													"flex items-center gap-0.5 font-medium",
+													"fcy gap-0.5 font-medium",
 													isUp
 														? "text-primary"
 														: isDown
 															? "text-destructive"
-															: "text-muted-foreground",
+															: "fmuted",
 												)}
 											>
 												{isUp ? (
@@ -123,7 +122,7 @@ export function QuickStats({ stats, loading = false }: QuickStatsProps) {
 											</span>
 										)}
 										{!card.trend && (
-											<span className="text-muted-foreground">
+											<span className="fmuted">
 												No recent change
 											</span>
 										)}

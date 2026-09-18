@@ -4,13 +4,13 @@ import Link from "next/link";
 import {
 	ArrowRightIcon,
 	CalendarDotsIcon,
+	ClockCounterClockwiseIcon,
 	SparkleIcon,
-	StarFourIcon,
 	TrophyIcon,
 } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
 	Table,
 	TableBody,
@@ -24,7 +24,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { useUnits } from "@/common";
+import { CardsHeader, useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/empty";
 import { useLastWorkout } from "@/hooks";
 import { WorkoutTableSkeleton } from "@/skeletons";
+import { cn } from "@/lib/utils";
 
 export interface TopLift {
 	id: string | number;
@@ -64,21 +65,16 @@ export function LastWorkoutCard({
 	const { prCount, prs } = useLastWorkout(data);
 	const { fmtWeight, weightUnit } = useUnits();
 
-	// 1. Loading State
 	if (loading || data === undefined) {
 		return <WorkoutTableSkeleton rows={4} />;
 	}
 
-	// 2. Empty Data State with shadcn Empty
 	if (data === null || data.topLifts.length === 0) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none min-h-[220px] w-full"
-			>
+			<Card size="sm" className="fcard-flat min-h-55 w-full">
 				<Empty className="p-6 sm:p-8 text-center w-full">
 					<EmptyHeader>
-						<EmptyMedia className="flex border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+						<EmptyMedia className="ficon-box-lg">
 							<CalendarDotsIcon
 								className="size-6 text-primary"
 								weight="bold"
@@ -87,7 +83,7 @@ export function LastWorkoutCard({
 						<EmptyTitle className="text-sm font-medium text-foreground">
 							No sessions recorded
 						</EmptyTitle>
-						<EmptyDescription className="text-xs text-muted-foreground max-w-[200px] sm:max-w-sm mx-auto">
+						<EmptyDescription className="text-xs fmuted max-w-[200px] sm:max-w-sm mx-auto">
 							Complete your first workout to view top performance
 							snapshots here.
 						</EmptyDescription>
@@ -108,23 +104,13 @@ export function LastWorkoutCard({
 		);
 	}
 
-	// 3. Render Workout Snapshot Data
 	return (
-		<Card
-			size="sm"
-			className="w-full border-secondary/50 bg-card/50 text-foreground"
-		>
-			{/* Card Header */}
-			<CardHeader className="p-4 sm:p-6 pb-3 space-y-2">
-				<div className="flex flex-wrap items-center justify-between gap-2">
-					<div className="flex flex-wrap items-center gap-2">
-						<span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-							<CalendarDotsIcon
-								size={16}
-								className="text-primary shrink-0"
-							/>
-							{data.date}
-						</span>
+		<Card size="sm" className="fcard-flat w-full text-foreground card-ease">
+			<CardsHeader
+				icon={ClockCounterClockwiseIcon}
+				title="Last Workout"
+				trailing={
+					<div className="fg1_5 fwrap">
 						{prCount > 0 && (
 							<Popover>
 								<PopoverTrigger
@@ -132,7 +118,7 @@ export function LastWorkoutCard({
 									render={
 										<Badge
 											variant="outline"
-											className="h-5 px-1.5 text-[9px] font-bold uppercase tracking-wider active:bg-primary/30 hover:bg-accent cursor-pointer"
+											className="h-5 px-1.5 ftext-3xs font-bold fupper cursor-pointer rounded-none border-primary/40 text-primary"
 										>
 											<TrophyIcon
 												className="size-3 mr-0.5"
@@ -142,12 +128,12 @@ export function LastWorkoutCard({
 										</Badge>
 									}
 								/>
-								<PopoverContent className="w-auto p-2 text-xs">
-									<div className="space-y-1">
-										<p className="font-semibold">
+								<PopoverContent className="w-auto p-2 text-xs rounded-none border-secondary/50">
+									<div className="fcol1">
+										<p className="font-bold fupper fmuted ftext-2xs">
 											Personal Records
 										</p>
-										<ul className="list-disc list-inside text-muted-foreground">
+										<ul className="list-disc list-inside fmuted">
 											{prs.map((lift) => (
 												<li key={lift.id}>
 													<strong className="text-foreground">
@@ -163,117 +149,127 @@ export function LastWorkoutCard({
 								</PopoverContent>
 							</Popover>
 						)}
+						<Button
+							nativeButton={false}
+							variant="ghost"
+							size="sm"
+							className="h-6 justify-between border border-border/60 bg-muted/30 px-2 text-xs fmuted hover:bg-muted hover:text-foreground gap-1 rounded-none"
+							render={
+								<Link href={`/workout-log/${data.id}`}>
+									<span>Open</span>
+									<ArrowRightIcon size={12} className="text-primary"/>
+								</Link>
+							}
+						/>
 					</div>
-					<Button
-						nativeButton={false}
-						variant="ghost"
-						size="sm"
-						className="h-8 justify-between border border-border/60 bg-muted/30 px-3 text-xs text-muted-foreground hover:bg-muted hover:text-foreground gap-1.5"
-						render={
-							<Link href={`/workout-log/${data.id}`}>
-								<span>Open Session</span>
-								<ArrowRightIcon size={14} />
-							</Link>
-						}
-					/>
+				}
+			/>
+
+			<CardContent className="p-4 pt-1 fcol4">
+				{/* Meta row */}
+				<div className="fwrap gap-3 fcb p-3 border border-border/40 bg-background/50 rounded-none">
+					<div className="fcy gap-1.5 text-xs fmuted">
+						<CalendarDotsIcon
+							size={14}
+							className="text-primary sh0"
+							weight="bold"
+						/>
+						<span className="font-medium text-foreground">
+							{data.date}
+						</span>
+					</div>
+					<div className="fwrap gap-2 fcy">
+						<Badge
+							variant="secondary"
+							className="ftext-2xs fupper font-semibold rounded-none"
+						>
+							{data.programName}
+						</Badge>
+						<p className="text-xs font-medium text-foreground truncate">
+							{data.dayName}
+						</p>
+					</div>
 				</div>
 
-				<div className="flex flex-wrap items-center gap-2 pt-0.5">
-					<Badge variant="secondary" className="text-xs">
-						{data.programName}
-					</Badge>
-					<p className="text-xs sm:text-sm font-medium text-foreground truncate max-w-full">
-						{data.dayName}
-					</p>
-				</div>
-			</CardHeader>
-
-			{/* Workout Table Section */}
-			<CardContent className="p-0 sm:px-6 sm:pb-4 overflow-x-auto">
-				<Table className="w-full table-fixed min-w-[280px]">
-					<TableHeader>
-						<TableRow className="border-border/60 hover:bg-transparent">
-							<TableHead className="w-[50%] h-9 px-4 sm:px-3 text-xs font-semibold text-muted-foreground">
-								Exercise
-							</TableHead>
-							<TableHead className="w-[25%] h-9 px-2 sm:px-3 text-right text-xs font-semibold text-muted-foreground">
-								Weight
-							</TableHead>
-							<TableHead className="w-[25%] h-9 px-4 sm:px-3 text-right text-xs font-semibold text-muted-foreground">
-								Reps
-							</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{data.topLifts.map((lift) => {
-							const isPR = lift.isPR || false;
-							return (
-								<TableRow
-									key={lift.id}
-									className={`border-border/60 ${
-										isPR ? "bg-primary/5" : ""
-									}`}
-								>
-									{/* Exercise Column */}
-									<TableCell className="px-4 py-3 sm:px-3 text-xs sm:text-sm font-medium text-foreground">
-										<div className="flex items-center gap-2 min-w-0">
-											<div className="flex shrink-0 border p-1.5 rounded-md bg-primary/10 border-primary/30 text-primary">
+				{/* Table */}
+				<div className="border border-border/40 overflow-hidden">
+					<Table>
+						<TableHeader>
+							<TableRow className="border-border/60 hover:bg-transparent">
+								<TableHead className="w-[50%] h-8 px-3 ftext-3xs fupper fmuted font-semibold">
+									Exercise
+								</TableHead>
+								<TableHead className="w-[25%] h-8 px-3 text-right ftext-3xs fupper fmuted font-semibold">
+									Weight
+								</TableHead>
+								<TableHead className="w-[25%] h-8 px-3 text-right ftext-3xs fupper fmuted font-semibold">
+									Reps
+								</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{data.topLifts.map((lift) => {
+								const isPR = lift.isPR ?? false;
+								return (
+									<TableRow
+										key={lift.id}
+										className={cn(
+											"border-border/40 transition-colors",
+											isPR
+												? "bg-primary/10"
+												: "hover:bg-muted/40",
+										)}
+									>
+										<TableCell className="px-3 py-2.5">
+											<div className="fg2 min-w-0">
 												{isPR ? (
 													<SparkleIcon
-														className="size-3.5"
-														weight="bold"
+														className="size-3.5 text-primary sh0"
+														weight="fill"
 													/>
 												) : (
-													<StarFourIcon
-														className="size-3.5"
-														weight="bold"
+													<div className="size-1.5 rounded-full bg-muted-foreground/40 sh0" />
+												)}
+												<span className="text-xs sm:text-sm font-medium text-foreground truncate">
+													{lift.exercise}
+												</span>
+												{isPR && (
+													<TrophyIcon
+														className="size-3 text-primary sh0"
+														weight="duotone"
 													/>
 												)}
 											</div>
-											<span className="truncate">
-												{lift.exercise}
-											</span>
-
-											{isPR && (
-												<Badge
-													variant="outline"
-													className="border-primary/40 text-primary sh0"
-												>
-													<TrophyIcon
-														size={10}
-														weight="duotone"
-													/>
-												</Badge>
+										</TableCell>
+										<TableCell
+											className={cn(
+												"px-3 py-2.5 text-right text-xs sm:text-sm font-semibold tabular-nums whitespace-nowrap",
+												isPR
+													? "text-primary"
+													: "text-foreground",
 											)}
-										</div>
-									</TableCell>
-
-									{/* Weight Column */}
-									<TableCell
-										className={`px-2 py-3 sm:px-3 text-right text-xs sm:text-sm font-semibold whitespace-nowrap ${
-											isPR
-												? "text-primary underline underline-offset-2"
-												: "text-foreground"
-										}`}
-									>
-										{fmtWeight(lift.weightKg)} {weightUnit}
-									</TableCell>
-
-									{/* Reps Column */}
-									<TableCell
-										className={`px-4 py-3 sm:px-3 text-right text-xs sm:text-sm font-semibold whitespace-nowrap ${
-											isPR
-												? "text-primary"
-												: "text-foreground"
-										}`}
-									>
-										{lift.reps}
-									</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
+										>
+											{fmtWeight(lift.weightKg)}
+											<span className="ftext-3xs fmuted font-normal ml-0.5">
+												{weightUnit}
+											</span>
+										</TableCell>
+										<TableCell
+											className={cn(
+												"px-3 py-2.5 text-right text-xs sm:text-sm font-semibold tabular-nums whitespace-nowrap",
+												isPR
+													? "text-primary"
+													: "text-foreground",
+											)}
+										>
+											{lift.reps}
+										</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				</div>
 			</CardContent>
 		</Card>
 	);

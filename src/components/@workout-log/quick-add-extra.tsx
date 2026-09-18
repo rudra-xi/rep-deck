@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AsteriskIcon, PlusCircleIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
 	Combobox,
 	ComboboxContent,
@@ -17,7 +17,7 @@ import { useFormField, useRangedInput } from "@/hooks";
 import { toast } from "sonner";
 import { PRESET_EXERCISES, type PresetExercise } from "@/constants";
 import type { LoggedSet } from "@/types";
-import { useUnits } from "@/common";
+import { CardsHeader, useUnits } from "@/common";
 
 interface PlannedExerciseItem {
 	id: string;
@@ -66,7 +66,7 @@ export function QuickAddExtra({
 				weight: weight.value.toString(),
 				reps: reps.value.toString(),
 				rpe: rpe.value.toString() || "",
-				notes: "", // Empty notes since we removed the field
+				notes: "",
 			});
 
 			toast.success("Extra set added", {
@@ -91,25 +91,15 @@ export function QuickAddExtra({
 	return (
 		<Card
 			size="sm"
-			className="relative border border-secondary/50 bg-card/50 base-ease hover:border-primary/50 rounded-none shadow-none space-y-0"
+			className="relative fcard-flat card-ease"
 		>
-			<CardHeader className="space-y-0 pb-3 flex fcb">
-				<div>
-					<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-						<AsteriskIcon
-							weight="bold"
-							className="text-popover-foreground"
-						/>
-						Add Extra Work
-					</CardTitle>
-				</div>
+			<CardsHeader
+				icon={AsteriskIcon}
+				title="Add Extra Work"
+				
+			/>
 
-				<div className="fc border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
-					<PlusCircleIcon className="size-4" weight="bold" />
-				</div>
-			</CardHeader>
-
-			<CardContent>
+			<CardContent className="p-4 pt-1">
 				<form onSubmit={handleSubmit} className="space-y-3">
 					<div className="space-y-1">
 						<Combobox

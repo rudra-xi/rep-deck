@@ -61,7 +61,7 @@ export const ROADMAP: RoadmapItem[] = [
 	{
 		title: "Custom themes",
 		description:
-			"Pick from 6 built-in themes and set your favourite as default.",
+			"Pick from 8 built-in themes and set your favourite as default.",
 		status: "shipped",
 		version: "v0.1.0",
 		pillar: "UX",

@@ -1,48 +1,51 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { updateSession } from "@/utils/supabase/proxy";
-import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@supabase/ssr";
 
 export async function proxy(request: NextRequest) {
-	// First, update the session
-	const response = await updateSession(request);
+	let response = NextResponse.next({ request });
 
-	// Check if user is authenticated
-	const supabase = await createClient();
+	const supabase = createServerClient(
+		process.env.NEXT_PUBLIC_SUPABASE_URL!,
+		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+		{
+			cookies: {
+				getAll() {
+					return request.cookies.getAll();
+				},
+				setAll(cookiesToSet) {
+					cookiesToSet.forEach(({ name, value, options }) => {
+						request.cookies.set(name, value);
+						response.cookies.set(name, value, options);
+					});
+				},
+			},
+		},
+	);
+
+	// This refreshes the session and gives you the user
 	const {
 		data: { user },
 	} = await supabase.auth.getUser();
 
 	const path = request.nextUrl.pathname;
 
-	// Define public routes (only these are accessible without auth)
-	const publicRoutes = ["/", "/auth/callback"];
+	const publicRoutes = ["/", "/auth/callback", "/sign-in", "/sign-up"];
 	const isPublicRoute = publicRoutes.some(
-		(route) => path === route || path.startsWith(route),
+		(route) => path === route || path.startsWith(`${route}/`),
 	);
 
-	// Define protected routes (require auth)
-	const protectedRoutes = ["/dashboard", "/profile", "/settings"];
-	const isProtectedRoute = protectedRoutes.some(
-		(route) => path === route || path.startsWith(route),
-	);
-
-	// If not authenticated and trying to access protected route
-	if (!user && isProtectedRoute) {
-		console.log("🔒 Unauthenticated access to protected route:", path);
-		return NextResponse.redirect(new URL("/", request.url));
-	}
-
-	// If authenticated and trying to access landing page
+	// Authenticated users skip the landing page
 	if (user && path === "/") {
-		console.log(
-			"🔓 Authenticated user on landing page, redirecting to dashboard",
-		);
-		return NextResponse.redirect(new URL("/dashboard", request.url));
+		const url = request.nextUrl.clone();
+		url.pathname = "/dashboard";
+		return NextResponse.redirect(url);
 	}
 
-	// If not authenticated and trying to access auth/callback, allow it
-	if (!user && path === "/auth/callback") {
-		return response;
+	// Everyone else must be signed in
+	if (!user && !isPublicRoute) {
+		const url = request.nextUrl.clone();
+		url.pathname = "/";
+		return NextResponse.redirect(url);
 	}
 
 	return response;
@@ -50,13 +53,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
 	matcher: [
-		/*
-		 * Match all request paths except for the ones starting with:
-		 * - _next/static (static files)
-		 * - _next/image (image optimization files)
-		 * - favicon.ico (favicon file)
-		 * - public (public files)
-		 */
-		"/((?!_next/static|_next/image|favicon.ico|public).*)",
+		"/((?!_next/static|_next/image|favicon.ico|public|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
 	],
 };

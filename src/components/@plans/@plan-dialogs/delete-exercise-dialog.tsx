@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useState } from "react";
 
 interface DeleteExerciseDialogProps {
 	exerciseName: string;
@@ -24,13 +25,16 @@ export function DeleteExerciseDialog({
 	exerciseName,
 	onDelete,
 }: DeleteExerciseDialogProps) {
+	const [open, setOpen] = useState(false);
+
 	const handleDelete = async () => {
 		try {
 			await onDelete();
 			toast.success("Exercise deleted", {
 				description: `"${exerciseName}" has been deleted.`,
 			});
-		} catch (error) {
+			setOpen(false);
+		} catch {
 			toast.error("Delete failed", {
 				description: "There was an error deleting the exercise.",
 			});
@@ -44,7 +48,7 @@ export function DeleteExerciseDialog({
 					<Button
 						size="sm"
 						variant="ghost"
-						className="size-7 p-0 text-muted-foreground hover:text-destructive"
+						className="size-7 p-0 fmuted hover:text-destructive"
 					>
 						<TrashIcon className="size-3.5" />
 					</Button>
@@ -53,7 +57,7 @@ export function DeleteExerciseDialog({
 
 			<AlertDialogContent className="rounded-none border-secondary/50 bg-card">
 				<AlertDialogHeader>
-					<AlertDialogTitle className="text-sm font-bold uppercase">
+					<AlertDialogTitle className="text-sm font-bold fupper">
 						Delete Exercise?
 					</AlertDialogTitle>
 					<AlertDialogDescription className="text-xs">

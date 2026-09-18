@@ -113,13 +113,10 @@ export function PlannedExercises({
 
 	if (!exercises || exercises.length === 0) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none min-h-[200px] w-full"
-			>
+			<Card size="sm" className="fcard-flat min-h-[200px] w-full">
 				<Empty className="p-6 sm:p-8 text-center w-full">
 					<EmptyHeader>
-						<EmptyMedia className="flex border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+						<EmptyMedia className="ficon-box-lg">
 							<BarbellIcon
 								className="size-6 text-primary"
 								weight="bold"
@@ -180,18 +177,18 @@ export function PlannedExercises({
 					<Card
 						key={ex.id}
 						size="sm"
-						className={`h-fit border bg-card/40 backdrop-blur-sm rounded-none shadow-none transition-all ${
+						className={`h-fit fcard-flat bg-card/40 backdrop-blur-sm base-ease ${
 							isCompleted
 								? "border-primary/50 bg-primary/5 opacity-80"
 								: "border-border/60 hover:border-primary/40"
 						}`}
 					>
 						<CardHeader className="p-3 pb-2 space-y-2">
-							<div className="flex items-center justify-between gap-2">
+							<div className="fcb gap-2">
 								<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground truncate">
 									{ex.name}
 								</CardTitle>
-								<div className="flex items-center gap-1.5 shrink-0">
+								<div className="fcy gap-1.5 sh0">
 									<Badge
 										variant="outline"
 										className="text-[9px] px-1.5 py-0 h-4 font-semibold uppercase rounded-none border-border/60"
@@ -223,7 +220,7 @@ export function PlannedExercises({
 							</div>
 
 							<div className="flex items-end justify-between">
-								<div className="flex flex-col text-[10px] text-muted-foreground pt-1.5 min-h-8">
+								<div className="fcol text-[10px] text-muted-foreground pt-1.5 min-h-8">
 									<span>
 										PR:{" "}
 										<span className="text-foreground font-semibold tracking-wider">
@@ -255,10 +252,10 @@ export function PlannedExercises({
 											render={
 												<Badge
 													variant="outline"
-													className="flex items-center gap-1.5 text-xs cursor-pointer hover:bg-accent/50"
+													className="fcy gap-1.5 text-xs cursor-pointer hover:bg-accent/50"
 												>
 													<ChatTextIcon
-														className="size-3.5 text-primary shrink-0"
+														className="size-3.5 text-primary sh0"
 														weight="bold"
 													/>
 													<span className="italic truncate max-w-46">
@@ -294,7 +291,7 @@ export function PlannedExercises({
 							}
 							className="border-t border-border/30 bg-background/20"
 						>
-							<div className="flex items-center justify-between px-3 py-1.5 bg-accent/15">
+							<div className="fcb px-3 py-1.5 bg-accent/15">
 								<span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
 									Target:{" "}
 									{ex.targetSets ? `${ex.targetSets} × ` : ""}

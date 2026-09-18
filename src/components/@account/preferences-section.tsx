@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import type { UserPreferences } from "@/types";
@@ -11,6 +11,7 @@ import {
 } from "@phosphor-icons/react";
 import { usePreferences } from "@/hooks";
 import { cn } from "@/lib/utils";
+import { CardsHeader } from "@/common";
 
 interface PreferencesSectionProps {
 	initialPreferences: UserPreferences;
@@ -23,27 +24,17 @@ export function PreferencesSection({
 		usePreferences(initialPreferences);
 
 	return (
-		<Card className="border border-secondary/50 bg-card/50 rounded-none shadow-none transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
-			<CardHeader className="p-5 pb-3 flex flex-row items-center justify-between space-y-0">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2.5">
-					<div className="flex items-center justify-center border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md shrink-0">
-						<SlidersHorizontalIcon
-							className="size-4"
-							weight="bold"
-						/>
-					</div>
-					Preferences
-				</CardTitle>
-			</CardHeader>
+		<Card className="fcard-flat card-ease hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
+			<CardsHeader icon={SlidersHorizontalIcon} title="Preferences" />
 
-			<CardContent className="p-5 pt-0 space-y-4">
+			<CardContent className="p-5 pt-1 fcol4">
 				{/* Weight Unit */}
-				<div className="p-3.5 border border-border/40 bg-background/50 rounded-none transition-all duration-200 hover:border-primary/30 group">
-					<div className="flex items-start gap-3">
-						<div className="flex items-center justify-center border border-primary/20 bg-primary/5 p-2 text-primary rounded-md shrink-0 group-hover:bg-primary/10 group-hover:border-primary/40 transition-all duration-200">
+				<div className="p-3.5 border border-border/40 bg-background/50 rounded-none base-ease hover:border-primary/30 group">
+					<div className="ft gap-3">
+						<div className="fc border border-primary/20 bg-primary/5 p-2 text-primary rounded-md sh0 group-hover:bg-primary/10 group-hover:border-primary/40 base-ease">
 							<ScalesIcon className="size-4" weight="bold" />
 						</div>
-						<div className="space-y-1 flex-1 min-w-0">
+						<div className="space-y-1 fgrow min-w-0">
 							<Label className="text-xs font-bold text-foreground block">
 								Weight Unit
 							</Label>
@@ -58,11 +49,11 @@ export function PreferencesSection({
 						</div>
 					</div>
 
-					<div className="mt-3 flex items-center justify-between gap-3 p-2 border border-border/30 bg-muted/20">
+					<div className="mt-3 fcb gap-3 p-2 border border-border/30 bg-muted/20">
 						<div className="flex items-baseline gap-2 font-mono tabular-nums min-w-0">
 							<span
 								className={cn(
-									"text-sm font-bold transition-all duration-300",
+									"text-sm font-bold base-ease",
 									prefs.weightUnit === "kg"
 										? "text-primary text-sm"
 										: "text-muted-foreground text-xs",
@@ -75,7 +66,7 @@ export function PreferencesSection({
 							</span>
 							<span
 								className={cn(
-									"text-sm font-bold transition-all duration-300",
+									"text-sm font-bold base-ease",
 									prefs.weightUnit === "lb"
 										? "text-primary text-sm"
 										: "text-muted-foreground text-xs",
@@ -93,12 +84,12 @@ export function PreferencesSection({
 				</div>
 
 				{/* Measurement Unit */}
-				<div className="p-3.5 border border-border/40 bg-background/50 rounded-none transition-all duration-200 hover:border-primary/30 group">
-					<div className="flex items-start gap-3">
-						<div className="flex items-center justify-center border border-primary/20 bg-primary/5 p-2 text-primary rounded-md shrink-0 group-hover:bg-primary/10 group-hover:border-primary/40 transition-all duration-200">
+				<div className="p-3.5 border border-border/40 bg-background/50 rounded-none base-ease hover:border-primary/30 group">
+					<div className="ft gap-3">
+						<div className="fc border border-primary/20 bg-primary/5 p-2 text-primary rounded-md sh0 group-hover:bg-primary/10 group-hover:border-primary/40 base-ease">
 							<RulerIcon className="size-4" weight="bold" />
 						</div>
-						<div className="space-y-1 flex-1 min-w-0">
+						<div className="space-y-1 fgrow min-w-0">
 							<Label className="text-xs font-bold text-foreground block">
 								Measurement Unit
 							</Label>
@@ -113,30 +104,30 @@ export function PreferencesSection({
 						</div>
 					</div>
 
-					<div className="mt-3 flex items-center justify-between gap-3 p-2 border border-border/30 bg-muted/20">
+					<div className="mt-3 fcb gap-3 p-2 border border-border/30 bg-muted/20">
 						<div className="flex items-baseline gap-2 min-w-0">
 							<span
 								className={cn(
-									"font-bold transition-all duration-300",
-									prefs.measurementUnit === "in"
-										? "text-primary text-sm"
-										: "text-muted-foreground text-xs",
-								)}
-							>
-								35.4 in
-							</span>
-							<span className="text-muted-foreground/40 text-xs">
-								·
-							</span>
-							<span
-								className={cn(
-									"text-sm font-bold transition-all duration-300",
+									"text-sm font-bold base-ease",
 									prefs.measurementUnit === "cm"
 										? "text-primary text-sm"
 										: "text-muted-foreground text-xs",
 								)}
 							>
 								90.0 cm
+							</span>
+							<span className="text-muted-foreground/40 text-xs">
+								·
+							</span>
+							<span
+								className={cn(
+									"font-bold base-ease",
+									prefs.measurementUnit === "in"
+										? "text-primary text-sm"
+										: "text-muted-foreground text-xs",
+								)}
+							>
+								35.4 in
 							</span>
 						</div>
 						<Switch

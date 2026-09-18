@@ -49,16 +49,15 @@ export function DeletePlanDialog({
 			<AlertDialogTrigger
 				render={
 					<Button
-						size="icon-sm"
+						size="icon"
 						variant="outline"
 						onClick={(e) => {
 							e.stopPropagation();
 							setOpen(true);
 						}}
-						className="rounded-none h-7 text-[11px] gap-1 border-border/50 text-destructive hover:bg-destructive/10 hover:text-destructive"
+						className="rounded-none h-7 border-border/50 text-destructive hover:bg-destructive/10 hover:text-destructive"
 					>
 						<TrashIcon className="size-3" weight="bold" />
-						
 					</Button>
 				}
 			/>

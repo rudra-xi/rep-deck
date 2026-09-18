@@ -112,7 +112,7 @@ export default function WorkoutLogClientView({
 				/>
 				<Empty className="border border-dashed border-border/80 bg-card/30 p-8">
 					<EmptyHeader>
-						<EmptyMedia className="fc border border-primary/30 bg-primary/10 p-2 text-primary shrink-0">
+						<EmptyMedia className="fc border border-primary/30 bg-primary/10 p-2 text-primary sh0">
 							<FilePlusIcon
 								className="size-6 text-primary"
 								weight="light"
@@ -139,10 +139,10 @@ export default function WorkoutLogClientView({
 	}
 
 	return (
-		<section className="space-y-6 sm:space-y-8">
+		<section className="lg:space-y-6 space-y-8">
 			<PageTitleCard
-				title="Workout"
-				subTitle="Log today's session with your current plan and last lifts"
+				title="Workout Log"
+				subTitle="Log today's session — sets, reps, and notes as you train"
 			/>
 
 			{/* Day Selector */}

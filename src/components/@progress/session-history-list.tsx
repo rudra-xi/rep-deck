@@ -6,15 +6,10 @@ import {
 	CalendarDotsIcon,
 	CaretRightIcon,
 } from "@phosphor-icons/react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-	type ChartConfig,
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "@/components/ui/chart";
+import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 import {
 	Empty,
 	EmptyContent,
@@ -25,7 +20,7 @@ import {
 } from "@/components/ui/empty";
 import { useSessionHistory } from "@/hooks";
 import { SessionHistoryListSkeleton } from "@/skeletons";
-import { useUnits } from "@/common";
+import { CardsHeader, useUnits } from "@/common";
 
 interface SessionHistoryListProps {
 	initialData?: any[];
@@ -42,22 +37,18 @@ export function SessionHistoryList({
 		useSessionHistory(initialData, propLoading);
 
 	const sessionChartConfig = {
-		volume: { label: `Volume (${weightUnit})`, color: "var(--chart-1)" },
+		volume: { label: "Volume", color: "var(--chart-1)" },
+		label: { color: "var(--primary-foreground)" },
 	} satisfies ChartConfig;
 
-	// Loading State
 	if (loading) return <SessionHistoryListSkeleton rows={4} />;
 
-	// Empty State
 	if (!hasData) {
 		return (
-			<Card
-				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none min-h-[220px]"
-			>
+			<Card size="sm" className="fcard-flat min-h-[220px]">
 				<Empty className="p-6 text-center w-full">
 					<EmptyHeader>
-						<EmptyMedia className="flex border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+						<EmptyMedia className="ficon-box-lg">
 							<CalendarDotsIcon
 								className="size-6 text-primary"
 								weight="bold"
@@ -66,7 +57,7 @@ export function SessionHistoryList({
 						<EmptyTitle className="text-sm font-medium text-foreground">
 							No Sessions Yet
 						</EmptyTitle>
-						<EmptyDescription className="text-xs text-muted-foreground max-w-sm mx-auto">
+						<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
 							Complete your first workout to see your session
 							history and volume tracking.
 						</EmptyDescription>
@@ -87,114 +78,117 @@ export function SessionHistoryList({
 		);
 	}
 
-	// Data State
+	// Last 6 sessions, oldest → newest for left-to-right reading
+	const recentBars = chartData.slice(0, 6).reverse();
+
 	return (
-		<Card
-			size="sm"
-			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-		>
-			<CardHeader className="space-y-0 pb-3 flex fcb">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-					<ClockCounterClockwiseIcon
-						weight="bold"
-						className="text-popover-foreground"
-					/>
-					Recent Session Volume
-				</CardTitle>
+		<Card size="sm" className="fcard-flat card-ease">
+			<CardsHeader
+				icon={ClockCounterClockwiseIcon}
+				title="Recent Session Volume"
+			/>
 
-				<div className="fc border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
-					<CalendarDotsIcon className="size-4" weight="bold" />
-				</div>
-			</CardHeader>
-
-			<CardContent className="space-y-4 pt-0">
+			<CardContent className="p-4 pt-1 fcol4">
+				{/* Horizontal bar chart — date inside bar, volume + unit outside right */}
 				<ChartContainer
 					config={sessionChartConfig}
 					className="h-[140px] w-full border-b border-border/30 pb-2"
 				>
 					<BarChart
 						accessibilityLayer
-						data={chartData.slice(0, 6).reverse()}
+						data={recentBars}
 						layout="vertical"
-						margin={{
-							left: 0,
-							right: 12,
-							top: 4,
-							bottom: 4,
-						}}
+						margin={{ right: 60, top: 6, bottom: 6 }}
 					>
-						<CartesianGrid
-							horizontal={false}
-							strokeDasharray="3 3"
-						/>
-						<XAxis
-							type="number"
-							fontSize={10}
-							unit={weightUnit}
-							tickLine={false}
-							axisLine={false}
-						/>
+						{/* Both axes hidden — labels live inside/outside the bars */}
+						<XAxis type="number" dataKey="volume" hide />
 						<YAxis
 							type="category"
 							dataKey="date"
-							fontSize={10}
 							tickLine={false}
 							axisLine={false}
-							width={48}
+							hide
 						/>
-						<ChartTooltip
-							content={<ChartTooltipContent indicator="line" />}
-						/>
+
 						<Bar
 							dataKey="volume"
 							fill="var(--color-volume)"
-							radius={[0, 2, 2, 0]}
-							barSize={12}
+							radius={0}
 							isAnimationActive={true}
 							animationDuration={800}
-							animationEasing="ease-in-out"
-						/>
+							animationEasing="ease-out"
+						>
+							{/* Date label — inside the bar, left-aligned */}
+							<LabelList
+								dataKey="date"
+								position="insideLeft"
+								offset={8}
+								className="fill-(--color-label)"
+								fontSize={10}
+							/>
+
+							{/* Volume value + unit — outside the bar, right-aligned */}
+							<LabelList
+								dataKey="volume"
+								position="right"
+								offset={8}
+								className="fill-foreground"
+								fontSize={10}
+								formatter={(value: number) =>
+									`${Number(value).toLocaleString()} ${weightUnit}`
+								}
+							/>
+						</Bar>
 					</BarChart>
 				</ChartContainer>
 
+				{/* Session list */}
 				<div className="divide-y divide-border/30">
-					{sessions.map((session) => (
-						<div
-							key={session.id}
-							tabIndex={0}
-							role="button"
-							onClick={() => navigateToSession(session.id)}
-							onKeyDown={(e) => {
-								if (e.key === "Enter" || e.key === " ") {
-									e.preventDefault();
-									navigateToSession(session.id);
-								}
-							}}
-							className="py-2.5 flex items-center justify-between hover:bg-background/40 transition-colors cursor-pointer px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-						>
-							<div className="space-y-0.5">
-								<div className="flex items-center gap-2">
-									<span className="text-xs font-bold text-foreground">
-										{session.date}
-									</span>
-									<span className="text-[10px] font-semibold px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20">
-										{session.programName} –{" "}
-										{session.dayLabel}
-									</span>
-								</div>
-								<p className="text-[11px] text-muted-foreground">
-									{session.keyLiftsSummary}
-								</p>
-							</div>
+					{sessions.map((session) => {
+						const hasVolume =
+							typeof session.totalVolumeKg === "number" &&
+							!isNaN(session.totalVolumeKg);
 
-							<div className="flex items-center gap-3">
-								<span className="text-xs font-semibold text-foreground hidden sm:inline">
-									{fmtWeight(session.totalVolumeKg ?? 0).toLocaleString()} {weightUnit}
-								</span>
-								<CaretRightIcon className="size-4 text-muted-foreground" />
+						return (
+							<div
+								key={session.id}
+								tabIndex={0}
+								role="button"
+								onClick={() => navigateToSession(session.id)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter" || e.key === " ") {
+										e.preventDefault();
+										navigateToSession(session.id);
+									}
+								}}
+								className="py-2.5 fcb hover:bg-background/40 transition-colors cursor-pointer px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+							>
+								<div className="space-y-0.5 min-w-0">
+									<div className="fcy gap-2">
+										<span className="text-xs font-bold text-foreground sh0">
+											{session.date}
+										</span>
+										<span className="text-[10px] font-semibold px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 truncate">
+											{session.programName} –{" "}
+											{session.dayLabel}
+										</span>
+									</div>
+									<p className="text-[11px] text-muted-foreground truncate">
+										{session.keyLiftsSummary}
+									</p>
+								</div>
+
+								<div className="fcy gap-3 sh0">
+									<span className="text-xs font-semibold text-foreground hidden sm:inline tabular-nums">
+										{hasVolume
+											? `${fmtWeight(session.totalVolumeKg).toLocaleString()} ${weightUnit}`
+											: "—"}
+									</span>
+									<CaretRightIcon className="size-4 text-muted-foreground" />
+								</div>
 							</div>
-						</div>
-					))}
+						);
+					})}
 				</div>
 			</CardContent>
 		</Card>

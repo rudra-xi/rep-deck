@@ -78,13 +78,14 @@ export function WeightBodyFatTrend({
 			<ChartCardSkeleton
 				height="h-[200px] sm:h-[220px]"
 				titleWidth="w-40"
+				hasKpiRow
 			/>
 		);
 	}
 
 	if (!hasData) {
 		return (
-			<Card size="sm" className="fcard-flat min-h-[220px]">
+			<Card size="sm" className="fcard-flat min-h-55">
 				<Empty className="p-6 text-center w-full">
 					<EmptyHeader>
 						<EmptyMedia className="ficon-box-lg">
@@ -118,7 +119,7 @@ export function WeightBodyFatTrend({
 	}
 
 	return (
-		<Card size="sm" className="fcard-flat">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeader icon={HeartbeatIcon} title="Body Composition" />
 
 			<CardContent className="p-4 pt-1 fcol3">
@@ -138,7 +139,7 @@ export function WeightBodyFatTrend({
 					<ComposedChart
 						accessibilityLayer
 						data={convertedData}
-						margin={{ left: 10, right: 2, top: 8, bottom: 4 }}
+						margin={{ left: 0, right: 0, top: 8, bottom: 4 }}
 					>
 						<defs>
 							<linearGradient

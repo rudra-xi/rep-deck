@@ -33,7 +33,7 @@ function BulletList({ items }: { items: React.ReactNode[] }) {
 		<ul className="fcol2_5">
 			{items.map((item, i) => (
 				<li key={i} className="ft gap-3">
-					<span className="size-1.5 rounded-full bg-primary shrink-0 mt-2" />
+					<span className="size-1.5 rounded-full bg-primary sh0 mt-2" />
 					<span className="text-sm text-muted-foreground leading-relaxed">
 						{item}
 					</span>

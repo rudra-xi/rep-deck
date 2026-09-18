@@ -1,23 +1,18 @@
 "use client";
 
-import { useMemo } from "react";   // ✅ ADD
+import { useMemo } from "react";
 import Link from "next/link";
-import { NumberSquareOneIcon, TrendUpIcon } from "@phosphor-icons/react";
+import { TrendUpIcon } from "@phosphor-icons/react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
 	type ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useUnits } from "@/common";
+import { CardsHeader, useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -39,7 +34,7 @@ export interface StrengthTrendDataPoint {
 
 const chartConfig = {
 	squat: { label: "Squat", color: "var(--chart-1)" },
-	bench: { label: "Bench Press", color: "var(--chart-2)" },
+	bench: { label: "Bench", color: "var(--chart-2)" },
 	deadlift: { label: "Deadlift", color: "var(--chart-3)" },
 	ohp: { label: "OHP", color: "var(--chart-4)" },
 } satisfies ChartConfig;
@@ -53,10 +48,9 @@ export function StrengthChart({
 	data = [],
 	loading = false,
 }: StrengthChartProps) {
-	const { weightUnit, fmtWeight } = useUnits();   // ✅ add fmtWeight
+	const { weightUnit, fmtWeight } = useUnits();
 	const { activeLifts, toggleLift, hasData } = useStrengthChart(data);
 
-	// ✅ Convert every data point to user's unit
 	const convertedData = useMemo(
 		() =>
 			data.map((d) => ({
@@ -85,15 +79,43 @@ export function StrengthChart({
 		);
 	}
 
+	// Toggle buttons for lift selection
+	const liftToggles = (
+		<div className="fg1 fwrap w-full justify-end">
+			{Object.entries(chartConfig).map(([key, config]) => {
+				const isActive = activeLifts[key as keyof typeof activeLifts];
+				return (
+					<Button
+						key={key}
+						variant="ghost"
+						size="sm"
+						onClick={() => toggleLift(key)}
+						className={`h-7 px-2 text-xs rounded-none transition-colors fgrow sm:flex-initial ${
+							isActive
+								? "border border-primary bg-primary/10 text-accent-foreground font-medium"
+								: "bg-transparent fmuted hover:text-foreground border border-border"
+						}`}
+					>
+						<span
+							className="mr-1.5 size-2 sh0 rounded-full"
+							style={{ backgroundColor: config.color }}
+						/>
+						{config.label}
+					</Button>
+				);
+			})}
+		</div>
+	);
+
 	if (!hasData) {
 		return (
 			<Card
 				size="sm"
-				className="relative border border-secondary/40 bg-card/30 rounded-none shadow-none min-h-[300px] w-full"
+				className="fcard-flat relative min-h-[300px] w-full"
 			>
 				<Empty className="p-8 text-center w-full">
 					<EmptyHeader>
-						<EmptyMedia className="flex border border-primary/30 bg-primary/10 p-2 text-primary rounded-md shrink-0">
+						<EmptyMedia className="ficon-box-lg">
 							<TrendUpIcon
 								className="size-6 text-primary"
 								weight="bold"
@@ -102,26 +124,24 @@ export function StrengthChart({
 						<EmptyTitle className="text-sm font-medium text-foreground">
 							No Strength Data Yet
 						</EmptyTitle>
-						<EmptyDescription className="text-xs text-muted-foreground max-w-sm mx-auto">
+						<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
 							Log workouts with Squat, Bench Press, Deadlift, or
 							Overhead Press to see your estimated 1RM progression
 							over time.
 						</EmptyDescription>
 					</EmptyHeader>
 					<EmptyContent>
-						<div className="flex flex-wrap gap-2 mt-1">
-							<Button
-								nativeButton={false}
-								variant="outline"
-								size="sm"
-								className="text-xs rounded-none"
-								render={
-									<Link href="/workouts/new">
-										Log Your First Workout
-									</Link>
-								}
-							/>
-						</div>
+						<Button
+							nativeButton={false}
+							variant="outline"
+							size="sm"
+							className="text-xs mt-1 rounded-none"
+							render={
+								<Link href="/workouts/new">
+									Log Your First Workout
+								</Link>
+							}
+						/>
 					</EmptyContent>
 				</Empty>
 			</Card>
@@ -129,50 +149,14 @@ export function StrengthChart({
 	}
 
 	return (
-		<Card
-			size="sm"
-			className="w-full border-secondary/50 bg-card/50 rounded-none shadow-none"
-		>
-			<CardHeader className="p-4 lg:p-5 flex flex-col items-start justify-between gap-3 lg:flex-row lg:items-center">
-				<div className="flex items-center gap-2">
-					<NumberSquareOneIcon
-						size={16}
-						weight="bold"
-						className="text-primary shrink-0"
-					/>
-					<CardDescription className="text-[11px] sm:text-xs text-foreground font-medium">
-						Estimated 1RM.
-					</CardDescription>
-				</div>
+		<Card size="sm" className="fcard-flat w-full card-ease">
+			<CardsHeader icon={TrendUpIcon} title="Estimated ORM" />
 
-				<div className="flex flex-wrap gap-1 w-full lg:w-auto">
-					{Object.entries(chartConfig).map(([key, config]) => {
-						const isActive =
-							activeLifts[key as keyof typeof activeLifts];
-						return (
-							<Button
-								key={key}
-								variant="ghost"
-								size="sm"
-								onClick={() => toggleLift(key)}
-								className={`h-6 lg:h-7 px-2 text-xs rounded-none transition-colors flex-1 lg:flex-initial ${
-									isActive
-										? "bg-accent text-accent-foreground font-medium"
-										: "bg-transparent text-muted-foreground hover:text-foreground"
-								}`}
-							>
-								<span
-									className="mr-1.5 h-1.5 w-1.5 lg:h-2 lg:w-2 shrink-0 rounded-full"
-									style={{ backgroundColor: config.color }}
-								/>
-								{config.label}
-							</Button>
-						);
-					})}
-				</div>
-			</CardHeader>
+			<CardContent className="p-4 pt-1 fcol3">
+				{/* Toggle row — right-aligned above chart */}
+				{liftToggles}
 
-			<CardContent className="px-2 pb-4 lg:px-5 lg:pb-5">
+				{/* Chart */}
 				<ChartContainer
 					config={chartConfig}
 					className="h-55 lg:h-70 w-full"

@@ -1,10 +1,10 @@
 "use client";
 
 import { ShieldCheckIcon, WarningIcon } from "@phosphor-icons/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
+import { Card, CardContent } from "@/components/ui/card";
 import { useDataQuality } from "@/hooks";
 import { DataQualityCardSkeleton } from "@/skeletons";
+import { CardsHeader } from "@/common";
 
 interface DataQualityProps {
 	daysSinceLastMeasurement?: number;
@@ -25,29 +25,16 @@ export function DataQualityCard({
 	if (loading) return <DataQualityCardSkeleton />;
 
 	return (
-		<Card className="border border-secondary/50 bg-card/50 rounded-none shadow-none">
-			<CardHeader className="p-4 pb-2">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2.5">
-					<div
-						className={`flex items-center justify-center border p-1.5 rounded-md shrink-0 ${
-							isStale
-								? "border-primary/30 bg-primary/10 text-primary"
-								: "border-primary/30 bg-primary/10 text-primary"
-						}`}
-					>
-						{isStale ? (
-							<WarningIcon className="size-4" weight="bold" />
-						) : (
-							<ShieldCheckIcon className="size-4" weight="bold" />
-						)}
-					</div>
-					Data Quality
-				</CardTitle>
-			</CardHeader>
-			<CardContent className="p-4 pt-1 space-y-2.5">
+		<Card className="fcard-flat card-ease">
+			<CardsHeader
+				icon={isStale ? WarningIcon : ShieldCheckIcon}
+				title="Data Quality"
+			/>
+
+			<CardContent className="p-4 pt-1 fcol2_5">
 				<div className="grid grid-cols-2 gap-2">
 					<div className="p-2 border border-border/40 bg-background/50 rounded-none">
-						<span className="text-[10px] text-muted-foreground uppercase block">
+						<span className="ftext-2xs fmuted uppercase block">
 							Last Logged
 						</span>
 						<span className="text-xs font-bold text-foreground">
@@ -55,7 +42,7 @@ export function DataQualityCard({
 						</span>
 					</div>
 					<div className="p-2 border border-border/40 bg-background/50 rounded-none">
-						<span className="text-[10px] text-muted-foreground uppercase block">
+						<span className="ftext-2xs fmuted uppercase block">
 							Logging Interval
 						</span>
 						<span className="text-xs font-bold text-foreground">
@@ -65,9 +52,9 @@ export function DataQualityCard({
 				</div>
 
 				{isStale ? (
-					<div className="p-2 border border-destructive/30 bg-destructive/10 text-destructive text-xs flex items-center gap-2">
+					<div className="p-2 border border-destructive/30 bg-destructive/10 text-destructive text-xs fcy gap-2">
 						<WarningIcon
-							className="size-4 shrink-0"
+							className="size-4 sh0"
 							weight="bold"
 						/>
 						<span>{status.message}</span>

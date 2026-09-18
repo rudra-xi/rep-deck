@@ -5,29 +5,41 @@ import type { ReactNode } from "react";
 import { Footer, Navigation } from "@/common";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
+import { useToastPosition } from "@/hooks";
 
 export default function LayoutProvider({ children }: { children: ReactNode }) {
 	const pathname = usePathname();
 	const hideOnRoutes = "/";
 	const show = !hideOnRoutes.includes(pathname);
+
+	const toastPosition = useToastPosition({
+		mobilePosition: "bottom-center",
+		desktopPosition: "top-right",
+	});
+
 	return (
 		<ThemeProvider
 			attribute="class"
-			defaultTheme="enterprise"
+			defaultTheme="violateeye"
 			enableSystem={false}
 			themes={[
-				"enterprise",
-				"qraft",
+				"green",
+				"violateeye",
 				"rosepine",
-				"zen",
-				"opcl",
-				"barmell",
+				"retro",
+				"cosmic",
+				"orchid",
+				"booking",
+				"lime",
 			]}
 			disableTransitionOnChange
 		>
 			{show && <Navigation />}
 			{children}
-			<Toaster position="top-right" />
+			<Toaster
+				position={toastPosition}
+				mobileOffset={{ bottom: "5rem" }}
+			/>
 			{show && <Footer />}
 		</ThemeProvider>
 	);

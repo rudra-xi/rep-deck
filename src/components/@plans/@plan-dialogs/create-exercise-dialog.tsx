@@ -22,7 +22,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { useDialog, useFormField } from "@/hooks";
 import { toast } from "sonner";
-import { PRESET_EXERCISES, PRESET_REP_RANGES, type PresetExercise } from "@/constants";
+import {
+	PRESET_EXERCISES,
+	PRESET_REP_RANGES,
+	type PresetExercise,
+} from "@/constants";
 
 interface CreateExerciseDialogProps {
 	programDayId: string;
@@ -115,7 +119,7 @@ export function CreateExerciseDialog({
 			<DialogContent className="sm:max-w-[425px] rounded-none border-secondary/50 bg-card">
 				<form onSubmit={handleSubmit}>
 					<DialogHeader>
-						<DialogTitle className="text-sm font-bold uppercase tracking-wider text-foreground">
+						<DialogTitle className="text-sm font-bold fupper text-foreground">
 							Add Exercise
 						</DialogTitle>
 					</DialogHeader>
@@ -123,7 +127,7 @@ export function CreateExerciseDialog({
 					<div className="py-4 space-y-3">
 						{/* Combobox Exercise Input */}
 						<div className="space-y-1">
-							<span className="text-[11px] font-medium uppercase text-muted-foreground block">
+							<span className="ftext-xs2 font-medium fupper fmuted block">
 								Exercise Name
 							</span>
 							<Combobox
@@ -148,13 +152,9 @@ export function CreateExerciseDialog({
 									</ComboboxEmpty>
 									<ComboboxList>
 										{(item: PresetExercise) => (
-											<ComboboxItem
-												key={item.name}
-												value={item}
-												className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer flex justify-between items-center"
-											>
+											<ComboboxItem className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer fcb">
 												<span>{item.name}</span>
-												<span className="text-[10px] text-muted-foreground uppercase">
+												<span className="ftext-2xs fmuted fupper">
 													{item.type}
 												</span>
 											</ComboboxItem>
@@ -165,7 +165,7 @@ export function CreateExerciseDialog({
 
 							{/* Custom exercise notification tag */}
 							{exerciseName.trim() && !isPreset && (
-								<p className="text-[10px] text-muted-foreground mt-1">
+								<p className="ftext-2xs fmuted mt-1">
 									Custom exercise: "{exerciseName.trim()}"
 									will be added
 								</p>

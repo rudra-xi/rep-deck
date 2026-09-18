@@ -4,9 +4,11 @@ import { useRouter } from "next/navigation";
 import { addPlanDay, deletePlanDay } from "@/actions/plans";
 import { CreateDayDialog, DeleteDayDialog } from "@/plan-dialogs";
 import { BlueprintIcon, CaretRightIcon } from "@phosphor-icons/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import type { PlanWithStructure } from "@/types/plans";
 import { PlanDetailsCardSkeleton } from "@/skeletons";
+import { Badge } from "@/components/ui/badge";
+import { CardsHeader } from "@/common";
 
 interface PlanDetailsCardProps {
 	plan: PlanWithStructure;
@@ -33,7 +35,6 @@ export function PlanDetailsCard({
 		router.refresh();
 	};
 
-	// Keyboard event handler for accessibility
 	const handleKeyDown = (
 		event: React.KeyboardEvent<HTMLDivElement>,
 		dayId: string,
@@ -48,24 +49,24 @@ export function PlanDetailsCard({
 		return <PlanDetailsCardSkeleton dayCount={plan.days?.length ?? 3} />;
 
 	return (
-		<Card
-			size="sm"
-			className="relative border border-secondary/50 bg-card/50 rounded-none shadow-none"
-		>
-			<CardHeader className="space-y-0 pb-3 flex fcb">
-				<CardTitle className="text-xs font-bold uppercase tracking-wider text-primary fc gap-2">
-					<BlueprintIcon
-						weight="bold"
-						className="text-popover-foreground"
-					/>
-					{plan.name} (v{plan.version})
-				</CardTitle>
+		<Card size="sm" className="fcard-flat card-ease">
+			<CardsHeader
+				icon={BlueprintIcon}
+				title={
+					<>
+						{plan.name}
+						<Badge
+							variant="outline"
+							className="text-xs font-bold lowercase ml-1"
+						>
+							v{plan.version}
+						</Badge>
+					</>
+				}
+				trailing={<CreateDayDialog onAddDay={handleAddDay} />}
+			/>
 
-				{/* Modularized Create Day Dialog */}
-				<CreateDayDialog onAddDay={handleAddDay} />
-			</CardHeader>
-
-			<CardContent className="space-y-2">
+			<CardContent className="p-4 pt-1 fcol2">
 				<span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
 					Select Training Day
 				</span>
@@ -86,7 +87,7 @@ export function PlanDetailsCard({
 										: "border-border/40 bg-background/50 text-muted-foreground hover:text-foreground hover:border-primary/40"
 								}`}
 							>
-								<div className="flex items-center gap-2">
+								<div className="fcy gap-2">
 									<span className="text-[10px] font-bold px-1.5 py-0.5 bg-background border border-border/50 text-primary">
 										Day {day.dayIndex}
 									</span>
@@ -95,8 +96,7 @@ export function PlanDetailsCard({
 									</span>
 								</div>
 
-								<div className="flex items-center gap-1">
-									{/* Modularized Delete Day Dialog */}
+								<div className="fcy gap-1">
 									<DeleteDayDialog
 										dayLabel={day.label}
 										onDelete={() => handleDeleteDay(day.id)}
