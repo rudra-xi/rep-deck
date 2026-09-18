@@ -35,7 +35,7 @@ export default function GlobalError({
 					</div>
 
 					{/* Icon */}
-					<div className="inline-fc border border-destructive/30 bg-destructive/10 p-3 text-destructive mb-4">
+					<div className="inline-flex border border-destructive/30 bg-destructive/10 p-3 text-destructive mb-4">
 						<WarningIcon className="size-6" weight="fill" />
 					</div>
 
