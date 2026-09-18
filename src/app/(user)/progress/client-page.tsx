@@ -1,83 +1,70 @@
-// progress/client-page.tsx
 "use client";
 
 import { useState } from "react";
-import { PageTitleCard, SectionTitleCard } from "@/common";
+import { PageTitleCard, SectionTitleCard, WeightBodyFatTrend } from "@/common";
 import { Separator } from "@/components/ui/separator";
 import {
-	BodyMetricsCard,
 	IndividualLiftDetailsCard,
 	SessionHistoryList,
 	StrengthOverviewCard,
+	LowerBodyTrend,
 	TrainingFrequencyCard,
+	UpperBodyTrend,
 } from "@/progress";
 
-interface ProgressClientPageProps {
-	initialStrengthOverview: any[];
-	initialLiftDetails: any[];
-	initialSessions: any[];
-	initialFrequency: any[];
-	initialBodyMetrics?: any[];
-}
-
-export default function ProgressClientPage({
-	initialStrengthOverview,
-	initialLiftDetails,
-	initialSessions,
-	initialFrequency,
-	initialBodyMetrics = [],
-}: ProgressClientPageProps) {
+export default function ProgressClientPage() {
 	const [timeRange, setTimeRange] = useState<"2M" | "3M" | "6M" | "1Y">("3M");
 
 	return (
-		<section className="space-y-6 sm:space-y-8 pb-12">
-			{/* Page Header */}
+		<section className="lg:space-y-6 space-y-8">
 			<PageTitleCard
 				title="Progress"
-				subTitle="Deep dive into your strength, size, and body composition over time"
+				subTitle="Track strength, size, and body composition over time"
 			/>
 
-			{/* Section 1: Body Metrics */}
+			{/* Section 1: Body Composition */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Body Composition" />
-				<BodyMetricsCard initialData={initialBodyMetrics} />
+				<WeightBodyFatTrend />
 			</div>
 
 			<Separator />
 
-			{/* Section 2: Strength Performance Grid */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
-				<div className="space-y-3 w-full">
-					<SectionTitleCard title="Big 4 Trend" />
+			{/* Section 2: Measurements (2 charts side-by-side) */}
+			<div className="space-y-3 w-full">
+				<SectionTitleCard title="Measurements Progress" />
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
+					<UpperBodyTrend />
+					<LowerBodyTrend />
+				</div>
+			</div>
+
+			<Separator />
+
+			{/* Section 3: Strength Performance */}
+			<div className="space-y-3 w-full">
+				<SectionTitleCard title="Strength Performance" />
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
 					<StrengthOverviewCard
 						timeRange={timeRange}
 						onTimeRangeChange={setTimeRange}
-						initialData={initialStrengthOverview}
 					/>
-				</div>
-
-				<div className="space-y-3 w-full">
-					<SectionTitleCard title="Lift Details" />
-					<IndividualLiftDetailsCard
-						initialData={initialLiftDetails}
-					/>
+					<IndividualLiftDetailsCard />
 				</div>
 			</div>
 
 			<Separator />
 
-			{/* Section 3: Activity & Consistency Grid */}
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">
-				<div className="lg:col-span-2 space-y-3 order-3 lg:order-1">
-					<SectionTitleCard title="Session History" />
-					<SessionHistoryList initialData={initialSessions} />
-				</div>
-
-				<Separator className="block lg:hidden order-2" />
-
-				<div className="lg:col-span-1 space-y-3 order-1 lg:order-3">
-					<SectionTitleCard title="Training Frequency" />
-					<TrainingFrequencyCard initialData={initialFrequency} />
+			{/* Section 4: Activity & Consistency (combined) */}
+			<div className="space-y-3 w-full">
+				<SectionTitleCard title="Activity & Consistency" />
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">
+					<div className="lg:col-span-2 order-2 lg:order-1">
+						<SessionHistoryList />
+					</div>
+					<div className="lg:col-span-1 order-1 lg:order-2">
+						<TrainingFrequencyCard />
+					</div>
 				</div>
 			</div>
 		</section>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NotePencilIcon} from "@phosphor-icons/react";
+import { NotePencilIcon } from "@phosphor-icons/react";
 import { setActivePlan } from "@/actions/plans";
 import { PageTitleCard, SectionTitleCard } from "@/common";
 import { Separator } from "@/components/ui/separator";
@@ -95,7 +95,7 @@ export default function PlansClientView({
 				/>
 				<Empty className="border border-dashed border-border/80 bg-card/30 p-8 items-stretch text-center">
 					<EmptyHeader className="items-center">
-						<EmptyMedia className="fc border border-primary/30 bg-primary/10 p-2 text-primary shrink-0">
+						<EmptyMedia className="fc border border-primary/30 bg-primary/10 p-2 text-primary sh0">
 							<NotePencilIcon
 								className="size-6 text-primary"
 								weight="light"
@@ -119,11 +119,11 @@ export default function PlansClientView({
 	}
 
 	return (
-		<section className="space-y-6 sm:space-y-8">
+		<section className="lg:space-y-6 space-y-8">
 			{/* Page Header */}
 			<PageTitleCard
 				title="Plans"
-				subTitle="Manage your training blocks and switch between plan versions"
+				subTitle="Build, version, and switch between training programs"
 			/>
 
 			{/* Section 1: Plans Overview */}

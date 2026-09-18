@@ -21,11 +21,11 @@ export function AccountClientPage({
 	initialPreferences,
 }: AccountClientPageProps) {
 	return (
-		<section className="space-y-6 sm:space-y-8">
+		<section className="lg:space-y-6 space-y-8">
 			{/* Page Header */}
 			<PageTitleCard
 				title="Account"
-				subTitle="Manage your profile, login, and app preferences."
+				subTitle="Profile, units, theme, and support"
 			/>
 
 			{/* Section 1: Profile */}
@@ -36,35 +36,26 @@ export function AccountClientPage({
 
 			<Separator />
 
-			{/* Section 2: Preferences & Theme Grid */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
-				<div className="space-y-3 w-full">
-					<SectionTitleCard title="Preferences" />
+			{/* Section 2: Preferences (Units + Theme) */}
+			<div className="space-y-3 w-full">
+				<SectionTitleCard title="Preferences" />
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
 					<PreferencesSection
 						initialPreferences={initialPreferences}
 					/>
-				</div>
-
-				<div className="space-y-3 w-full">
-					<SectionTitleCard title="Theme" />
 					<ThemeSection />
 				</div>
 			</div>
 
 			<Separator />
 
-			{/* Section 3: Feedback & Support */}
+			{/* Section 3: Support (Feedback + App Info) */}
 			<div className="space-y-3 w-full">
-				<SectionTitleCard title="Feedback" />
-				<FeedbackSection />
-			</div>
-
-			<Separator />
-
-			{/* Section 4: App Info */}
-			<div className="space-y-3 w-full">
-				<SectionTitleCard title="App" />
-				<AboutSection />
+				<SectionTitleCard title="Support" />
+				<div className="space-y-6 w-full">
+					<FeedbackSection />
+					<AboutSection />
+				</div>
 			</div>
 		</section>
 	);

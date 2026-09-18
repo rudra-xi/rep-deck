@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PageTitleCard, SectionTitleCard } from "@/common";
+import { PageTitleCard, SectionTitleCard, WeightBodyFatTrend } from "@/common";
 import { Separator } from "@/components/ui/separator";
 import {
 	DataQualityCard,
@@ -10,7 +10,6 @@ import {
 	MuscleSizeTrend,
 	QuickAddMeasurementForm,
 	QuickStats,
-	WeightBodyFatTrend,
 } from "@/metrics";
 import { getMetricsData } from "@/actions/metrics";
 
@@ -39,10 +38,10 @@ export function MetricsClientPage() {
 	}, []);
 
 	return (
-		<section className="space-y-6 sm:space-y-8">
+		<section className="lg:space-y-6 space-y-8">
 			<PageTitleCard
 				title="Metrics"
-				subTitle="Log your body measurements and track changes over time"
+				subTitle="Log body measurements and follow the trend"
 			/>
 
 			{/* Section 1: Quick Stats */}
@@ -60,18 +59,20 @@ export function MetricsClientPage() {
 					<QuickAddMeasurementForm />
 				</div>
 
+				<Separator className="block lg:hidden" />
+
 				<div className="space-y-3 w-full">
 					<SectionTitleCard title="How to Measure" />
-					<MeasurementGuide/>
+					<MeasurementGuide />
 				</div>
 			</div>
 
 			<Separator />
 
-			{/* Section 3: Data Quality & Reminders */}
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start w-full">
-				<div className="space-y-3 w-full">
-					<SectionTitleCard title="Data Quality" />
+			{/* Section 3: Tracking Health (Data Quality + Reminders) */}
+			<div className="space-y-3 w-full">
+				<SectionTitleCard title="Tracking Health" />
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start w-full">
 					<DataQualityCard
 						daysSinceLastMeasurement={
 							initialData?.qualityMetrics
@@ -82,28 +83,20 @@ export function MetricsClientPage() {
 						}
 						loading={loading}
 					/>
-				</div>
-
-				<div className="space-y-3 w-full">
-					<SectionTitleCard title="Reminders" />
-					<MeasurementReminders/>
+					<MeasurementReminders />
 				</div>
 			</div>
 
 			<Separator />
 
-			{/* Section 4: Charts */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
-				<div className="space-y-3 w-full">
-					<SectionTitleCard title="Weight & Body Fat" />
+			{/* Section 4: Body Trends (Weight & Body Fat + Muscle Size) */}
+			<div className="space-y-3 w-full">
+				<SectionTitleCard title="Body Trends" />
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
 					<WeightBodyFatTrend
 						initialData={initialData?.chartData || []}
 						loading={loading}
 					/>
-				</div>
-
-				<div className="space-y-3 w-full">
-					<SectionTitleCard title="Muscle Size" />
 					<MuscleSizeTrend
 						initialData={initialData?.chartData || []}
 						loading={loading}

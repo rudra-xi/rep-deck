@@ -14,11 +14,11 @@ export function DashboardClientPage() {
 	const { data, loading, refresh } = useDashboardData();
 
 	return (
-		<section className="space-y-6 sm:space-y-8">
+		<section className="lg:space-y-6 space-y-8">
 			{/* Page Header */}
 			<PageTitleCard
 				title="Dashboard"
-				subTitle="See your progress, consistency, and current program in one place"
+				subTitle="Your training at a glance — program, progress, and recent activity"
 			/>
 
 			{/* KPI / Quick Stats Section */}
