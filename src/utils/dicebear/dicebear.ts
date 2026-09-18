@@ -5,17 +5,19 @@
  * Keys must match the theme slugs used in `next-themes` and `themes.css`.
  */
 export const AVATAR_PALETTES = {
-	enterprise: { backgroundColor: "1e1b3a", shapeColor: "ffffff" },
-	qraft: { backgroundColor: "121113", shapeColor: "e78a53" },
+	green: { backgroundColor: "1e293b", shapeColor: "aff33e" },
+	violateeye: { backgroundColor: "1d1b30", shapeColor: "846feb" },
 	rosepine: { backgroundColor: "403d52", shapeColor: "e0def4" },
-	zen: { backgroundColor: "222222", shapeColor: "d1cfc0" },
-	opcl: { backgroundColor: "16161e", shapeColor: "f59e0b" },
-	barmell: { backgroundColor: "1a233b", shapeColor: "ff2e2e" },
+	retro: { backgroundColor: "262626", shapeColor: "f36a2d" },
+	cosmic: { backgroundColor: "252e3d", shapeColor: "9690f1" },
+	orchid: { backgroundColor: "35334d", shapeColor: "b2a5e9" },
+	booking: { backgroundColor: "1c1b37", shapeColor: "f7514b" },
+	lime: { backgroundColor: "303030", shapeColor: "d9e96e" },
 } as const;
 
 export type ThemeSlug = keyof typeof AVATAR_PALETTES;
 
-export const DEFAULT_THEME: ThemeSlug = "enterprise";
+export const DEFAULT_THEME: ThemeSlug = "violateeye";
 
 /**
  * Generates a DiceBear Thumbs SVG avatar URL with colors matching the given theme.
@@ -32,6 +34,7 @@ export function getDiceBearAvatarUrl(
 		backgroundColor,
 		shapeColor,
 		borderRadius: "0",
+		animationVariant: "fastest",
 	});
 
 	return `https://api.dicebear.com/10.x/thumbs/svg?${params}`;

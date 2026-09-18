@@ -5,13 +5,17 @@ import { toast } from "sonner";
 import { useMounted } from "./use-mounted";
 
 export const THEME_OPTIONS = [
-	{ value: "enterprise", label: "Enterprise" },
-	{ value: "zen", label: "Zen" },
-	{ value: "opcl", label: "OPCL" },
-	{ value: "qraft", label: "qrafthive" },
-	{ value: "rosepine", label: "Rose Pine" },
-	{ value: "barmell", label: "Barmell" },
+	{ value: "violateeye", label: "Violate Eye" },
+	{ value: "green",      label: "Light Green" },
+	{ value: "rosepine",   label: "Rose Pine" },
+	{ value: "retro",      label: "Retro" },
+	{ value: "cosmic",     label: "Cosmic" },
+	{ value: "orchid",     label: "Orchid" },
+	{ value: "booking",    label: "Booking" },
+	{ value: "lime",       label: "Lime" },
 ] as const;
+
+export type ThemeSlug = (typeof THEME_OPTIONS)[number]["value"];
 
 export function useThemeSelection() {
 	const { theme, setTheme } = useTheme();
