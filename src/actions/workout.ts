@@ -1,7 +1,9 @@
 "use server";
 
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { and, asc, desc, eq } from "drizzle-orm";
+import { getUserPreferences } from "@/actions/account";
+import { getCurrentUser } from "@/actions/auth";
 import { db } from "@/db";
 import {
 	exerciseTemplates,
@@ -10,27 +12,9 @@ import {
 	workoutSessions,
 	workoutSets,
 } from "@/db/schema";
-import { getCurrentUser } from "@/actions/auth";
 import { toCapitalized } from "@/lib/to-capitalized";
-import { getUserPreferences } from "@/actions/account";
 import { parseWeightToKg } from "@/lib/units";
-
-export interface ExercisePerformanceSummary {
-	lastBest: {
-		weight: number;
-		reps: number;
-		rpe?: number | null;
-		formatted: string;
-	} | null;
-	overallBest: {
-		weight: number;
-		reps: number;
-		rpe?: number | null;
-		formatted: string;
-	} | null;
-	lastNote?: string | null;
-	isPR?: boolean;
-}
+import type { ExercisePerformanceSummary } from "@/types/workout-log";
 
 // Helper function to check if a set is a PR using 1RM comparison
 async function checkIfPR(
@@ -122,7 +106,7 @@ export async function getActiveWorkoutPlan() {
 	}
 }
 
-// 2. Fetch both Last Session Best & Overall All-Time Best (PR)
+// 2. Fetch both Last Session Best & Overall All-Time Best (PR) — single exercise
 export async function getExercisePerformanceHistory(
 	exerciseName: string,
 ): Promise<ExercisePerformanceSummary | null> {
@@ -211,6 +195,116 @@ export async function getExercisePerformanceHistory(
 	}
 }
 
+// 2b. BATCHED — fetch performance for multiple exercises in one query
+export async function getExercisePerformanceBatch(
+	exerciseNames: string[],
+): Promise<Record<string, ExercisePerformanceSummary | null>> {
+	try {
+		const { dbUser } = await getCurrentUser();
+		if (!dbUser || exerciseNames.length === 0) return {};
+
+		const normalizedNames = exerciseNames.map((n) => toCapitalized(n));
+
+		const allSets = await db
+			.select({
+				exerciseName: workoutSets.exerciseName,
+				sessionId: workoutSessions.id,
+				sessionDate: workoutSessions.date,
+				weight: workoutSets.weight,
+				reps: workoutSets.reps,
+				rpe: workoutSets.rpe,
+				notes: workoutSets.notes,
+				isPR: workoutSets.isPR,
+				createdAt: workoutSets.createdAt,
+			})
+			.from(workoutSets)
+			.innerJoin(
+				workoutSessions,
+				eq(workoutSets.sessionId, workoutSessions.id),
+			)
+			.where(
+				and(
+					eq(workoutSessions.userId, dbUser.id),
+					inArray(workoutSets.exerciseName, normalizedNames),
+				),
+			)
+			.orderBy(desc(workoutSessions.date), desc(workoutSets.createdAt));
+
+		// Group sets by exercise name
+		const grouped = new Map<string, typeof allSets>();
+		for (const set of allSets) {
+			let bucket = grouped.get(set.exerciseName);
+			if (!bucket) {
+				bucket = [];
+				grouped.set(set.exerciseName, bucket);
+			}
+			bucket.push(set);
+		}
+
+		const formatSet = (set: {
+			weight: number;
+			reps: number;
+			rpe?: number | null;
+		}) =>
+			`${set.weight} × ${set.reps}${set.rpe ? ` @ rpe ${set.rpe}` : ""}`;
+
+		const result: Record<string, ExercisePerformanceSummary | null> = {};
+
+		for (const name of normalizedNames) {
+			const sets = grouped.get(name);
+			if (!sets || sets.length === 0) {
+				result[name] = null;
+				continue;
+			}
+
+			const latestSessionId = sets[0].sessionId;
+			const lastSessionSets = sets.filter(
+				(s) => s.sessionId === latestSessionId,
+			);
+
+			const lastNoteSet = sets.find(
+				(s) => s.notes !== null && s.notes.trim() !== "",
+			);
+
+			const lastBestSet = lastSessionSets.reduce((prev, cur) => {
+				if (cur.weight > prev.weight) return cur;
+				if (cur.weight === prev.weight && cur.reps > prev.reps)
+					return cur;
+				return prev;
+			}, lastSessionSets[0]);
+
+			const overallBestSet = sets.reduce((prev, cur) => {
+				if (cur.weight > prev.weight) return cur;
+				if (cur.weight === prev.weight && cur.reps > prev.reps)
+					return cur;
+				return prev;
+			}, sets[0]);
+
+			result[name] = {
+				lastBest: {
+					weight: lastBestSet.weight,
+					reps: lastBestSet.reps,
+					rpe: lastBestSet.rpe,
+					formatted: formatSet(lastBestSet),
+				},
+				overallBest: {
+					weight: overallBestSet.weight,
+					reps: overallBestSet.reps,
+					rpe: overallBestSet.rpe,
+					formatted: formatSet(overallBestSet),
+				},
+				lastNote: lastNoteSet?.notes ?? null,
+				isPR: sets.some((s) => s.isPR === true),
+			};
+		}
+
+		return result;
+	} catch (error) {
+		console.error("Error fetching exercise performance batch:", error);
+		return {};
+	}
+}
+
 export async function getLastExercisePerformance(exerciseName: string) {
 	const history = await getExercisePerformanceHistory(exerciseName);
 	return history?.lastBest?.formatted ?? null;
@@ -275,6 +369,9 @@ export async function finishWorkoutSession(data: {
 			}
 		});
 
+		// Track PR count outside the transaction so we can return it
+		let prCount = 0;
+
 		const result = await db.transaction(async (tx) => {
 			const [session] = await tx
 				.insert(workoutSessions)
@@ -332,13 +429,16 @@ export async function finishWorkoutSession(data: {
 				);
 
 				await tx.insert(workoutSets).values(setsWithPR);
+
+				// Count PRs after insert resolves
+				prCount = setsWithPR.filter((s) => s.isPR).length;
 			}
 
 			return session;
 		});
 
 		revalidatePath("/workout-log");
-		return { success: true, session: result };
+		return { success: true, session: result, prCount };
 	} catch (error) {
 		console.error("Error saving workout session:", error);
 		return {

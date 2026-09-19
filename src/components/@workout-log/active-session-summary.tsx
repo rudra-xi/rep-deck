@@ -1,34 +1,37 @@
 "use client";
 
 import {
+	ChatTextIcon,
 	CheckCircleIcon,
 	ClipboardTextIcon,
 	PulseIcon,
 	TrophyIcon,
-	ChatTextIcon,
 } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { getLastSessionNote } from "@/actions/workout";
+import { CardsHeader, useUnits } from "@/common";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import type { LoggedSet } from "@/types";
-import { useWorkoutSession } from "@/hooks";
-import { toast } from "sonner";
-import { Spinner } from "@/components/ui/spinner";
-import { useEffect, useState } from "react";
-import { getLastSessionNote } from "@/actions/workout";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CardsHeader, useUnits } from "@/common";
+import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
+import { useWorkoutSession } from "@/hooks";
+import { wouldBePR } from "@/hooks/workout-log-hook/use-exercise-performance";
+import type { LoggedSet } from "@/types";
+import type { ExercisePerformanceWithPR } from "@/types/workout-log";
 
 interface ActiveSessionSummaryProps {
 	loggedSets: LoggedSet[];
 	notes: string;
 	setNotes: (notes: string) => void;
+	performanceMap: Record<string, ExercisePerformanceWithPR | null>;
 	programId?: string;
 	dayIndex?: number;
 	onSuccess?: () => void;
@@ -46,6 +49,7 @@ export function ActiveSessionSummary({
 	loggedSets,
 	notes,
 	setNotes,
+	performanceMap,
 	programId,
 	dayIndex,
 	onSuccess,
@@ -67,19 +71,34 @@ export function ActiveSessionSummary({
 	const exerciseSummaries: ExerciseSummary[] = Object.entries(grouped).map(
 		([exercise, sets]) => {
 			const bestSet = sets.reduce((best, current) => {
-				const currentWeight = Number(current.weight) || 0;
-				const currentReps = Number(current.reps) || 0;
-				const bestWeight = Number(best.weight) || 0;
-				const bestReps = Number(best.reps) || 0;
-
-				const currentScore = currentWeight * (1 + currentReps / 30);
-				const bestScore = bestWeight * (1 + bestReps / 30);
-
+				const currentScore =
+					(Number(current.weight) || 0) *
+					(1 + (Number(current.reps) || 0) / 30);
+				const bestScore =
+					(Number(best.weight) || 0) *
+					(1 + (Number(best.reps) || 0) / 30);
 				return currentScore > bestScore ? current : best;
 			}, sets[0]);
 
-			const isPR = sets.some(
-				(set) => (set as Record<string, unknown>).isPR === true,
+			// Look up prior best by exercise name (case-insensitive fallback)
+			const perfEntry =
+				performanceMap[exercise] ??
+				Object.entries(performanceMap).find(
+					([name]) =>
+						name.trim().toLowerCase() ===
+						exercise.trim().toLowerCase(),
+				)?.[1] ??
+				null;
+
+			const previousBest = perfEntry?.overallBest ?? null;
+
+			// Live client-side PR check
+			const isPR = wouldBePR(
+				bestSet.weight,
+				bestSet.reps,
+				previousBest
+					? { weight: previousBest.weight, reps: previousBest.reps }
+					: null,
 			);
 
 			const exerciseNote =
@@ -118,21 +137,9 @@ export function ActiveSessionSummary({
 		programId,
 		dayIndex,
 		onSuccess: () => {
+			// Cleanup only — toasts handled in handleFinish below
 			setNotes("");
 			onSuccess?.();
-
-			const prCount = exerciseSummaries.filter((ex) => ex.isPR).length;
-			if (prCount > 0) {
-				toast.success("New Personal Records!", {
-					description: `You achieved ${prCount} PR${prCount > 1 ? "s" : ""} in this session!`,
-					duration: 5000,
-				});
-			}
-
-			toast.success("Workout completed!", {
-				description: `Successfully logged ${loggedSets.length} sets across ${Object.keys(grouped).length} exercises.`,
-				duration: 4000,
-			});
 		},
 	});
 
@@ -154,7 +161,21 @@ export function ActiveSessionSummary({
 			const result = await submitWorkout(loggedSets, notes);
 			toast.dismiss(loadingToast);
 
-			if (!result.success) {
+			if (result.success) {
+				const serverPRCount = result.data?.prCount ?? 0;
+
+				if (serverPRCount > 0) {
+					toast.success("New Personal Records!", {
+						description: `You achieved ${serverPRCount} PR${serverPRCount > 1 ? "s" : ""} in this session!`,
+						duration: 5000,
+					});
+				}
+
+				toast.success("Workout completed!", {
+					description: `Successfully logged ${loggedSets.length} sets across ${Object.keys(grouped).length} exercises.`,
+					duration: 4000,
+				});
+			} else {
 				toast.error("Failed to save workout", {
 					description:
 						result.error ||
@@ -162,7 +183,7 @@ export function ActiveSessionSummary({
 					duration: 4000,
 				});
 			}
-		} catch (error) {
+		} catch (_error) {
 			toast.dismiss(loadingToast);
 			toast.error("Unexpected error", {
 				description:
@@ -177,10 +198,7 @@ export function ActiveSessionSummary({
 	const prCount = exerciseSummaries.filter((ex) => ex.isPR).length;
 
 	return (
-		<Card
-			size="sm"
-			className="relative fcard-flat card-ease"
-		>
+		<Card size="sm" className="relative fcard-flat card-ease">
 			<CardsHeader icon={PulseIcon} title="Session Summary" />
 
 			<CardContent className="p-4 pt-1 fcol4">
@@ -334,24 +352,45 @@ export function ActiveSessionSummary({
 													className="size-3.5 text-primary sh0"
 													weight="bold"
 												/>
-												<span className="italic truncate">
-													{exerciseNote}
+												<span className="italic">
+													~ {exerciseNote}
 												</span>
 											</div>
 										)}
 
 										<div className="fwrap gap-1.5">
 											{sets.map((s, idx) => {
-												const isSetPR =
-													(
-														s as Record<
-															string,
-															unknown
-														>
-													).isPR === true;
+												// Per-set PR check — uses the same prior best
+												const perfEntry =
+													performanceMap[exercise] ??
+													Object.entries(
+														performanceMap,
+													).find(
+														([name]) =>
+															name
+																.trim()
+																.toLowerCase() ===
+															exercise
+																.trim()
+																.toLowerCase(),
+													)?.[1] ??
+													null;
+												const previousBest =
+													perfEntry?.overallBest ??
+													null;
+												const isSetPR = wouldBePR(
+													s.weight,
+													s.reps,
+													previousBest
+														? {
+																weight: previousBest.weight,
+																reps: previousBest.reps,
+															}
+														: null,
+												);
 												const hasSetNote = Boolean(
 													s.notes &&
-													s.notes.trim() !== "",
+														s.notes.trim() !== "",
 												);
 
 												return (
@@ -405,9 +444,8 @@ export function ActiveSessionSummary({
 															)}
 															<p className="text-muted-foreground font-mono">
 																{s.weight}
-																{
-																	weightUnit
-																} × {s.reps}
+																{weightUnit} ×{" "}
+																{s.reps}
 																{s.rpe
 																	? ` @ RPE ${s.rpe}`
 																	: ""}

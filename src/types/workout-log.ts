@@ -10,7 +10,6 @@ export type LoggedSet = {
 	setNumber?: number | string;
 };
 
-// You can also add other workout-related types here
 export type Exercise = {
 	id: string;
 	name: string;
@@ -24,3 +23,30 @@ export type Day = {
 	label: string;
 	exercises?: Exercise[];
 };
+
+/* ─────────────────────────────────────────────────────────────
+   Exercise performance — used by workout-log hooks and cards.
+   ───────────────────────────────────────────────────────────── */
+
+export interface ExercisePerformanceSummary {
+	lastBest: {
+		weight: number;
+		reps: number;
+		rpe?: number | null;
+		formatted: string;
+	} | null;
+	overallBest: {
+		weight: number;
+		reps: number;
+		rpe?: number | null;
+		formatted: string;
+	} | null;
+	lastNote?: string | null;
+	isPR?: boolean;
+}
+
+export interface ExercisePerformanceWithPR extends ExercisePerformanceSummary {
+	/** Exercise name — used as the map key for O(1) lookup */
+	name: string;
+	isPR: boolean;
+}

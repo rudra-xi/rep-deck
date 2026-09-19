@@ -1,15 +1,10 @@
 "use client";
 
+import { FilePlusIcon } from "@phosphor-icons/react";
+import Link from "next/link";
 import { useEffect } from "react";
 import { PageTitleCard, SectionTitleCard } from "@/common";
-import { Separator } from "@/components/ui/separator";
-import {
-	ActiveSessionSummary,
-	DaySelector,
-	PlannedExercises,
-	QuickAddExtra,
-} from "@/workout-log";
-import { useWorkoutDraft, useExerciseInputs } from "@/hooks";
+import { Button } from "@/components/ui/button";
 import {
 	Empty,
 	EmptyContent,
@@ -18,13 +13,23 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import { FilePlusIcon } from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Separator } from "@/components/ui/separator";
+import {
+	useExerciseInputs,
+	useExercisePerformance,
+	useWorkoutDraft,
+} from "@/hooks";
 import type { LoggedSet } from "@/types";
+import type { PlanWithStructure } from "@/types/plans";
+import {
+	ActiveSessionSummary,
+	DaySelector,
+	PlannedExercises,
+	QuickAddExtra,
+} from "@/workout-log";
 
 interface WorkoutLogClientViewProps {
-	initialPlan: any;
+	initialPlan: PlanWithStructure | null;
 }
 
 export default function WorkoutLogClientView({
@@ -41,24 +46,26 @@ export default function WorkoutLogClientView({
 		clearDraft,
 	} = useWorkoutDraft(initialPlan?.days?.[0]?.dayIndex || 1);
 
-	// Get clearInputs from useExerciseInputs
 	const { clearInputs } = useExerciseInputs();
 
 	const currentDay = initialPlan?.days?.find(
-		(d: any) => d.dayIndex === selectedDayIndex,
+		(d) => d.dayIndex === selectedDayIndex,
 	);
+
+	// ← LIFT the hook so both PlannedExercises and ActiveSessionSummary share it
+	const { performanceMap, isLoading: isLoadingPerformance } =
+		useExercisePerformance(currentDay?.exercises ?? []);
 
 	// Update plan if it changes
 	useEffect(() => {
 		const dayExists = initialPlan?.days?.some(
-			(d: any) => d.dayIndex === selectedDayIndex,
+			(d) => d.dayIndex === selectedDayIndex,
 		);
 		if (!dayExists && initialPlan?.days?.length) {
 			setSelectedDayIndex(initialPlan.days[0].dayIndex);
 		}
 	}, [initialPlan, selectedDayIndex, setSelectedDayIndex]);
 
-	// Batch add handler when "Done" is clicked on an exercise
 	const handleAddExerciseSets = (
 		newSets: Array<Omit<LoggedSet, "id"> & { templateId?: string }>,
 	) => {
@@ -68,7 +75,6 @@ export default function WorkoutLogClientView({
 		const exerciseName = newSets[0].exerciseName;
 
 		setLoggedSets((prevSets) => {
-			// Remove previous sets for this template/exercise to avoid duplicates
 			const filtered = prevSets.filter((s) => {
 				if (targetTemplateId && s.templateId) {
 					return s.templateId !== targetTemplateId;
@@ -79,7 +85,6 @@ export default function WorkoutLogClientView({
 				);
 			});
 
-			// Assign unique IDs to the new sets
 			const formattedSets: LoggedSet[] = newSets.map((s, index) => ({
 				...s,
 				id: `${s.templateId || s.exerciseName}-${s.setNumber || index + 1}-${Date.now()}`,
@@ -89,20 +94,17 @@ export default function WorkoutLogClientView({
 		});
 	};
 
-	// Remove handler when an exercise is unmarked "Done"
 	const handleRemoveExerciseSets = (templateId: string) => {
 		setLoggedSets((prevSets) =>
 			prevSets.filter((s) => s.templateId !== templateId),
 		);
 	};
 
-	// Combined clear function - clears both draft and exercise inputs
 	const handleClearDraft = () => {
-		clearDraft(); // Clears workout draft state
-		clearInputs(); // Explicitly clear exercise inputs
+		clearDraft();
+		clearInputs();
 	};
 
-	// Empty state
 	if (!initialPlan) {
 		return (
 			<section className="space-y-6 py-12 text-center max-w-md mx-auto">
@@ -145,7 +147,6 @@ export default function WorkoutLogClientView({
 				subTitle="Log today's session — sets, reps, and notes as you train"
 			/>
 
-			{/* Day Selector */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Current Plan" />
 				<DaySelector
@@ -158,11 +159,12 @@ export default function WorkoutLogClientView({
 
 			<Separator />
 
-			{/* Planned Exercises */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Session Workflow" />
 				<PlannedExercises
 					exercises={currentDay?.exercises || []}
+					performanceMap={performanceMap}
+					isLoadingPerformance={isLoadingPerformance}
 					onAddExerciseSets={handleAddExerciseSets}
 					onRemoveExerciseSets={handleRemoveExerciseSets}
 				/>
@@ -170,7 +172,6 @@ export default function WorkoutLogClientView({
 
 			<Separator />
 
-			{/* Summary & Quick Add */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">
 				<div className="lg:col-span-2 space-y-3 w-full order-3 lg:order-1">
 					<SectionTitleCard title="Live Log" />
@@ -178,6 +179,7 @@ export default function WorkoutLogClientView({
 						loggedSets={loggedSets}
 						notes={notes}
 						setNotes={setNotes}
+						performanceMap={performanceMap}
 						programId={initialPlan.id}
 						dayIndex={selectedDayIndex}
 						onSuccess={handleClearDraft}

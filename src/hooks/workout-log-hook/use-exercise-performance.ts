@@ -1,62 +1,86 @@
 import { useEffect, useState } from "react";
-import {
-	getExercisePerformanceHistory,
-	type ExercisePerformanceSummary,
-} from "@/actions/workout";
+import { getExercisePerformanceBatch } from "@/actions/workout";
+import type { ExercisePerformanceWithPR } from "@/types/workout-log";
 
 interface Exercise {
 	id: string;
 	name: string;
 }
 
-// Extend the type to include isPR
-interface ExercisePerformanceWithPR extends ExercisePerformanceSummary {
-	isPR: boolean;
-}
-
 export function useExercisePerformance(exercises: Exercise[]) {
-	const [lastLogs, setLastLogs] = useState<
+	const [performanceMap, setPerformanceMap] = useState<
 		Record<string, ExercisePerformanceWithPR | null>
 	>({});
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
+		let isMounted = true;
+
 		async function fetchPerformance() {
-			setIsLoading(true);
-			const logs: Record<string, ExercisePerformanceWithPR | null> = {};
-
-			for (const ex of exercises) {
-				try {
-					const performance = await getExercisePerformanceHistory(
-						ex.name,
-					);
-
-					// The isPR is already returned from the server action
-					const isPR = performance?.isPR ?? false;
-
-					logs[ex.id] = {
-						...performance,
-						isPR,
-					} as ExercisePerformanceWithPR;
-				} catch (error) {
-					console.error(
-						`Failed to fetch performance for ${ex.name}:`,
-						error,
-					);
-					logs[ex.id] = null;
+			if (exercises.length === 0) {
+				if (isMounted) {
+					setPerformanceMap({});
+					setIsLoading(false);
 				}
+				return;
 			}
 
-			setLastLogs(logs);
-			setIsLoading(false);
+			setIsLoading(true);
+			try {
+				const names = exercises.map((e) => e.name);
+				const result = await getExercisePerformanceBatch(names);
+
+				if (!isMounted) return;
+
+				// Normalize into ExercisePerformanceWithPR, keyed by exercise name
+				const normalized: Record<
+					string,
+					ExercisePerformanceWithPR | null
+				> = {};
+				for (const name of names) {
+					const perf = result[name];
+					normalized[name] = perf
+						? { ...perf, name, isPR: perf.isPR ?? false }
+						: null;
+				}
+				setPerformanceMap(normalized);
+			} catch (error) {
+				console.error("Failed to fetch exercise performance:", error);
+			} finally {
+				if (isMounted) setIsLoading(false);
+			}
 		}
 
-		if (exercises.length > 0) {
-			fetchPerformance();
-		} else {
-			setIsLoading(false);
-		}
+		fetchPerformance();
+		return () => {
+			isMounted = false;
+		};
 	}, [exercises]);
 
-	return { lastLogs, isLoading };
+	return { performanceMap, isLoading };
+}
+
+/**
+ * Client-side PR check using the Epley 1RM formula.
+ * Returns true if the given set beats the previous all-time best.
+ */
+export function wouldBePR(
+	weight: number | string,
+	reps: number | string,
+	previousBest: { weight: number; reps: number } | null | undefined,
+): boolean {
+	const w = Number(weight);
+	const r = Number(reps);
+
+	if (!Number.isFinite(w) || !Number.isFinite(r) || r <= 0 || w <= 0) {
+		return false;
+	}
+
+	// No prior data → first-ever set is always a PR
+	if (!previousBest) return true;
+
+	const current1RM = w * (1 + r / 30);
+	const prev1RM = previousBest.weight * (1 + previousBest.reps / 30);
+
+	return current1RM > prev1RM;
 }
