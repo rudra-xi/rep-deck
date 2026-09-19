@@ -1,14 +1,16 @@
+// biome-ignore-all lint/a11y/useSemanticElements: interactive row wraps multi-element content; <button> would produce invalid HTML
 "use client";
 
-import Link from "next/link";
 import {
-	ClockCounterClockwiseIcon,
 	CalendarDotsIcon,
 	CaretRightIcon,
+	ClockCounterClockwiseIcon,
 } from "@phosphor-icons/react";
+import Link from "next/link";
 import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardsHeader, useUnits } from "@/common";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 import {
 	Empty,
@@ -20,10 +22,10 @@ import {
 } from "@/components/ui/empty";
 import { useSessionHistory } from "@/hooks";
 import { SessionHistoryListSkeleton } from "@/skeletons";
-import { CardsHeader, useUnits } from "@/common";
+import type { SessionHistoryItem } from "@/types/progress";
 
 interface SessionHistoryListProps {
-	initialData?: any[];
+	initialData?: SessionHistoryItem[];
 	loading?: boolean;
 }
 
@@ -147,7 +149,7 @@ export function SessionHistoryList({
 					{sessions.map((session) => {
 						const hasVolume =
 							typeof session.totalVolumeKg === "number" &&
-							!isNaN(session.totalVolumeKg);
+							!Number.isNaN(session.totalVolumeKg);
 
 						return (
 							<div

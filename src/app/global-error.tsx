@@ -1,7 +1,7 @@
 "use client";
 
+import { ArrowClockwiseIcon, WarningIcon } from "@phosphor-icons/react";
 import { useEffect } from "react";
-import { WarningIcon, ArrowClockwiseIcon } from "@phosphor-icons/react";
 import "./globals.css";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";

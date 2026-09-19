@@ -20,7 +20,7 @@ interface MuscleSizeData {
 export function useMuscleSizeTrend(data: MuscleSizeData[] = []) {
 	const muscleColors = MUSCLE_COLORS;
 
-	const muscleKeys = useMemo(() => Object.keys(muscleColors), []);
+	const muscleKeys = useMemo(() => Object.keys(muscleColors), [muscleColors]);
 
 	const hasData = data.length > 0;
 

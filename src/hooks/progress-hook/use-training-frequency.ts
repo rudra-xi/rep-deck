@@ -1,10 +1,11 @@
 // hooks/useTrainingFrequency.ts
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getTrainingFrequency } from "@/actions/progress";
 import { TWELVE_WEEK_BENCHMARK } from "@/constants";
+import type { TrainingFrequencyDay } from "@/types/progress";
 
 export function useTrainingFrequency(
-	initialData: any[] = [],
+	initialData: TrainingFrequencyDay[] = [],
 	propLoading: boolean = false,
 ) {
 	const [data, setData] = useState(initialData);

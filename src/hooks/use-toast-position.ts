@@ -30,8 +30,7 @@ export function useToastPosition({
 	mobilePosition = "bottom-center",
 	desktopPosition = "top-right",
 }: UseToastPositionOptions = {}): ToastPosition {
-	const [position, setPosition] =
-		useState<ToastPosition>(desktopPosition);
+	const [position, setPosition] = useState<ToastPosition>(desktopPosition);
 
 	useEffect(() => {
 		const mq = window.matchMedia(query);

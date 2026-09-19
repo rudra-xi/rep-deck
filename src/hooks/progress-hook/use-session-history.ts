@@ -1,11 +1,13 @@
 // hooks/progress-hook/use-session-history.ts
-import { useState, useEffect, useMemo } from "react";
-import { getRecentSessions } from "@/actions/progress";
+
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { getRecentSessions } from "@/actions/progress";
 import { useUnits } from "@/common"; // ✅ ADD
+import type { SessionHistoryItem } from "@/types/progress";
 
 export function useSessionHistory(
-	initialData: any[] = [],
+	initialData: SessionHistoryItem[] = [],
 	propLoading: boolean = false,
 ) {
 	const router = useRouter();

@@ -1,7 +1,7 @@
 // hooks/useWorkoutDraft.ts
 import { useEffect, useState } from "react";
+import { clearAllWorkoutData, STORAGE_KEYS } from "@/lib/storage";
 import type { LoggedSet } from "@/types";
-import { STORAGE_KEYS, clearAllWorkoutData } from "@/lib/storage";
 
 export function useWorkoutDraft(initialDayIndex: number) {
 	const [loggedSets, setLoggedSets] = useState<LoggedSet[]>([]);
@@ -19,7 +19,7 @@ export function useWorkoutDraft(initialDayIndex: number) {
 			);
 			if (savedDay !== null) {
 				const parsedDay = Number(savedDay);
-				if (!isNaN(parsedDay)) {
+				if (!Number.isNaN(parsedDay)) {
 					setSelectedDayIndex(parsedDay);
 				}
 			}

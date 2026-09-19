@@ -1,20 +1,28 @@
 // app/components/workout-log/id/workout-detail.tsx
 "use client";
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import {
+	BarbellIcon,
 	CalendarDotsIcon,
-	TrophyIcon,
 	CaretLeftIcon,
 	CaretRightIcon,
-	BarbellIcon,
-	LightningIcon,
 	HashIcon,
+	LightningIcon,
+	TrophyIcon,
 } from "@phosphor-icons/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { format, isSameDay } from "date-fns";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { BackButton, useUnits } from "@/common";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import {
 	Table,
@@ -24,14 +32,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Calendar } from "@/components/ui/calendar";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import { BackButton, useUnits } from "@/common";
-import { format, isSameDay } from "date-fns";
 
 interface WorkoutDetailProps {
 	session: {
@@ -324,7 +324,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 								size="sm"
 								className="fcard-flat card-ease h-full"
 							>
-								<CardHeader className="fr items-center justify-between space-y-0 pb-3">
+								<CardHeader className="flex fcb space-y-0 pb-3">
 									<div className="fg2 min-w-0 pr-2">
 										<div className="ficon-box-sm">
 											<BarbellIcon

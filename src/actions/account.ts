@@ -1,12 +1,12 @@
 "server-only";
 "use server";
 
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
 import type { UserPreferences } from "@/types";
+import { createClient } from "@/utils/supabase/server";
 import { getCurrentUser } from "./auth";
 
 /**
@@ -56,7 +56,7 @@ export async function updateProfile(data: { name: string }) {
 
 		revalidatePath("/account");
 		return { success: true };
-	} catch (err: any) {
+	} catch (err) {
 		return {
 			success: false,
 			error: err.message || "Failed to update profile",
@@ -91,7 +91,7 @@ export async function updatePreferences(preferences: UserPreferences) {
 		revalidatePath("/metrics");
 		revalidatePath("/dashboard");
 		return { success: true };
-	} catch (err: any) {
+	} catch (err) {
 		return {
 			success: false,
 			error: err.message || "Failed to save preferences",

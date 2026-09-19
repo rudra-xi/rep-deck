@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
-import Link from "next/link";
+import type { Icon } from "@phosphor-icons/react";
 import { ChartLineUpIcon, TrendUpIcon } from "@phosphor-icons/react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import {
 	CartesianGrid,
 	Line,
@@ -11,8 +12,10 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { Card, CardContent } from "@/components/ui/card";
+import { getMetricsData } from "@/actions/metrics";
+import { CardsHeader, useUnits } from "@/common";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
 	type ChartConfig,
 	ChartContainer,
@@ -21,7 +24,6 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { CardsHeader, useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -30,19 +32,9 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import { ChartCardSkeleton } from "@/skeletons";
-import { getMetricsData } from "@/actions/metrics";
 import { cn } from "@/lib/utils";
-
-interface MeasurementPoint {
-	date: string;
-	arms: number | null;
-	forearms: number | null;
-	thighs: number | null;
-	chest: number | null;
-	waist: number | null;
-	hips: number | null;
-}
+import { ChartCardSkeleton } from "@/skeletons";
+import type { MeasurementPoint } from "@/types/progress";
 
 const UPPER_METRICS = ["arms", "forearms", "chest"] as const;
 
@@ -147,7 +139,6 @@ function useAllMeasurements() {
 				const res = await getMetricsData("3M");
 				if (!isMounted) return;
 
-				// Safely extracts from chartData or measurements array
 				const chartData = res?.chartData ?? res?.measurements ?? [];
 				setData(chartData);
 			} catch (err) {
@@ -276,7 +267,7 @@ function useLatestGrowth(
 // ─────────────────────────────────────────────────────────────────
 
 interface MeasurementsChartCardProps {
-	icon: any;
+	icon: Icon;
 	title: string;
 	subtitle: string;
 	config: ChartConfig;
@@ -295,10 +286,7 @@ function MeasurementsChartCard({
 	const latest = useLatestGrowth(data, rawData, config);
 	const { measurementUnit, fmtMeasurement } = useUnits();
 
-	// Staggered durations per line — gives the chart an organic draw-in
 	const lineDurations: Record<string, number> = {
-		// These keys map to whatever metrics are in `config`.
-		// Fall back to 1000ms for any key not listed here.
 		arms: 800,
 		forearms: 1000,
 		chest: 1200,
@@ -320,7 +308,6 @@ function MeasurementsChartCard({
 			/>
 
 			<CardContent className="p-4 pt-1 fcol3">
-				{/* Growth badges with actual in/cm values */}
 				<div className="fwrap gap-1.5">
 					{latest.map((entry) => {
 						const isUp = (entry.rawDelta ?? 0) > 0;
@@ -382,11 +369,7 @@ function MeasurementsChartCard({
 					})}
 				</div>
 
-				{/* Chart */}
-				<ChartContainer
-					config={config}
-					className="h-60 sm:h-70 w-full"
-				>
+				<ChartContainer config={config} className="h-60 sm:h-70 w-full">
 					<LineChart
 						accessibilityLayer
 						data={data}
@@ -418,7 +401,6 @@ function MeasurementsChartCard({
 							strokeOpacity={0.5}
 						/>
 
-						{/* Tooltip with % suffix on values */}
 						<ChartTooltip
 							cursor={false}
 							content={

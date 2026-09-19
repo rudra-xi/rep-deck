@@ -1,14 +1,14 @@
 "use client";
 
-import { useTheme } from "next-themes";
-import { Toaster as Sonner, type ToasterProps } from "sonner";
 import {
 	CheckCircleIcon,
+	CircleNotchIcon,
 	InfoIcon,
 	WarningIcon,
 	XCircleIcon,
-	CircleNotchIcon,
 } from "@phosphor-icons/react";
+import { useTheme } from "next-themes";
+import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
 	const { theme = "system" } = useTheme();

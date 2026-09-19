@@ -1,18 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { NotePencilIcon } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
 import { setActivePlan } from "@/actions/plans";
 import { PageTitleCard, SectionTitleCard } from "@/common";
-import { Separator } from "@/components/ui/separator";
-import {
-	DayExercisesList,
-	PlanDetailsCard,
-	PlanSettingsCard,
-	PlansOverviewCards,
-} from "@/plans";
-import { CreatePlanDialog } from "@/plan-dialogs";
-import type { PlanWithStructure } from "@/types/plans";
 import {
 	Empty,
 	EmptyContent,
@@ -21,6 +12,15 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import { Separator } from "@/components/ui/separator";
+import { CreatePlanDialog } from "@/plan-dialogs";
+import {
+	DayExercisesList,
+	PlanDetailsCard,
+	PlanSettingsCard,
+	PlansOverviewCards,
+} from "@/plans";
+import type { PlanWithStructure } from "@/types/plans";
 
 interface PlansClientViewProps {
 	initialPlans: PlanWithStructure[];

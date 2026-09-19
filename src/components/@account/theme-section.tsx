@@ -1,32 +1,32 @@
 "use client";
 
+import {
+	CalendarCheckIcon,
+	EyeIcon,
+	FlowerIcon,
+	FlowerLotusIcon,
+	GameControllerIcon,
+	LeafIcon,
+	PaintBrushIcon,
+	PlanetIcon,
+	PlantIcon,
+} from "@phosphor-icons/react";
+import { CardsHeader } from "@/common";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-	PaintBrushIcon,
-	PlantIcon,
-	FlowerIcon,
-	FlowerLotusIcon,
-	EyeIcon,
-    GameControllerIcon,
-    PlanetIcon,
-    CalendarCheckIcon,
-    LeafIcon,
-} from "@phosphor-icons/react";
+import { THEME_OPTIONS, type ThemeSlug, useThemeSelection } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { useThemeSelection, THEME_OPTIONS, type ThemeSlug } from "@/hooks";
-import { CardsHeader } from "@/common";
 
 const THEME_ICONS: Record<ThemeSlug, React.ElementType> = {
-	green:      PlantIcon,
+	green: PlantIcon,
 	violateeye: EyeIcon,
-	rosepine:   FlowerIcon,
-	retro:      GameControllerIcon,
-	cosmic:     PlanetIcon,
-	orchid:     FlowerLotusIcon,
-	booking:    CalendarCheckIcon,
-	lime:       LeafIcon,
+	rosepine: FlowerIcon,
+	retro: GameControllerIcon,
+	cosmic: PlanetIcon,
+	orchid: FlowerLotusIcon,
+	booking: CalendarCheckIcon,
+	lime: LeafIcon,
 };
 
 export function ThemeSection() {

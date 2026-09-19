@@ -5,8 +5,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import { createClient } from "@/utils/supabase/server";
 import { toCapitalized } from "@/lib/to-capitalized";
+import { createClient } from "@/utils/supabase/server";
 
 // Helper to generate a default avatar seed
 function generateDefaultAvatarSeed(identifier: string) {
@@ -189,7 +189,7 @@ export async function syncUserWithDatabase() {
 			.insert(users)
 			.values({
 				id: user.id,
-				email: user.email!,
+				email: user.email,
 				name: toCapitalized(rawName),
 				avatarSeed: generateDefaultAvatarSeed(user.id),
 			})

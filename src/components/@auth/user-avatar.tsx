@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import type { User } from "@supabase/supabase-js";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarSkeleton } from "@/skeletons";
 import {
-	getDiceBearAvatarUrl,
 	DEFAULT_THEME,
+	getDiceBearAvatarUrl,
 	type ThemeSlug,
 } from "@/utils/dicebear/dicebear";
-import { AvatarSkeleton } from "@/skeletons";
 
 interface UserAvatarProps {
 	className?: string;

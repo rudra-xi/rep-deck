@@ -1,17 +1,17 @@
 "use client";
 
+import {
+	RulerIcon,
+	ScalesIcon,
+	SlidersHorizontalIcon,
+} from "@phosphor-icons/react";
+import { CardsHeader } from "@/common";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import type { UserPreferences } from "@/types";
-import {
-	ScalesIcon,
-	RulerIcon,
-	SlidersHorizontalIcon,
-} from "@phosphor-icons/react";
 import { usePreferences } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { CardsHeader } from "@/common";
+import type { UserPreferences } from "@/types";
 
 interface PreferencesSectionProps {
 	initialPreferences: UserPreferences;

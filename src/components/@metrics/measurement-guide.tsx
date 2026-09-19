@@ -1,8 +1,8 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { BookOpenIcon } from "@phosphor-icons/react";
 import { CardsHeader } from "@/common";
+import { Card, CardContent } from "@/components/ui/card";
 import { GUIDE_ITEMS } from "@/constants";
 
 export function MeasurementGuide() {

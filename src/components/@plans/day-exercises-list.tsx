@@ -1,29 +1,28 @@
 "use client";
 
+import { SunDimIcon } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import {
 	addExerciseToDay,
 	deleteExercise,
 	updateExercise,
 } from "@/actions/plans";
-import {
-	CreateExerciseDialog,
-	DeleteExerciseDialog,
-	EditExerciseDialog,
-} from "@/plan-dialogs";
-import { SunDimIcon } from "@phosphor-icons/react";
+import { CardsHeader } from "@/common";
 import { Card, CardContent } from "@/components/ui/card";
-import type { DayWithExercises } from "@/types/plans";
 import {
 	Empty,
-	EmptyContent,
 	EmptyDescription,
 	EmptyHeader,
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import {
+	CreateExerciseDialog,
+	DeleteExerciseDialog,
+	EditExerciseDialog,
+} from "@/plan-dialogs";
 import { DayExercisesListSkeleton } from "@/skeletons";
-import { CardsHeader } from "@/common";
+import type { DayWithExercises } from "@/types/plans";
 
 interface DayExercisesListProps {
 	day?: DayWithExercises;

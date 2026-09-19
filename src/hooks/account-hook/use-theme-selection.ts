@@ -6,13 +6,13 @@ import { useMounted } from "./use-mounted";
 
 export const THEME_OPTIONS = [
 	{ value: "violateeye", label: "Violate Eye" },
-	{ value: "green",      label: "Light Green" },
-	{ value: "rosepine",   label: "Rose Pine" },
-	{ value: "retro",      label: "Retro" },
-	{ value: "cosmic",     label: "Cosmic" },
-	{ value: "orchid",     label: "Orchid" },
-	{ value: "booking",    label: "Booking" },
-	{ value: "lime",       label: "Lime" },
+	{ value: "green", label: "Light Green" },
+	{ value: "rosepine", label: "Rose Pine" },
+	{ value: "retro", label: "Retro" },
+	{ value: "cosmic", label: "Cosmic" },
+	{ value: "orchid", label: "Orchid" },
+	{ value: "booking", label: "Booking" },
+	{ value: "lime", label: "Lime" },
 ] as const;
 
 export type ThemeSlug = (typeof THEME_OPTIONS)[number]["value"];

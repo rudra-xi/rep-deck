@@ -1,15 +1,15 @@
 "use server";
 
-import { and, gte, lte, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, gte, sql } from "drizzle-orm";
+import { getCurrentUser } from "@/actions/auth";
 import { db } from "@/db";
 import {
 	bodyMeasurements,
-	programTemplates,
 	programDayTemplates,
+	programTemplates,
 	workoutSessions,
 	workoutSets,
 } from "@/db/schema";
-import { getCurrentUser } from "@/actions/auth";
 import { toCapitalized } from "@/lib/to-capitalized";
 
 export interface StrengthTrendDataPoint {
@@ -376,8 +376,8 @@ export async function getDashboardData() {
 				return point;
 			})
 			.sort((a, b) => {
-				const dateA = new Date(a.date + ", 2026");
-				const dateB = new Date(b.date + ", 2026");
+				const dateA = new Date(`${a.date}, 2026`);
+				const dateB = new Date(`${b.date}, 2026`);
 				return dateA.getTime() - dateB.getTime();
 			});
 

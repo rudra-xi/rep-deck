@@ -3,9 +3,9 @@
 import { SignOutIcon } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import { signOut } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 

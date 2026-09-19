@@ -1,16 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { PencilSimpleIcon } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
 import {
 	Combobox,
 	ComboboxContent,
@@ -19,14 +12,21 @@ import {
 	ComboboxItem,
 	ComboboxList,
 } from "@/components/ui/combobox";
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useDialog, useFormField } from "@/hooks";
-import { toast } from "sonner";
 import {
 	PRESET_EXERCISES,
 	PRESET_REP_RANGES,
 	type PresetExercise,
 } from "@/constants";
+import { useDialog, useFormField } from "@/hooks";
 
 interface ExerciseData {
 	id: string;
@@ -67,7 +67,13 @@ export function EditExerciseDialog({
 			targetSets.setValue(exercise.targetSets || 3);
 			targetRepRange.setValue(exercise.targetRepRange || "8-12");
 		}
-	}, [open, exercise]);
+	}, [
+		open,
+		exercise,
+		targetRepRange.setValue,
+		targetSets.setValue,
+		type.setValue,
+	]);
 
 	const handleSelectExercise = (item: PresetExercise | string | null) => {
 		if (!item) return;

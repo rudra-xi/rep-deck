@@ -1,3 +1,4 @@
+// biome-ignore-all lint/suspicious/noArrayIndexKey: fixed-length decorative star rating
 "use client";
 
 import { QuotesIcon, StarIcon } from "@phosphor-icons/react";

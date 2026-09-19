@@ -1,4 +1,4 @@
-import { UpperBodyTrend, LowerBodyTrend } from "./all-measurements-trend";
+import { LowerBodyTrend, UpperBodyTrend } from "./all-measurements-trend";
 import { IndividualLiftDetailsCard } from "./individual-lift-details-card";
 import { SessionHistoryList } from "./session-history-list";
 import { StrengthOverviewCard } from "./strength-overview-card";

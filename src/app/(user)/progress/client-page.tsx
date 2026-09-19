@@ -5,9 +5,9 @@ import { PageTitleCard, SectionTitleCard, WeightBodyFatTrend } from "@/common";
 import { Separator } from "@/components/ui/separator";
 import {
 	IndividualLiftDetailsCard,
+	LowerBodyTrend,
 	SessionHistoryList,
 	StrengthOverviewCard,
-	LowerBodyTrend,
 	TrainingFrequencyCard,
 	UpperBodyTrend,
 } from "@/progress";

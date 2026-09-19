@@ -1,6 +1,7 @@
 // components/@common/skeletons.tsx
-import { Skeleton } from "@/components/ui/skeleton";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 /* ══════════════════════════════════════════════════════════════════
@@ -507,10 +508,7 @@ export function SessionHistoryListSkeleton({ rows = 4 }: { rows?: number }) {
 				<Skeleton className="h-[140px] w-full rounded-none border-b border-border/30" />
 				<div className="divide-y divide-border/30">
 					{Array.from({ length: rows }).map((_, i) => (
-						<div
-							key={i}
-							className="py-2.5 fcb px-1"
-						>
+						<div key={i} className="py-2.5 fcb px-1">
 							<div className="space-y-1.5 min-w-0">
 								<div className="fcy gap-2">
 									<Skeleton className="h-3 w-16 rounded-sm" />

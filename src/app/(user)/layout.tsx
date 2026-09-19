@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { getUserPreferences, getUserProfile } from "@/actions/account";
-import { UnitProvider, Navigation } from "@/common";
+import { Navigation, UnitProvider } from "@/common";
 
 export default async function UserLayout({
 	children,

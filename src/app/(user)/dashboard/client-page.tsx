@@ -11,7 +11,7 @@ import {
 import { useDashboardData } from "@/hooks";
 
 export function DashboardClientPage() {
-	const { data, loading, refresh } = useDashboardData();
+	const { data, loading } = useDashboardData();
 
 	return (
 		<section className="lg:space-y-6 space-y-8">

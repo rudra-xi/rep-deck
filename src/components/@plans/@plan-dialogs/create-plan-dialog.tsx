@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createPlan } from "@/actions/plans";
 import { CalendarIcon, PlusIcon } from "@phosphor-icons/react";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { createPlan } from "@/actions/plans";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,8 +25,6 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { useDialogForm } from "@/hooks";
-import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 
 export function CreatePlanDialog() {
 	const router = useRouter();
@@ -50,7 +50,7 @@ export function CreatePlanDialog() {
 					startDate: startDate ? startDate.toISOString() : undefined,
 				});
 			});
-		} catch (error) {
+		} catch (_error) {
 			toast.error("Failed to create plan", {
 				description: "There was an error creating the plan.",
 			});

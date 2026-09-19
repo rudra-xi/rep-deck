@@ -1,6 +1,14 @@
 "use client";
 
+import {
+	CheckCircleIcon,
+	CircleDashedIcon,
+	ClockIcon,
+	MapTrifoldIcon,
+} from "@phosphor-icons/react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -9,22 +17,14 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
-	MapTrifoldIcon,
-	CheckCircleIcon,
-	ClockIcon,
-	CircleDashedIcon,
-} from "@phosphor-icons/react";
-import { cn } from "@/lib/utils";
-import {
-	STATUS_META,
-	VERSION_META,
 	getItemsByVersion,
 	type RoadmapItem,
 	type RoadmapStatus,
+	STATUS_META,
+	VERSION_META,
 } from "@/lib/roadmap";
+import { cn } from "@/lib/utils";
 
 const STATUS_ICONS: Record<RoadmapStatus, React.ElementType> = {
 	shipped: CheckCircleIcon,
@@ -71,7 +71,10 @@ function VersionSection({
 }) {
 	const byPillar = items.reduce<Record<string, RoadmapItem[]>>(
 		(acc, item) => {
-			(acc[item.pillar] ??= []).push(item);
+			if (!acc[item.pillar]) {
+				acc[item.pillar] = [];
+			}
+			acc[item.pillar].push(item);
 			return acc;
 		},
 		{},

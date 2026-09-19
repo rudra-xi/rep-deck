@@ -1,6 +1,8 @@
 "use client";
 
 import { TrashIcon } from "@phosphor-icons/react";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -13,8 +15,6 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useState } from "react";
 
 interface DeleteExerciseDialogProps {
 	exerciseName: string;
@@ -25,7 +25,7 @@ export function DeleteExerciseDialog({
 	exerciseName,
 	onDelete,
 }: DeleteExerciseDialogProps) {
-	const [open, setOpen] = useState(false);
+	const [_open, setOpen] = useState(false);
 
 	const handleDelete = async () => {
 		try {

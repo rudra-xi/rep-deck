@@ -1,15 +1,15 @@
 import "dotenv/config";
+import { eq } from "drizzle-orm";
 import {
+	bodyMeasurements,
 	db,
-	users,
-	programTemplates,
-	programDayTemplates,
 	exerciseTemplates,
+	programDayTemplates,
+	programTemplates,
+	users,
 	workoutSessions,
 	workoutSets,
-	bodyMeasurements,
 } from "./index";
-import { eq } from "drizzle-orm";
 
 const USER_ID = "2e2a4a9f-8fe9-470e-8b21-c58e67e8d8ea";
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getMetricsData } from "@/actions/metrics";
 import { PageTitleCard, SectionTitleCard, WeightBodyFatTrend } from "@/common";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -11,10 +12,11 @@ import {
 	QuickAddMeasurementForm,
 	QuickStats,
 } from "@/metrics";
-import { getMetricsData } from "@/actions/metrics";
+
+type MetricsData = Awaited<ReturnType<typeof getMetricsData>>;
 
 export function MetricsClientPage() {
-	const [initialData, setInitialData] = useState<any>(null);
+	const [initialData, setInitialData] = useState<MetricsData>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {

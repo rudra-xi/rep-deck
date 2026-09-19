@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
 import {
-	WarningIcon,
 	ArrowClockwiseIcon,
 	HouseIcon,
+	WarningIcon,
 } from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
-import { Logo } from "@/common";
 import Link from "next/link";
+import { useEffect } from "react";
+import { Logo } from "@/common";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export default function GlobalError({
@@ -58,7 +58,7 @@ export default function GlobalError({
 					)}
 
 					{/* Divider */}
-					<Separator className={"my-6"}/>
+					<Separator className={"my-6"} />
 
 					{/* Actions */}
 					<div className="fcol sm:flex-row items-stretch sm:items-center gap-2">

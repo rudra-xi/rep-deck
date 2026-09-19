@@ -1,7 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
 import type { Icon } from "@phosphor-icons/react";
+import type { ReactNode } from "react";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -32,11 +32,7 @@ export function CardsHeader({
 					<span className="truncate">{title}</span>
 				</div>
 
-				{trailing && (
-					<div className="fcy gap-1.5 sh0">
-						{trailing}
-					</div>
-				)}
+				{trailing && <div className="fcy gap-1.5 sh0">{trailing}</div>}
 			</CardTitle>
 		</CardHeader>
 	);

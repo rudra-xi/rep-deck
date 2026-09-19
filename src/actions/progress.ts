@@ -1,11 +1,11 @@
 // actions/progress.ts
 "use server";
 
+import { format, subDays } from "date-fns";
 import { and, asc, desc, eq, gte, inArray, sql } from "drizzle-orm";
-import { db } from "@/db";
-import { workoutSessions, workoutSets, bodyMeasurements } from "@/db/schema";
 import { getCurrentUser } from "@/actions/auth";
-import { subDays, format } from "date-fns";
+import { db } from "@/db";
+import { bodyMeasurements, workoutSessions, workoutSets } from "@/db/schema";
 import { toCapitalized } from "@/lib/to-capitalized";
 
 // Reference current date aligned to Sep 10, 2026

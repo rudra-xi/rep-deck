@@ -6,9 +6,9 @@ import {
 	Features,
 	Hero,
 	HowItWorks,
+	ShowcaseSection,
 	Social,
 	StatsBar,
-	ShowcaseSection,
 	TrustBadges,
 } from "@/landing";
 

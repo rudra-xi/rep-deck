@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { CopyIcon } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { duplicatePlan } from "@/actions/plans";
-
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useDialog } from "@/hooks";
-import { toast } from "sonner";
 import type { PlanWithStructure } from "@/types/plans";
 
 interface DuplicatePlanDialogProps {

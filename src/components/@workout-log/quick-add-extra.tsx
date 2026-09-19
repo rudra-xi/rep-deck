@@ -1,7 +1,9 @@
 "use client";
 
+import { AsteriskIcon, PlusIcon } from "@phosphor-icons/react";
 import { useState } from "react";
-import { AsteriskIcon, PlusCircleIcon, PlusIcon } from "@phosphor-icons/react";
+import { toast } from "sonner";
+import { CardsHeader, useUnits } from "@/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -13,11 +15,9 @@ import {
 	ComboboxList,
 } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
-import { useFormField, useRangedInput } from "@/hooks";
-import { toast } from "sonner";
 import { PRESET_EXERCISES, type PresetExercise } from "@/constants";
+import { useFormField, useRangedInput } from "@/hooks";
 import type { LoggedSet } from "@/types";
-import { CardsHeader, useUnits } from "@/common";
 
 interface PlannedExerciseItem {
 	id: string;
@@ -89,15 +89,8 @@ export function QuickAddExtra({
 	);
 
 	return (
-		<Card
-			size="sm"
-			className="relative fcard-flat card-ease"
-		>
-			<CardsHeader
-				icon={AsteriskIcon}
-				title="Add Extra Work"
-				
-			/>
+		<Card size="sm" className="relative fcard-flat card-ease">
+			<CardsHeader icon={AsteriskIcon} title="Add Extra Work" />
 
 			<CardContent className="p-4 pt-1">
 				<form onSubmit={handleSubmit} className="space-y-3">

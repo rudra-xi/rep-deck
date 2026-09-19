@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
 	ArrowRightIcon,
 	CalendarDotsIcon,
@@ -8,23 +7,11 @@ import {
 	SparkleIcon,
 	TrophyIcon,
 } from "@phosphor-icons/react";
+import Link from "next/link";
+import { CardsHeader, useUnits } from "@/common";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import { CardsHeader, useUnits } from "@/common";
 import {
 	Empty,
 	EmptyContent,
@@ -33,9 +20,22 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 import { useLastWorkout } from "@/hooks";
-import { WorkoutTableSkeleton } from "@/skeletons";
 import { cn } from "@/lib/utils";
+import { WorkoutTableSkeleton } from "@/skeletons";
 
 export interface TopLift {
 	id: string | number;
@@ -157,7 +157,10 @@ export function LastWorkoutCard({
 							render={
 								<Link href={`/workout-log/${data.id}`}>
 									<span>Open</span>
-									<ArrowRightIcon size={12} className="text-primary"/>
+									<ArrowRightIcon
+										size={12}
+										className="text-primary"
+									/>
 								</Link>
 							}
 						/>

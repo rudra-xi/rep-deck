@@ -1,15 +1,15 @@
 "use client";
 
+import {
+	AboutSection,
+	FeedbackSection,
+	PreferencesSection,
+	ProfileSection,
+	ThemeSection,
+} from "@/account";
 import { PageTitleCard, SectionTitleCard } from "@/common";
 import { Separator } from "@/components/ui/separator";
-import {
-	ProfileSection,
-	PreferencesSection,
-	ThemeSection,
-	FeedbackSection,
-	AboutSection,
-} from "@/account";
-import type { UserProfile, UserPreferences } from "@/types";
+import type { UserPreferences, UserProfile } from "@/types";
 
 interface AccountClientPageProps {
 	initialProfile: UserProfile;

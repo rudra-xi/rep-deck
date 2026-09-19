@@ -1,6 +1,7 @@
 "use client";
 
 import { PlusIcon } from "@phosphor-icons/react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useDialog, useFormField } from "@/hooks";
-import { toast } from "sonner";
 
 interface CreateDayDialogProps {
 	onAddDay: (label: string) => void | Promise<void>;

@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import {
+	BarbellIcon,
 	CaretDownIcon,
 	CaretUpIcon,
+	ChatTextIcon,
 	CheckIcon,
 	ChecksIcon,
-	ChatTextIcon,
-	BarbellIcon,
 } from "@phosphor-icons/react";
+import Link from "next/link";
+import { useState } from "react";
+import { useUnits } from "@/common";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,14 +19,6 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Input } from "@/components/ui/input";
-import type { LoggedSet } from "@/types";
-import { useExerciseInputs, useExercisePerformance } from "@/hooks";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
 import {
 	Empty,
 	EmptyContent,
@@ -33,9 +27,16 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { useExerciseInputs } from "@/hooks";
 import { InlineStatSkeleton } from "@/skeletons";
-import { useUnits } from "@/common";
+import type { LoggedSet } from "@/types";
+import type { ExercisePerformanceWithPR } from "@/types/workout-log";
 
 interface ExerciseTemplate {
 	id: string;
@@ -47,6 +48,8 @@ interface ExerciseTemplate {
 
 interface PlannedExercisesProps {
 	exercises: ExerciseTemplate[];
+	performanceMap: Record<string, ExercisePerformanceWithPR | null>;
+	isLoadingPerformance: boolean;
 	onAddExerciseSets: (
 		sets: Array<Omit<LoggedSet, "id"> & { templateId?: string }>,
 	) => void;
@@ -55,6 +58,8 @@ interface PlannedExercisesProps {
 
 export function PlannedExercises({
 	exercises,
+	performanceMap,
+	isLoadingPerformance,
 	onAddExerciseSets,
 	onRemoveExerciseSets,
 }: PlannedExercisesProps) {
@@ -65,8 +70,6 @@ export function PlannedExercises({
 	);
 
 	const { handleInputChange, getSetInput } = useExerciseInputs();
-	const { lastLogs, isLoading } = useExercisePerformance(exercises);
-
 	const { weightUnit, fmtWeightStr } = useUnits();
 
 	const handleToggleDone = (ex: ExerciseTemplate) => {
@@ -113,7 +116,7 @@ export function PlannedExercises({
 
 	if (!exercises || exercises.length === 0) {
 		return (
-			<Card size="sm" className="fcard-flat min-h-[200px] w-full">
+			<Card size="sm" className="fcard-flat min-h-50 w-full">
 				<Empty className="p-6 sm:p-8 text-center w-full">
 					<EmptyHeader>
 						<EmptyMedia className="ficon-box-lg">
@@ -154,7 +157,9 @@ export function PlannedExercises({
 				const isOpen = openStates[ex.id] ?? true;
 				const isCompleted = !!completed[ex.id];
 
-				const perfData = lastLogs[ex.id];
+				// ← Lookup by NAME (was: lastLogs[ex.id])
+				const perfData = performanceMap[ex.name];
+
 				const lastBest = perfData?.lastBest
 					? `${fmtWeightStr(perfData.lastBest.weight)} × ${perfData.lastBest.reps}${
 							perfData.lastBest.rpe
@@ -177,7 +182,7 @@ export function PlannedExercises({
 					<Card
 						key={ex.id}
 						size="sm"
-						className={`h-fit fcard-flat bg-card/40 backdrop-blur-sm base-ease ${
+						className={`h-fit fcard-flat bg-card/40 backdrop-blur-sm transition-all ${
 							isCompleted
 								? "border-primary/50 bg-primary/5 opacity-80"
 								: "border-border/60 hover:border-primary/40"
@@ -219,12 +224,12 @@ export function PlannedExercises({
 								</div>
 							</div>
 
-							<div className="flex items-end justify-between">
+							<div className="fbe">
 								<div className="fcol text-[10px] text-muted-foreground pt-1.5 min-h-8">
 									<span>
 										PR:{" "}
 										<span className="text-foreground font-semibold tracking-wider">
-											{isLoading ? (
+											{isLoadingPerformance ? (
 												<InlineStatSkeleton />
 											) : (
 												overallBest || "—"
@@ -232,11 +237,10 @@ export function PlannedExercises({
 										</span>
 									</span>
 
-									{/* ✅ FIX: was showing overallBest */}
 									<span className="gap-1">
 										Last:{" "}
 										<span className="text-foreground font-semibold tracking-wider">
-											{isLoading ? (
+											{isLoadingPerformance ? (
 												<InlineStatSkeleton />
 											) : (
 												lastBest || "—"
@@ -261,10 +265,7 @@ export function PlannedExercises({
 													<span className="italic truncate max-w-46">
 														~{" "}
 														{lastNote.length > 40
-															? lastNote.slice(
-																	0,
-																	40,
-																) + "..."
+															? `${lastNote.slice(0, 40)}...`
 															: lastNote}{" "}
 														~
 													</span>

@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { updatePlan } from "@/actions/plans";
-import { format } from "date-fns";
 import {
 	CalendarDotsIcon,
 	FloppyDiskIcon,
 	GearIcon,
 } from "@phosphor-icons/react";
-
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { updatePlan } from "@/actions/plans";
+import { CardsHeader } from "@/common";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,10 +21,8 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import type { PlanWithStructure } from "@/types/plans";
-import { toast } from "sonner";
 import { PlanSettingsCardSkeleton } from "@/skeletons";
-import { CardsHeader } from "@/common";
+import type { PlanWithStructure } from "@/types/plans";
 
 interface PlanSettingsCardProps {
 	plan: PlanWithStructure;

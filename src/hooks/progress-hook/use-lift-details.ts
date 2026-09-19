@@ -1,6 +1,7 @@
 // hooks/useLiftDetails.ts
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getLiftDetails } from "@/actions/progress";
+import type { LiftDetailPoint } from "@/types/progress";
 
 type LiftType = "bench" | "squat" | "deadlift" | "ohp";
 
@@ -12,12 +13,12 @@ const LIFT_LABELS: Record<LiftType, string> = {
 };
 
 export function useLiftDetails(
-	initialData: any[] = [],
+	initialData: LiftDetailPoint[] = [],
 	propLoading: boolean = false,
 	defaultLift: LiftType = "bench",
 ) {
 	const [selectedLift, setSelectedLift] = useState<LiftType>(defaultLift);
-	const [cache, setCache] = useState<Record<string, any[]>>({});
+	const [cache, setCache] = useState<Record<string, LiftDetailPoint[]>>({});
 	const [loading, setLoading] = useState(
 		initialData.length === 0 && !propLoading,
 	);

@@ -1,12 +1,7 @@
 "use client";
 
+import { ActivityIcon, FlameIcon, TrophyIcon } from "@phosphor-icons/react";
 import Link from "next/link";
-import {
-	ActivityIcon,
-	CalendarCheckIcon,
-	FlameIcon,
-	TrophyIcon,
-} from "@phosphor-icons/react";
 import {
 	PolarAngleAxis,
 	PolarGrid,
@@ -14,6 +9,8 @@ import {
 	Radar,
 	RadarChart,
 } from "recharts";
+import { CardsHeader } from "@/common";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
 	type ChartConfig,
@@ -29,10 +26,8 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import { Button } from "@/components/ui/button";
 import { useTrainingFrequency } from "@/hooks";
 import { TrainingFrequencyCardSkeleton } from "@/skeletons";
-import { CardsHeader } from "@/common";
 
 const chartConfig = {
 	sessions: {
@@ -101,10 +96,7 @@ export function TrainingFrequencyCard({
 	}
 
 	return (
-		<Card
-			size="sm"
-			className="fcard-flat overflow-hidden card-ease"
-		>
+		<Card size="sm" className="fcard-flat overflow-hidden card-ease">
 			<CardsHeader icon={ActivityIcon} title="Training Distribution" />
 
 			<CardContent className="p-4 pt-1 fcol3">

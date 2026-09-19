@@ -1,24 +1,24 @@
 "use client";
 
-import { format } from "date-fns";
 import {
-	CheckIcon,
-	UserIcon,
-	EnvelopeSimpleIcon,
 	CalendarBlankIcon,
+	CheckIcon,
+	EnvelopeSimpleIcon,
 	PencilSimpleIcon,
+	UserIcon,
 } from "@phosphor-icons/react";
+import { format } from "date-fns";
+import { UserAvatar } from "@/auth";
+import { CardsHeader } from "@/common";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
-import { UserAvatar } from "@/auth";
+import { useProfileForm } from "@/hooks";
 import { cn } from "@/lib/utils";
 import type { UserProfile } from "@/types";
-import { useProfileForm } from "@/hooks";
-import { CardsHeader } from "@/common";
 
 interface ProfileSectionProps {
 	profile: UserProfile;

@@ -3,8 +3,8 @@ import { FAQ } from "./faq";
 import { Features } from "./features";
 import { Hero } from "./hero";
 import { HowItWorks } from "./how-it-works";
-import { Social } from "./social";
 import { ShowcaseSection } from "./showcase-section";
+import { Social } from "./social";
 import { StatsBar } from "./stats-bar";
 import { TrustBadges } from "./trust-badges";
 

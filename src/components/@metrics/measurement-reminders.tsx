@@ -1,14 +1,14 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
 	AlarmIcon,
-	CheckCircleIcon,
 	ArrowClockwiseIcon,
+	CheckCircleIcon,
 } from "@phosphor-icons/react";
-import { useMeasurementReminders } from "@/hooks";
 import { CardsHeader } from "@/common";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useMeasurementReminders } from "@/hooks";
 
 export function MeasurementReminders() {
 	const { selectedDays, toggleDay, isDaySelected, days, resetToDefaults } =

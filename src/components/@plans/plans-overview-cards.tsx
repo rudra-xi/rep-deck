@@ -1,24 +1,25 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { deletePlan, setActivePlan } from "@/actions/plans";
-import {
-	CreatePlanDialog,
-	DeletePlanDialog,
-	DuplicatePlanDialog,
-} from "@/plan-dialogs";
 import {
 	CaretLeftIcon,
 	CaretRightIcon,
 	FolderStarIcon,
 } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import { deletePlan } from "@/actions/plans";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { PlanWithStructure } from "@/types/plans";
-import { toast } from "sonner";
+import {
+	CreatePlanDialog,
+	DeletePlanDialog,
+	DuplicatePlanDialog,
+} from "@/plan-dialogs";
 import { PlansOverviewSkeleton } from "@/skeletons";
-import { Badge } from "@/components/ui/badge";
+import type { PlanWithStructure } from "@/types/plans";
 
 interface PlansOverviewCardsProps {
 	plans: PlanWithStructure[];
@@ -139,10 +140,7 @@ function PlanCardItem({
 					<CardTitle className="text-xs font-bold fupper text-foreground">
 						{plan.name}
 					</CardTitle>
-					<Badge
-						variant="outline"
-						className="text-xs font-bold"
-					>
+					<Badge variant="outline" className="text-xs font-bold">
 						v{plan.version}
 					</Badge>
 				</div>
@@ -204,7 +202,7 @@ export function PlansOverviewCards({
 	onSetActivePlan,
 	loading = false,
 }: PlansOverviewCardsProps) {
-	const activeIndex = useMemo(() => {
+	const _activeIndex = useMemo(() => {
 		const idx = plans.findIndex((p) => p.active);
 		return idx !== -1 ? idx : 0;
 	}, [plans]);

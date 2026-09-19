@@ -7,9 +7,9 @@ import {
 	EnvelopeSimpleIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
+import { CardsHeader } from "@/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CardsHeader } from "@/common";
 import { buildMailtoUrl, GITHUB_ISSUES } from "@/lib/contact";
 
 const FEEDBACK_MAILTO = buildMailtoUrl({

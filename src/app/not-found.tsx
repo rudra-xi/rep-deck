@@ -1,9 +1,9 @@
 "use client";
 
+import { ArrowLeftIcon, HouseIcon } from "@phosphor-icons/react";
 import Link from "next/link";
-import { HouseIcon, ArrowLeftIcon } from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
 import { Logo } from "@/common";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export default function NotFound() {
@@ -35,7 +35,7 @@ export default function NotFound() {
 					</p>
 
 					{/* Divider */}
-					<Separator className={"my-6"}/>
+					<Separator className={"my-6"} />
 
 					{/* Actions */}
 					<div className="fcol sm:flex-row items-stretch sm:items-center gap-2">

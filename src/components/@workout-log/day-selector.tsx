@@ -1,14 +1,10 @@
 "use client";
 
-import {
-	BarbellIcon,
-	CalendarDotsIcon,
-	CheckCircleIcon,
-} from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { CalendarDotsIcon, CheckCircleIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { CardsHeader } from "@/common";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface ProgramDay {
 	id: string;
@@ -48,15 +44,8 @@ export function DaySelector({
 	};
 
 	return (
-		<Card
-			size="sm"
-			className="fcard-flat card-ease"
-		>
-			<CardsHeader
-				icon={CalendarDotsIcon}
-				title={programName}
-				
-			/>
+		<Card size="sm" className="fcard-flat card-ease">
+			<CardsHeader icon={CalendarDotsIcon} title={programName} />
 
 			<CardContent className="p-4 pt-1 fcol3">
 				<div className="fcb">

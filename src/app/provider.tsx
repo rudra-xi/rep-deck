@@ -1,10 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
 import { Footer, Navigation } from "@/common";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "next-themes";
 import { useToastPosition } from "@/hooks";
 
 export default function LayoutProvider({ children }: { children: ReactNode }) {

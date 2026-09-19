@@ -55,11 +55,7 @@ export function usePreferences(initialPreferences: UserPreferences) {
 	};
 
 	const handleWeightToggle = (checked: boolean) =>
-		handlePreferenceChange(
-			"weightUnit",
-			checked ? "lb" : "kg",
-			"weight",
-		);
+		handlePreferenceChange("weightUnit", checked ? "lb" : "kg", "weight");
 
 	const handleMeasurementToggle = (checked: boolean) =>
 		handlePreferenceChange(

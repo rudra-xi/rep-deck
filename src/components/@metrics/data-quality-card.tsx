@@ -1,10 +1,10 @@
 "use client";
 
 import { ShieldCheckIcon, WarningIcon } from "@phosphor-icons/react";
+import { CardsHeader } from "@/common";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDataQuality } from "@/hooks";
 import { DataQualityCardSkeleton } from "@/skeletons";
-import { CardsHeader } from "@/common";
 
 interface DataQualityProps {
 	daysSinceLastMeasurement?: number;
@@ -53,10 +53,7 @@ export function DataQualityCard({
 
 				{isStale ? (
 					<div className="p-2 border border-destructive/30 bg-destructive/10 text-destructive text-xs fcy gap-2">
-						<WarningIcon
-							className="size-4 sh0"
-							weight="bold"
-						/>
+						<WarningIcon className="size-4 sh0" weight="bold" />
 						<span>{status.message}</span>
 					</div>
 				) : (

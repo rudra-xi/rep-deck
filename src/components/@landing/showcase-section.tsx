@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
 import {
 	ChartLineUpIcon,
 	ClipboardTextIcon,
 	FolderSimpleIcon,
 	ScalesIcon,
 } from "@phosphor-icons/react";
-import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { useState } from "react";
+import { Metrics, Plans, Progress, Workout } from "@/assets/image";
 import { showcaseTabs } from "@/constants";
-import { Workout, Plans, Progress, Metrics } from "@/assets/image";
+import { cn } from "@/lib/utils";
 
 /* ─────────────────────────────────────────────────────────────
    ICON + IMAGE MAPS — stay in the component (UI concern)

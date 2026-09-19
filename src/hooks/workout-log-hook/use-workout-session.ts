@@ -34,26 +34,16 @@ export function useWorkoutSession({
 				setCounts[s.exerciseName] =
 					(setCounts[s.exerciseName] || 0) + 1;
 
-				// ✅ IMPORTANT: Include notes and templateId
 				return {
 					exerciseName: s.exerciseName,
-					templateId: (s as any).templateId || undefined,
+					templateId: s.templateId || undefined,
 					setNumber: setCounts[s.exerciseName],
 					weight: Number(s.weight),
 					reps: Number(s.reps),
 					rpe: s.rpe ? Number(s.rpe) : undefined,
-					notes: s.notes || "", // ✅ This is critical!
+					notes: s.notes || "",
 				};
 			});
-
-			// Debug: Log what's being sent
-			console.log(
-				"📝 Formatted sets with notes:",
-				formattedSets.map((s) => ({
-					name: s.exerciseName,
-					notes: s.notes,
-				})),
-			);
 
 			const res = await finishWorkoutSession({
 				programId,
@@ -63,13 +53,12 @@ export function useWorkoutSession({
 			});
 
 			if (res.success) {
-				toast.success("Workout saved successfully!");
 				onSuccess?.();
 				return { success: true, data: res };
-			} else {
-				toast.error(res.error || "Failed to save workout session.");
-				return { success: false, error: res.error };
 			}
+
+			toast.error(res.error || "Failed to save workout session.");
+			return { success: false, error: res.error };
 		} catch (error) {
 			console.error("Error saving workout:", error);
 			toast.error("An unexpected error occurred while saving.");

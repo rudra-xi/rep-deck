@@ -1,12 +1,13 @@
-import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { type NextRequest, NextResponse } from "next/server";
+import { env } from "@/lib/env";
 
 export async function proxy(request: NextRequest) {
-	let response = NextResponse.next({ request });
+	const response = NextResponse.next({ request });
 
 	const supabase = createServerClient(
-		process.env.NEXT_PUBLIC_SUPABASE_URL!,
-		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+		env.SUPABASE_URL,
+		env.SUPABASE_ANON_KEY,
 		{
 			cookies: {
 				getAll() {
@@ -29,7 +30,7 @@ export async function proxy(request: NextRequest) {
 
 	const path = request.nextUrl.pathname;
 
-	const publicRoutes = ["/", "/auth/callback", "/sign-in", "/sign-up"];
+	const publicRoutes = ["/", "/auth/callback"];
 	const isPublicRoute = publicRoutes.some(
 		(route) => path === route || path.startsWith(`${route}/`),
 	);

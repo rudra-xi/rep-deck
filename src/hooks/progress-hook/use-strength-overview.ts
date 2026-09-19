@@ -1,17 +1,20 @@
 // hooks/useStrengthOverview.ts
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getStrengthOverview } from "@/actions/progress";
+import type { StrengthOverviewPoint } from "@/types/progress";
 
 type TimeRange = "2M" | "3M" | "6M" | "1Y";
 
 const TIME_RANGES: TimeRange[] = ["2M", "3M", "6M", "1Y"];
 
 export function useStrengthOverview(
-	initialData: any[] = [],
+	initialData: StrengthOverviewPoint[] = [],
 	propLoading: boolean = false,
 	timeRange: TimeRange = "3M", // ← receive from parent
 ) {
-	const [cache, setCache] = useState<Record<string, any[]>>({});
+	const [cache, setCache] = useState<Record<string, StrengthOverviewPoint[]>>(
+		{},
+	);
 	const [loading, setLoading] = useState(initialData.length === 0);
 	const [isFetching, setIsFetching] = useState(false);
 

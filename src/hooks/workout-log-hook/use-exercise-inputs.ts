@@ -1,5 +1,5 @@
 // hooks/useExerciseInputs.ts
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { STORAGE_KEYS } from "@/lib/storage";
 
 interface SetInput {
@@ -57,7 +57,7 @@ export function useExerciseInputs() {
 			if (value === "") return value;
 
 			const num = parseFloat(value);
-			if (isNaN(num)) return value;
+			if (Number.isNaN(num)) return value;
 
 			const { min, max } = VALIDATION[field];
 			if (num > max) return max.toString();

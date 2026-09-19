@@ -1,10 +1,10 @@
 "use client";
 
-import { CircleNotchIcon, GoogleLogoIcon } from "@phosphor-icons/react";
-import { useState, type ReactNode } from "react";
+import { GoogleLogoIcon } from "@phosphor-icons/react";
+import { type ReactNode, useState } from "react";
+import { toast } from "sonner";
 import { signInWithGoogle } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 
 interface GoogleLoginButtonProps {

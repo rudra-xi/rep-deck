@@ -1,6 +1,7 @@
 "use client";
 
 import { TrashIcon } from "@phosphor-icons/react";
+import { toast } from "sonner";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -14,7 +15,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useDialog } from "@/hooks";
-import { toast } from "sonner";
 
 interface DeleteDayDialogProps {
 	dayLabel: string;
@@ -32,7 +32,7 @@ export function DeleteDayDialog({ dayLabel, onDelete }: DeleteDayDialogProps) {
 				description: `"${dayLabel}" has been deleted.`,
 			});
 			setOpen(false);
-		} catch (error) {
+		} catch (_error) {
 			toast.error("Delete failed", {
 				description: "There was an error deleting the day.",
 			});

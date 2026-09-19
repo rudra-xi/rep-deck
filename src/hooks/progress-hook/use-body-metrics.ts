@@ -1,10 +1,11 @@
 // hooks/progress-hook/use-body-metrics.ts
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getBodyMetrics } from "@/actions/progress";
 import { useUnits } from "@/common";
+import type { BodyMetricPoint } from "@/types/progress";
 
 export function useBodyMetrics(
-	initialData: any[] = [],
+	initialData: BodyMetricPoint[] = [],
 	propLoading: boolean = false,
 ) {
 	const { fmtWeight } = useUnits();

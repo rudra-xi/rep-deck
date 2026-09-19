@@ -1,16 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import {
 	BarbellIcon,
 	CalendarCheckIcon,
 	CaretDownIcon,
+	DotOutlineIcon,
 	ScalesIcon,
 	TrendDownIcon,
 	TrendUpIcon,
 	TrophyIcon,
-	DotOutlineIcon,
 } from "@phosphor-icons/react";
+import Link from "next/link";
+import { useUnits } from "@/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -19,10 +20,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Spinner } from "@/components/ui/spinner";
 import { useKpiCards } from "@/hooks";
 import { KpiCardsSkeleton } from "@/skeletons";
-import { useUnits } from "@/common";
 
 export interface KpiTrend {
 	direction: "up" | "down" | "neutral";
@@ -61,15 +60,16 @@ interface KpiCardsProps {
 }
 
 export function KpiCards({ data, loading = false }: KpiCardsProps) {
-	const { fmtWeightStr, fmtWeight } = useUnits();
+	const { fmtWeightStr } = useUnits();
 
 	const program = data?.program;
 	const sessionsThisWeek = data?.sessionsThisWeek;
 	const bestLift = data?.bestLift;
 	const bodyWeight = data?.bodyWeight;
 
-	const { selectedLiftValue, setSelectedLiftValue, getActiveLiftOption } =
-		useKpiCards(bestLift?.dropdownOptions);
+	const { setSelectedLiftValue, getActiveLiftOption } = useKpiCards(
+		bestLift?.dropdownOptions,
+	);
 
 	const activeLiftOption = getActiveLiftOption(bestLift?.dropdownOptions);
 
@@ -248,7 +248,7 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 											card.trend.direction === "up"
 												? "text-primary"
 												: card.trend.direction ===
-													  "down"
+														"down"
 													? "text-destructive"
 													: "fmuted"
 										}`}

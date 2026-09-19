@@ -3,10 +3,10 @@
 import {
 	CheckCircleIcon,
 	CurrencyDollarIcon,
-	RulerIcon,
 	GoogleLogoIcon,
 	PencilSimpleLineIcon,
 	QuestionIcon,
+	RulerIcon,
 	SwapIcon,
 } from "@phosphor-icons/react";
 import {

@@ -1,15 +1,16 @@
+// biome-ignore-all lint/suspicious/noArrayIndexKey: static legal content, never reordered
 "use client";
 
 import { EnvelopeSimpleIcon, ShieldCheckIcon } from "@phosphor-icons/react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import {
 	BackButton,
 	CardsHeader,
 	PageTitleCard,
 	SectionTitleCard,
 } from "@/common";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const SECTIONS = [
 	{ id: "cover", num: "01", title: "What this policy covers" },

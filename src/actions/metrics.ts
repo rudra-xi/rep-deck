@@ -1,17 +1,17 @@
 "use server";
 
+import { differenceInDays, format, subDays } from "date-fns";
 import { and, asc, desc, eq, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getUserPreferences } from "@/actions/account";
+import { getCurrentUser } from "@/actions/auth";
 import { db } from "@/db";
 import { bodyMeasurements } from "@/db/schema";
-import { getCurrentUser } from "@/actions/auth";
-import { getUserPreferences } from "@/actions/account";
-import { subDays, format, differenceInDays } from "date-fns";
 import {
-	formatWeight,
 	formatMeasurement,
-	parseWeightToKg,
+	formatWeight,
 	parseMeasurementToIn,
+	parseWeightToKg,
 } from "@/lib/units";
 
 export interface MeasurementFormData {
@@ -262,7 +262,7 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 			if (curr == null || prev == null) return null;
 			const c = Number(curr);
 			const p = Number(prev);
-			if (isNaN(c) || isNaN(p)) return null;
+			if (Number.isNaN(c) || Number.isNaN(p)) return null;
 			return Number((c - p).toFixed(2));
 		};
 

@@ -29,7 +29,7 @@ export function hasWorkoutData(): boolean {
 
 // Helper to get all workout data
 export function getAllWorkoutData() {
-	const data: Record<string, any> = {};
+	const data: Record<string, unknown> = {};
 	Object.entries(STORAGE_KEYS).forEach(([key, storageKey]) => {
 		const value = localStorage.getItem(storageKey);
 		if (value) {

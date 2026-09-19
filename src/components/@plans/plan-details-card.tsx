@@ -1,14 +1,15 @@
+// biome-ignore-all lint/a11y/useSemanticElements: interactive row wraps multi-element content; <button> would produce invalid HTML
 "use client";
 
+import { BlueprintIcon, CaretRightIcon } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import { addPlanDay, deletePlanDay } from "@/actions/plans";
-import { CreateDayDialog, DeleteDayDialog } from "@/plan-dialogs";
-import { BlueprintIcon, CaretRightIcon } from "@phosphor-icons/react";
-import { Card, CardContent } from "@/components/ui/card";
-import type { PlanWithStructure } from "@/types/plans";
-import { PlanDetailsCardSkeleton } from "@/skeletons";
-import { Badge } from "@/components/ui/badge";
 import { CardsHeader } from "@/common";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { CreateDayDialog, DeleteDayDialog } from "@/plan-dialogs";
+import { PlanDetailsCardSkeleton } from "@/skeletons";
+import type { PlanWithStructure } from "@/types/plans";
 
 interface PlanDetailsCardProps {
 	plan: PlanWithStructure;

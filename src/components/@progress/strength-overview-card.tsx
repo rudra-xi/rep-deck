@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { GaugeIcon, TrendUpIcon } from "@phosphor-icons/react";
+import Link from "next/link";
 import {
 	CartesianGrid,
 	Line,
@@ -10,8 +10,9 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardsHeader, useUnits } from "@/common";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
 	type ChartConfig,
 	ChartContainer,
@@ -20,7 +21,6 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Spinner } from "@/components/ui/spinner";
 import {
 	Empty,
 	EmptyContent,
@@ -29,9 +29,10 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 import { useStrengthOverview } from "@/hooks";
 import { ChartCardSkeleton } from "@/skeletons";
-import { CardsHeader, useUnits } from "@/common";
+import type { StrengthOverviewPoint } from "@/types/progress";
 
 const strengthChartConfig = {
 	squat: { label: "Squat", color: "var(--chart-1)" },
@@ -45,7 +46,7 @@ type TimeRange = "2M" | "3M" | "6M" | "1Y";
 interface StrengthOverviewCardProps {
 	timeRange: TimeRange;
 	onTimeRangeChange: (range: TimeRange) => void;
-	initialData?: any[];
+	initialData?: StrengthOverviewPoint[];
 	loading?: boolean;
 }
 

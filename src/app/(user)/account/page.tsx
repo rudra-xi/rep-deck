@@ -1,5 +1,5 @@
+import { getUserPreferences, getUserProfile } from "@/actions/account";
 import { AccountClientPage } from "./client-page";
-import { getUserProfile, getUserPreferences } from "@/actions/account";
 
 export default async function AccountPage() {
 	const [profile, preferences] = await Promise.all([
