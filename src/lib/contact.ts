@@ -2,16 +2,15 @@ export const SUPPORT_EMAIL = "xi.rudra.code@gmail.com";
 export const GITHUB_REPO = "https://github.com/rudra-xi/rep-deck";
 export const GITHUB_ISSUES = `${GITHUB_REPO}/issues`;
 
-export function buildMailtoUrl({
-	subject,
-	body,
-}: {
+interface MailtoOptions {
 	subject: string;
 	body?: string;
-}) {
-	const parts = [`subject=${encodeURIComponent(subject)}`];
-	if (body) parts.push(`body=${encodeURIComponent(body)}`);
-	return `mailto:${SUPPORT_EMAIL}?${parts.join("&")}`;
+}
+
+export function buildMailtoUrl({ subject, body }: MailtoOptions) {
+	const params = new URLSearchParams({ subject });
+	if (body) params.set("body", body);
+	return `mailto:${SUPPORT_EMAIL}?${params.toString()}`;
 }
 
 export function buildFeedbackMailtoUrl({
@@ -40,6 +39,52 @@ export function buildFeedbackMailtoUrl({
 
 	return buildMailtoUrl({
 		subject: "Rep Deck — Feedback",
+		body,
+	});
+}
+
+export function buildPrivacyMailtoUrl({
+	appVersion = "v0.1.0",
+}: {
+	appVersion?: string;
+} = {}) {
+	const body = [
+		"Hi Rudra,",
+		"",
+		"I have a question about the Rep Deck Privacy Policy:",
+		"",
+		"—",
+		"",
+		"",
+		"---",
+		`App version: ${appVersion}`,
+	].join("\r\n");
+
+	return buildMailtoUrl({
+		subject: "Rep Deck — Privacy Inquiry",
+		body,
+	});
+}
+
+export function buildTermsMailtoUrl({
+	appVersion = "v0.1.0",
+}: {
+	appVersion?: string;
+} = {}) {
+	const body = [
+		"Hi Rudra,",
+		"",
+		"I have a question about the Rep Deck Terms of Service:",
+		"",
+		"—",
+		"",
+		"",
+		"---",
+		`App version: ${appVersion}`,
+	].join("\r\n");
+
+	return buildMailtoUrl({
+		subject: "Rep Deck — Terms Inquiry",
 		body,
 	});
 }
