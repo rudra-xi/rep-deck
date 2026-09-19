@@ -24,7 +24,10 @@ export function PreferencesSection({
 		usePreferences(initialPreferences);
 
 	return (
-		<Card className="fcard-flat card-ease hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
+		<Card
+			size="sm"
+			className="fcard-flat card-ease hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]"
+		>
 			<CardsHeader icon={SlidersHorizontalIcon} title="Preferences" />
 
 			<CardContent className="p-5 pt-1 fcol4">

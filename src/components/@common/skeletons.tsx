@@ -130,7 +130,7 @@ export function WorkoutTableSkeleton({ rows = 4 }: { rows?: number }) {
 
 export function DataQualityCardSkeleton() {
 	return (
-		<Card className="fcard-flat">
+		<Card size="sm" className="fcard-flat">
 			<CardsHeaderSkeleton titleWidth="w-28" />
 			<CardContent className="p-4 pt-1 fcol2_5">
 				<div className="grid grid-cols-2 gap-2">

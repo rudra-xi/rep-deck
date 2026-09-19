@@ -52,7 +52,7 @@ export const TrustBadges = () => {
 								<p className="text-xs font-bold uppercase tracking-wider text-foreground group-hover:text-primary transition-colors">
 									{label}
 								</p>
-								<p className="text-[11px] text-muted-foreground truncate leading-snug">
+								<p className="text-[11px] text-muted-foreground  leading-snug">
 									{description}
 								</p>
 							</div>

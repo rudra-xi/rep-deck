@@ -33,7 +33,10 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
 		: "N/A";
 
 	return (
-		<Card className="fcard-flat card-ease hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
+		<Card
+			size="sm"
+			className="fcard-flat card-ease hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]"
+		>
 			<CardsHeader icon={UserIcon} title="Profile" />
 
 			<CardContent className="p-5 pt-1 fcol5">
@@ -45,7 +48,7 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
 						/>
 					</div>
 					<div className="min-w-0 fgrow">
-						<h3 className="text-sm font-bold text-foreground truncate">
+						<h3 className="text-sm font-bold text-foreground ">
 							{profile.name || "Lifter"}
 						</h3>
 						<div className="fcy gap-1.5 mt-1">

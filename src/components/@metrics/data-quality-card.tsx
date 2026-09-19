@@ -25,7 +25,7 @@ export function DataQualityCard({
 	if (loading) return <DataQualityCardSkeleton />;
 
 	return (
-		<Card className="fcard-flat card-ease">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeader
 				icon={isStale ? WarningIcon : ShieldCheckIcon}
 				title="Data Quality"

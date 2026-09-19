@@ -65,7 +65,7 @@ export default function Terms() {
 					/>
 				</div>
 
-				<Card className="fcard-flat">
+				<Card size="sm" className="fcard-flat">
 					<CardsHeader
 						icon={FileTextIcon}
 						title="Overview"
@@ -93,7 +93,7 @@ export default function Terms() {
 										href={`#${s.id}`}
 										className="ftext-xs2 fmuted hover:text-primary transition-colors fcy gap-2"
 									>
-										<span className=" text-primary/60">
+										<span className="font-mono text-primary/60">
 											{s.num}.
 										</span>
 										<span className="truncate">
@@ -110,7 +110,7 @@ export default function Terms() {
 
 				<section id="acceptance" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Acceptance of terms" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								By accessing or using Rep Deck (the
@@ -124,7 +124,7 @@ export default function Terms() {
 
 				<section id="description" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Description of service" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5 fcol4">
 							<p className="text-sm text-muted-foreground">
 								Rep Deck is a workout tracking and progress
@@ -143,7 +143,7 @@ export default function Terms() {
 
 				<section id="accounts" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="User accounts" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<BulletList
 								items={[
@@ -158,7 +158,7 @@ export default function Terms() {
 
 				<section id="content" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="User content" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<BulletList
 								items={[
@@ -173,7 +173,7 @@ export default function Terms() {
 
 				<section id="use" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Acceptable use" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5 fcol4">
 							<p className="text-sm text-muted-foreground">
 								You agree not to:
@@ -191,7 +191,7 @@ export default function Terms() {
 
 				<section id="disclaimers" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Disclaimers" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<BulletList
 								items={[
@@ -213,7 +213,7 @@ export default function Terms() {
 
 				<section id="liability" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Limitation of liability" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								To the maximum extent permitted by law, Rep Deck
@@ -228,7 +228,7 @@ export default function Terms() {
 
 				<section id="changes" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Changes to the service and terms" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<BulletList
 								items={[
@@ -242,7 +242,7 @@ export default function Terms() {
 
 				<section id="termination" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Termination" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								We may suspend or terminate your access to Rep
@@ -255,7 +255,7 @@ export default function Terms() {
 
 				<section id="law" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Governing law" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								These Terms are governed by the laws of the
@@ -268,7 +268,7 @@ export default function Terms() {
 
 				<section id="contact" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Contact" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardsHeader
 							icon={EnvelopeSimpleIcon}
 							title="Get in touch"
@@ -292,7 +292,7 @@ export default function Terms() {
 										</p>
 										<a
 											href={`mailto:${SUPPORT_EMAIL}`}
-											className="text-sm text-foreground hover:text-primary transition-colors  truncate block"
+											className="text-sm text-foreground hover:text-primary transition-colors   block"
 										>
 											{SUPPORT_EMAIL}
 										</a>

@@ -147,7 +147,7 @@ export function MuscleSizeTrend({
 				title="Muscle Size"
 				trailing={
 					growth && (
-						<div>
+						<div className="flex gap-2">
 							{(
 								Object.entries(growth) as Array<
 									[

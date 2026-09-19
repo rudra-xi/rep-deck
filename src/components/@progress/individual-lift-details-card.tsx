@@ -200,7 +200,7 @@ export function IndividualLiftDetailsCard({
 								className="size-3 text-primary sh0"
 								weight="duotone"
 							/>
-							<span className="truncate">{lastPR}</span>
+							<span className="">{lastPR}</span>
 						</span>
 					</div>
 				</div>

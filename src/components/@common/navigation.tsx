@@ -102,16 +102,14 @@ function NavLink({
 				<div className="fgrow min-w-0">
 					<p
 						className={cn(
-							"text-sm font-medium truncate",
+							"text-sm font-medium ",
 							active && "font-bold",
 						)}
 					>
 						{label}
 					</p>
 					{description && (
-						<p className="ftext-2xs fmuted truncate">
-							{description}
-						</p>
+						<p className="ftext-2xs fmuted ">{description}</p>
 					)}
 				</div>
 
@@ -256,10 +254,10 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 											className="size-9 ring-1 ring-primary/20 sh0"
 										/>
 										<div className="fgrow min-w-0">
-											<p className="text-xs font-bold text-foreground truncate">
+											<p className="text-xs font-bold text-foreground ">
 												{userName}
 											</p>
-											<p className="ftext-xs2 fmuted truncate">
+											<p className="ftext-xs2 fmuted ">
 												View profile
 											</p>
 										</div>

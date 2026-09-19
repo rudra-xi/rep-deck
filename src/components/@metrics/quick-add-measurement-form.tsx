@@ -32,7 +32,7 @@ export function QuickAddMeasurementForm() {
 	const { weightLabel, measurementLabel } = useUnits();
 
 	return (
-		<Card className="fcard-flat card-ease">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardContent className="p-5">
 				<form onSubmit={handleSubmit} className="fcol4">
 					<div className="fcol1_5">

@@ -244,9 +244,7 @@
 @utility fmuted {
 	@apply text-muted-foreground;
 }
-@utility ftruncate {
-	@apply truncate;
-}
+
 @utility ftext-balance {
 	@apply text-balance;
 }

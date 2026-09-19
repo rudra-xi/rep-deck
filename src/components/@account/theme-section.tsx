@@ -33,7 +33,10 @@ export function ThemeSection() {
 	const { theme, isMounted, handleThemeChange } = useThemeSelection();
 
 	return (
-		<Card className="fcard-flat card-ease hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]">
+		<Card
+			size="sm"
+			className="fcard-flat card-ease hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.1)]"
+		>
 			<CardsHeader icon={PaintBrushIcon} title="App Theme" />
 
 			<CardContent className="p-5 pt-1">

@@ -14,7 +14,7 @@ import { RoadmapDialog } from "./roadmap-dialog";
 
 export function AboutSection() {
 	return (
-		<Card className="fcard-flat">
+		<Card size="sm" className="fcard-flat">
 			<CardsHeader icon={InfoIcon} title="About" />
 
 			<CardContent className="p-5 pt-1">

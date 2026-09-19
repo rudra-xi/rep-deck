@@ -325,7 +325,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 												weight="bold"
 											/>
 										</div>
-										<CardTitle className="text-xs font-medium fupper fmuted truncate">
+										<CardTitle className="text-xs font-medium fupper fmuted ">
 											{groupIdx + 1}. {exerciseName}
 										</CardTitle>
 									</div>

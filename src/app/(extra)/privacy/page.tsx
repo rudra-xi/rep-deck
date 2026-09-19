@@ -64,7 +64,7 @@ export default function Privacy() {
 					/>
 				</div>
 
-				<Card className="fcard-flat">
+				<Card size="sm" className="fcard-flat">
 					<CardsHeader
 						icon={ShieldCheckIcon}
 						title="Overview"
@@ -109,7 +109,7 @@ export default function Privacy() {
 
 				<section id="cover" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="What this policy covers" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								This Privacy Policy explains how Rep Deck (the
@@ -123,7 +123,7 @@ export default function Privacy() {
 
 				<section id="collect" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Information we collect" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5 fcol4">
 							<p className="text-sm text-muted-foreground">
 								Rep Deck may collect the following types of
@@ -179,7 +179,7 @@ export default function Privacy() {
 
 				<section id="use" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="How we use your information" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5 fcol4">
 							<p className="text-sm text-muted-foreground">
 								We use your information to:
@@ -199,7 +199,7 @@ export default function Privacy() {
 
 				<section id="storage" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Data storage and security" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<BulletList
 								items={[
@@ -214,7 +214,7 @@ export default function Privacy() {
 
 				<section id="sharing" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Data sharing" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5 fcol4">
 							<p className="text-sm text-muted-foreground">
 								Rep Deck does not sell your personal data. We
@@ -232,7 +232,7 @@ export default function Privacy() {
 
 				<section id="rights" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Your rights" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5 fcol4">
 							<p className="text-sm text-muted-foreground">
 								Depending on your location, you may have the
@@ -255,7 +255,7 @@ export default function Privacy() {
 
 				<section id="retention" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Data retention" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								We keep your data as long as your account is
@@ -271,7 +271,7 @@ export default function Privacy() {
 
 				<section id="children" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Children's privacy" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								Rep Deck is not intended for children under 13.
@@ -285,7 +285,7 @@ export default function Privacy() {
 
 				<section id="changes" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Changes to this policy" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardContent className="p-5">
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								We may update this Privacy Policy from time to
@@ -298,7 +298,7 @@ export default function Privacy() {
 
 				<section id="contact" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="Contact" />
-					<Card className="fcard-flat">
+					<Card size="sm" className="fcard-flat">
 						<CardsHeader
 							icon={EnvelopeSimpleIcon}
 							title="Get in touch"
@@ -323,7 +323,7 @@ export default function Privacy() {
 										</p>
 										<a
 											href={`mailto:${SUPPORT_EMAIL}`}
-											className="text-sm text-foreground hover:text-primary transition-colors truncate block"
+											className="text-sm text-foreground hover:text-primary transition-colors  block"
 										>
 											{SUPPORT_EMAIL}
 										</a>

@@ -164,7 +164,7 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 						<CardContent>
 							<div className="flex items-baseline justify-between gap-2 min-h-8">
 								{/* remove the loading ? branch — already handled above */}
-								<div className="text-2xl font-bold tracking-tight text-foreground truncate">
+								<div className="text-2xl font-bold tracking-tight text-foreground ">
 									{card.value}
 								</div>
 
@@ -276,9 +276,7 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 										)}
 									</span>
 								)}
-								<span className="fmuted truncate">
-									{card.subtext}
-								</span>
+								<span className="fmuted ">{card.subtext}</span>
 							</div>
 						</CardContent>
 					</Card>

@@ -56,7 +56,7 @@ export function QuickStats({ stats, loading = false }: QuickStatsProps) {
 						size="sm"
 						className="relative fcard-flat hover:border-primary/50 hover:shadow-[0_0_30px_-12px_rgba(var(--primary),0.15)] base-ease"
 					>
-						<CardHeader className="fr items-center justify-between space-y-0 pb-2">
+						<CardHeader className="flex fcb space-y-0 pb-2">
 							<CardTitle className="fcard-label">
 								{card.label}
 							</CardTitle>
@@ -75,7 +75,7 @@ export function QuickStats({ stats, loading = false }: QuickStatsProps) {
 										{card.value || "No notes"}
 									</p>
 								) : (
-									<span className="text-2xl font-bold tracking-tight text-foreground truncate">
+									<span className="text-2xl font-bold tracking-tight text-foreground ">
 										{card.value}
 									</span>
 								)}

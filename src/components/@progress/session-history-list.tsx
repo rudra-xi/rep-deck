@@ -170,12 +170,12 @@ export function SessionHistoryList({
 										<span className="text-xs font-bold text-foreground sh0">
 											{session.date}
 										</span>
-										<span className="text-[10px] font-semibold px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 truncate">
+										<span className="text-[10px] font-semibold px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 ">
 											{session.programName} –{" "}
 											{session.dayLabel}
 										</span>
 									</div>
-									<p className="text-[11px] text-muted-foreground truncate">
+									<p className="text-[11px] text-muted-foreground ">
 										{session.keyLiftsSummary}
 									</p>
 								</div>

@@ -67,10 +67,10 @@ export const Testimonials = () => {
 									{t.initials}
 								</div>
 								<div className="min-w-0">
-									<p className="text-xs font-bold text-foreground truncate">
+									<p className="text-xs font-bold text-foreground ">
 										{t.author}
 									</p>
-									<p className="ftext-2xs text-muted-foreground uppercase tracking-wider truncate">
+									<p className="ftext-2xs text-muted-foreground uppercase tracking-wider ">
 										{t.role}
 									</p>
 								</div>

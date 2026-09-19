@@ -189,7 +189,7 @@ export function PlannedExercises({
 					>
 						<CardHeader className="p-3 pb-2 space-y-2">
 							<div className="fcb gap-2">
-								<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground truncate">
+								<CardTitle className="text-xs font-bold uppercase tracking-wider text-foreground ">
 									{ex.name}
 								</CardTitle>
 								<div className="fcy gap-1.5 sh0">
@@ -261,7 +261,7 @@ export function PlannedExercises({
 														className="size-3.5 text-primary sh0"
 														weight="bold"
 													/>
-													<span className="italic truncate max-w-46">
+													<span className="italic  max-w-46">
 														~{" "}
 														{lastNote.length > 40
 															? `${lastNote.slice(0, 40)}...`

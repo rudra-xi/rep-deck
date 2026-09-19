@@ -15,7 +15,7 @@ export function MeasurementReminders() {
 		useMeasurementReminders();
 
 	return (
-		<Card className="fcard-flat card-ease">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeader
 				icon={AlarmIcon}
 				title="Reminder"

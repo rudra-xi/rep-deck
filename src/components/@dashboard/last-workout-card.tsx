@@ -188,7 +188,7 @@ export function LastWorkoutCard({
 						>
 							{data.programName}
 						</Badge>
-						<p className="text-xs font-medium text-foreground truncate">
+						<p className="text-xs font-medium text-foreground ">
 							{data.dayName}
 						</p>
 					</div>
@@ -233,7 +233,7 @@ export function LastWorkoutCard({
 												) : (
 													<div className="size-1.5 rounded-full bg-muted-foreground/40 sh0" />
 												)}
-												<span className="text-xs sm:text-sm font-medium text-foreground truncate">
+												<span className="text-xs sm:text-sm font-medium text-foreground ">
 													{lift.exercise}
 												</span>
 												{isPR && (

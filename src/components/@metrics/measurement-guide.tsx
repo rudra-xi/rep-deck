@@ -7,7 +7,7 @@ import { GUIDE_ITEMS } from "@/constants";
 
 export function MeasurementGuide() {
 	return (
-		<Card className="fcard-flat card-ease">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeader icon={BookOpenIcon} title="How to Measure" />
 
 			<CardContent className="p-4 pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
