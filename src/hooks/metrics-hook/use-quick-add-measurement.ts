@@ -1,5 +1,3 @@
-// hooks/useQuickAddMeasurement.ts
-
 import { format } from "date-fns";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -35,7 +33,6 @@ export function useQuickAddMeasurement() {
 		notes: "",
 	});
 
-	// Handle both input and textarea changes
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
@@ -65,7 +62,6 @@ export function useQuickAddMeasurement() {
 			return;
 		}
 
-		// Check if at least one measurement is provided
 		const hasAnyMeasurement = Object.values(formData).some(
 			(val) => val && parseFloat(val) > 0,
 		);
@@ -98,7 +94,6 @@ export function useQuickAddMeasurement() {
 
 			if (res.success) {
 				setSuccess(true);
-				// Format date as "Sep 10, 2026"
 				const formattedDate = format(selectedDate, "MMM d, yyyy");
 				toast.success("Measurement saved successfully!", {
 					description: `Logged for ${formattedDate}`,

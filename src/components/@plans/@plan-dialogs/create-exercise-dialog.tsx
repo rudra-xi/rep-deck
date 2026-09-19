@@ -45,14 +45,12 @@ export function CreateExerciseDialog({
 }: CreateExerciseDialogProps) {
 	const { open, setOpen, loading, setLoading } = useDialog();
 
-	// State for exercise name
 	const [exerciseName, setExerciseName] = useState("");
 
 	const type = useFormField("Chest");
 	const targetSets = useFormField(3);
 	const targetRepRange = useFormField("8-12");
 
-	// Handle item selection from Combobox
 	const handleSelectExercise = (item: PresetExercise | string | null) => {
 		if (!item) return;
 
@@ -83,7 +81,6 @@ export function CreateExerciseDialog({
 				description: `"${finalName}" has been added successfully.`,
 			});
 
-			// Reset fields
 			setExerciseName("");
 			type.reset();
 			targetSets.reset();
@@ -125,7 +122,6 @@ export function CreateExerciseDialog({
 					</DialogHeader>
 
 					<div className="py-4 space-y-3">
-						{/* Combobox Exercise Input */}
 						<div className="space-y-1">
 							<span className="ftext-xs2 font-medium fupper fmuted block">
 								Exercise Name
@@ -163,7 +159,6 @@ export function CreateExerciseDialog({
 								</ComboboxContent>
 							</Combobox>
 
-							{/* Custom exercise notification tag */}
 							{exerciseName.trim() && !isPreset && (
 								<p className="ftext-2xs fmuted mt-1">
 									Custom exercise: "{exerciseName.trim()}"
@@ -172,7 +167,6 @@ export function CreateExerciseDialog({
 							)}
 						</div>
 
-						{/* Sets, Reps, and Type Inputs */}
 						<div className="grid grid-cols-3 gap-2">
 							<div className="space-y-1">
 								<span className="text-[11px] font-medium uppercase text-muted-foreground block">

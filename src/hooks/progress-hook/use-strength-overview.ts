@@ -1,4 +1,3 @@
-// hooks/useStrengthOverview.ts
 import { useEffect, useState } from "react";
 import { getStrengthOverview } from "@/actions/progress";
 import type { StrengthOverviewPoint } from "@/types/progress";
@@ -10,7 +9,7 @@ const TIME_RANGES: TimeRange[] = ["2M", "3M", "6M", "1Y"];
 export function useStrengthOverview(
 	initialData: StrengthOverviewPoint[] = [],
 	propLoading: boolean = false,
-	timeRange: TimeRange = "3M", // ← receive from parent
+	timeRange: TimeRange = "3M",
 ) {
 	const [cache, setCache] = useState<Record<string, StrengthOverviewPoint[]>>(
 		{},
@@ -18,7 +17,6 @@ export function useStrengthOverview(
 	const [loading, setLoading] = useState(initialData.length === 0);
 	const [isFetching, setIsFetching] = useState(false);
 
-	// Seed the cache with initial data under its own range key
 	useEffect(() => {
 		if (initialData.length > 0) {
 			setCache((prev) =>
@@ -27,14 +25,12 @@ export function useStrengthOverview(
 		}
 	}, [initialData, timeRange]);
 
-	// Fetch whenever timeRange changes and isn't cached
 	useEffect(() => {
 		if (propLoading) {
 			setLoading(true);
 			return;
 		}
 
-		// Already cached — done
 		if (cache[timeRange]) {
 			setLoading(false);
 			return;
@@ -53,7 +49,7 @@ export function useStrengthOverview(
 		return () => {
 			isMounted = false;
 		};
-	}, [timeRange, propLoading, cache]); // `cache` still in deps, but guarded
+	}, [timeRange, propLoading, cache]);
 
 	const data = cache[timeRange] || [];
 	const hasData = data.some((d) => d.squat || d.bench || d.deadlift || d.ohp);

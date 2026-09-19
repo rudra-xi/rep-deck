@@ -11,7 +11,6 @@ import {
 import { programDayTemplates } from "./programDayTemplates";
 import { users } from "./users";
 
-// ---------- Program Templates ----------
 export const programTemplates = pgTable(
 	"program_templates",
 	{
@@ -21,7 +20,6 @@ export const programTemplates = pgTable(
 			.references(() => users.id, { onDelete: "cascade" }),
 		name: text("name").notNull(),
 		version: integer("version").notNull(),
-		// Allow nullable start dates or set a default:
 		startDate: timestamp("start_date", { withTimezone: true }).defaultNow(),
 		endDate: timestamp("end_date", { withTimezone: true }),
 		active: boolean("active").notNull().default(false),

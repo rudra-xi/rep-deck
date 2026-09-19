@@ -17,25 +17,12 @@ export interface RoadmapItem {
 	description: string;
 	status: RoadmapStatus;
 	version: RoadmapVersion;
-	/** Optional pillar/grouping key — used to cluster items inside a version */
 	pillar: string;
 }
 
 export const CURRENT_VERSION: RoadmapVersion = "v0.1.0";
 
-/**
- * Roadmap grouped by release. Each version is a "pillar" of work,
- * not a strict release train — items may slip between versions.
- *
- * v0.1.0 — shipped baseline (logging, metrics, charts, account, themes, units)
- * v0.2.0–v0.4.0 — smarter programming + insights + onboarding
- * v0.5.0–v0.7.0 — movement quality + accountability + data trust
- * v0.8.0–v1.0.0 — platform, performance, ecosystem
- */
 export const ROADMAP: RoadmapItem[] = [
-	// ─────────────────────────────────────────────────────────────
-	// v0.1.0 — Shipped baseline
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "Workout logging",
 		description:
@@ -73,10 +60,6 @@ export const ROADMAP: RoadmapItem[] = [
 		version: "v0.1.0",
 		pillar: "UX",
 	},
-
-	// ─────────────────────────────────────────────────────────────
-	// v0.2.0 — Programming core
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "Program library",
 		description:
@@ -93,10 +76,6 @@ export const ROADMAP: RoadmapItem[] = [
 		version: "v0.2.0",
 		pillar: "Programming",
 	},
-
-	// ─────────────────────────────────────────────────────────────
-	// v0.3.0 — Progression + insights
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "Auto-progression",
 		description:
@@ -113,10 +92,6 @@ export const ROADMAP: RoadmapItem[] = [
 		version: "v0.3.0",
 		pillar: "Insights",
 	},
-
-	// ─────────────────────────────────────────────────────────────
-	// v0.4.0 — Insight depth + onboarding
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "Readiness check-in",
 		description:
@@ -140,10 +115,6 @@ export const ROADMAP: RoadmapItem[] = [
 		version: "v0.4.0",
 		pillar: "UX",
 	},
-
-	// ─────────────────────────────────────────────────────────────
-	// v0.5.0 — Movement quality
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "RPE / RIR logging",
 		description:
@@ -160,10 +131,6 @@ export const ROADMAP: RoadmapItem[] = [
 		version: "v0.5.0",
 		pillar: "Quality",
 	},
-
-	// ─────────────────────────────────────────────────────────────
-	// v0.6.0 — Accountability
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "Pain & injury tracker",
 		description:
@@ -188,10 +155,6 @@ export const ROADMAP: RoadmapItem[] = [
 		version: "v0.6.0",
 		pillar: "Accountability",
 	},
-
-	// ─────────────────────────────────────────────────────────────
-	// v0.7.0 — Sharing + data trust
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "Coach / friend view",
 		description:
@@ -208,10 +171,6 @@ export const ROADMAP: RoadmapItem[] = [
 		version: "v0.7.0",
 		pillar: "Data",
 	},
-
-	// ─────────────────────────────────────────────────────────────
-	// v0.8.0 — Platform polish
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "PWA polish",
 		description:
@@ -228,10 +187,6 @@ export const ROADMAP: RoadmapItem[] = [
 		version: "v0.8.0",
 		pillar: "Data",
 	},
-
-	// ─────────────────────────────────────────────────────────────
-	// v0.9.0 — Extensibility
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "Opt-in analytics",
 		description:
@@ -248,10 +203,6 @@ export const ROADMAP: RoadmapItem[] = [
 		version: "v0.9.0",
 		pillar: "Programming",
 	},
-
-	// ─────────────────────────────────────────────────────────────
-	// v1.0.0 — Ecosystem
-	// ─────────────────────────────────────────────────────────────
 	{
 		title: "Third-party integrations",
 		description:
@@ -281,10 +232,6 @@ export const STATUS_META: Record<
 	},
 };
 
-/**
- * Version metadata for grouping in the UI.
- * Order matters — the dialog renders versions in this order, top to bottom.
- */
 export const VERSION_META: {
 	key: RoadmapVersion;
 	label: string;
@@ -342,13 +289,11 @@ export const VERSION_META: {
 	},
 ];
 
-/** Convenience selectors used by the dialog */
 export function getItemsByVersion(version: RoadmapVersion) {
 	return ROADMAP.filter((item) => item.version === version);
 }
 
 export function getNextUp() {
-	// First in-progress item, otherwise first planned item
 	return (
 		ROADMAP.find((i) => i.status === "in-progress") ??
 		ROADMAP.find((i) => i.status === "planned") ??

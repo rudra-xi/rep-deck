@@ -9,7 +9,6 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { socialLinksData } from "@/constants";
 
-// Icon mapping per Social Link ID
 const socialIconMap = {
 	1: GithubLogoIcon,
 	2: LinkedinLogoIcon,
@@ -20,7 +19,6 @@ export const Social = () => {
 	return (
 		<section className="w-full py-16 px-6 border-t border-border/40 bg-background">
 			<div className="container max-w-4xl mx-auto text-center space-y-6">
-				{/* Badge */}
 				<div>
 					<Badge
 						variant="outline"
@@ -30,18 +28,15 @@ export const Social = () => {
 					</Badge>
 				</div>
 
-				{/* Heading */}
 				<h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-wider">
 					Stay connected.
 				</h2>
 
-				{/* Paragraph */}
 				<p className="text-muted-foreground text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
 					Built by rudra-xi. Follow the journey, check project
-					updates, and see what’s being built next.
+					updates, and see what's being built next.
 				</p>
 
-				{/* Social Links */}
 				<div className="fwc gap-3 pt-2">
 					{socialLinksData.map((item) => {
 						const SocialSpecificIcon =

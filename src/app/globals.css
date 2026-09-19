@@ -2,8 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@import "./utilities.css";
 @import "./themes.css";
+@import "./utilities.css";
 
 @custom-variant dark (&:is(.green *, .violateeye *, .rosepine *, .retro *, .cosmic *, .orchid *, .booking *, .lime *));
 
@@ -96,9 +96,6 @@
 	}
 }
 
-/* --------------------------------------------------------------------------
-   Custom WebKit scrollbar
-   -------------------------------------------------------------------------- */
 ::-webkit-scrollbar {
 	width: 2px;
 }
@@ -109,11 +106,6 @@
 	display: none;
 }
 
-/* --------------------------------------------------------------------------
-   Non-layout, project-specific utilities
-   -------------------------------------------------------------------------- */
-
-/* Standard base easing for hover/focus transitions */
 @utility base-ease {
 	@apply transition-all ease-in duration-300;
 }
@@ -126,7 +118,6 @@
 	@apply space-y-6 sm:space-y-8;
 }
 
-/* Standard page wrapper padding */
 @utility main-padding {
 	@apply mx-6 my-20 lg:mx-10 lg:my-24;
 }

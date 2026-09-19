@@ -1,4 +1,3 @@
-// app/components/workout-log/id/workout-detail.tsx
 "use client";
 
 import {
@@ -62,7 +61,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 
 	const { totalVolume, prCount, uniqueExercisesCount, exerciseGroups } =
 		useMemo(() => {
-			// ✅ Numeric accumulation — do NOT pass through fmtWeight
 			const volume = session.sets.reduce(
 				(sum, set) => sum + set.weightKg * set.reps,
 				0,
@@ -120,7 +118,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 
 	return (
 		<div className="fcontainer py-6 px-4 fcol6">
-			{/* ── Top bar: back + session navigator ── */}
 			<div className="fwrap gap-4 fcb">
 				<BackButton text="Dashboard" />
 
@@ -223,10 +220,8 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 				)}
 			</div>
 
-			{/* ── Session summary card ── */}
 			<Card size="sm" className="fcard-flat card-ease">
 				<CardHeader className="fcol md:flex-row md:items-center justify-between gap-4 pb-4">
-					{/* Left: badges + program + date */}
 					<div className="fcol1_5">
 						<div className="fg2">
 							<Badge
@@ -259,7 +254,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 						</p>
 					</div>
 
-					{/* Right: KPI strip */}
 					<div className="fg4 border-t md:border-t-0 md:border-l border-border pt-3 md:pt-0 md:pl-6">
 						<div className="space-y-0.5">
 							<span className="ftext-2xs font-medium fmuted fupper fcy gap-1">
@@ -310,7 +304,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 				</CardHeader>
 			</Card>
 
-			{/* ── Exercise breakdown ── */}
 			<div className="fcol3">
 				<h2 className="text-xs font-medium fupper fmuted px-0.5">
 					Exercise Breakdown
@@ -384,7 +377,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 															: "hover:bg-muted/50"
 													}`}
 												>
-													<TableCell className="pl-3 font-mono text-xs fmuted">
+													<TableCell className="pl-3  text-xs fmuted">
 														{idx + 1}
 													</TableCell>
 													<TableCell className="text-right text-xs font-medium text-foreground px-1">

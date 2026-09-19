@@ -27,9 +27,6 @@ export interface MeasurementFormData {
 	notes?: string | null;
 }
 
-// ==========================================
-// CREATE MEASUREMENT
-// ==========================================
 export async function createMeasurement(formData: MeasurementFormData) {
 	try {
 		const { dbUser } = await getCurrentUser();
@@ -37,7 +34,6 @@ export async function createMeasurement(formData: MeasurementFormData) {
 
 		const prefs = await getUserPreferences();
 
-		// Convert incoming values to DB standards (KG for weight, IN for measurements)
 		const weightKg = formData.weightKg
 			? parseWeightToKg(formData.weightKg, prefs.weightUnit)
 			: null;
@@ -84,9 +80,6 @@ export async function createMeasurement(formData: MeasurementFormData) {
 	}
 }
 
-// ==========================================
-// DELETE MEASUREMENT
-// ==========================================
 export async function deleteMeasurement(measurementId: string) {
 	try {
 		const { dbUser } = await getCurrentUser();
@@ -110,9 +103,6 @@ export async function deleteMeasurement(measurementId: string) {
 	}
 }
 
-// ==========================================
-// UPDATE MEASUREMENT
-// ==========================================
 export async function updateMeasurement(
 	measurementId: string,
 	formData: Partial<MeasurementFormData>,
@@ -137,7 +127,6 @@ export async function updateMeasurement(
 			updates.bodyFatPercent = formData.bodyFatPercent ?? null;
 		}
 
-		// Convert measurement fields
 		const measurementFields = [
 			"armsIn",
 			"forearmsIn",
@@ -180,9 +169,6 @@ export async function updateMeasurement(
 	}
 }
 
-// ==========================================
-// GET METRICS DATA (with unit conversion)
-// ==========================================
 export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 	try {
 		const { dbUser } = await getCurrentUser();
@@ -192,14 +178,12 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 		const daysMap = { "3M": 90, "6M": 180, "1Y": 365 };
 		const startDate = subDays(new Date(), daysMap[timeRange] || 90);
 
-		// Fetch all entries (desc for latest first)
 		const allEntries = await db
 			.select()
 			.from(bodyMeasurements)
 			.where(eq(bodyMeasurements.userId, dbUser.id))
 			.orderBy(desc(bodyMeasurements.date));
 
-		// Fetch entries within the time range (asc for chart)
 		const chartEntries = await db
 			.select()
 			.from(bodyMeasurements)
@@ -213,7 +197,6 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 
 		const latest = allEntries[0] || null;
 
-		// --- Calculate Data Quality Metrics ---
 		let daysSinceLastMeasurement = 0;
 		let averageGapDays = 0;
 
@@ -247,14 +230,12 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 			averageGapDays,
 		};
 
-		// Find a baseline entry ~4 weeks ago for delta calculation
 		const fourWeeksAgoDate = subDays(new Date(), 28);
 		const pastEntry =
 			allEntries.find((e) => new Date(e.date) <= fourWeeksAgoDate) ||
 			allEntries[allEntries.length - 1] ||
 			null;
 
-		// Delta in DB units (kg / in)
 		const calculateDelta = (
 			curr?: number | string | null,
 			prev?: number | string | null,
@@ -266,7 +247,6 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 			return Number((c - p).toFixed(2));
 		};
 
-		// Convert deltas to user's preferred units for display
 		const convertWeightDelta = (delta: number | null) => {
 			if (delta === null) return null;
 			if (prefs.weightUnit === "lb") {
@@ -335,7 +315,6 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 			},
 		};
 
-		// Chart data with unit conversion
 		const chartData = chartEntries.map((e) => ({
 			rawDate: e.date,
 			date: format(new Date(e.date), "MMM d"),
@@ -363,7 +342,6 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 				: null,
 		}));
 
-		// Table data with unit conversion
 		const tableData = allEntries.map((e) => ({
 			id: e.id,
 			date: format(new Date(e.date), "MMM d, yyyy"),
@@ -399,7 +377,7 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 			tableData,
 			qualityMetrics,
 			latest,
-			preferences: prefs, // Return preferences so UI knows current units
+			preferences: prefs,
 		};
 	} catch (error) {
 		console.error("Error fetching metrics data:", error);
@@ -407,9 +385,6 @@ export async function getMetricsData(timeRange: "3M" | "6M" | "1Y" = "3M") {
 	}
 }
 
-// ==========================================
-// GET SINGLE MEASUREMENT
-// ==========================================
 export async function getMeasurementById(measurementId: string) {
 	try {
 		const { dbUser } = await getCurrentUser();

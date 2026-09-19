@@ -52,11 +52,9 @@ export default function WorkoutLogClientView({
 		(d) => d.dayIndex === selectedDayIndex,
 	);
 
-	// ← LIFT the hook so both PlannedExercises and ActiveSessionSummary share it
 	const { performanceMap, isLoading: isLoadingPerformance } =
 		useExercisePerformance(currentDay?.exercises ?? []);
 
-	// Update plan if it changes
 	useEffect(() => {
 		const dayExists = initialPlan?.days?.some(
 			(d) => d.dayIndex === selectedDayIndex,

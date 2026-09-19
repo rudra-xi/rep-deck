@@ -227,7 +227,7 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 																		option.label
 																	}
 																</span>
-																<span className="fmuted font-mono font-semibold ml-2">
+																<span className="fmuted  font-semibold ml-2">
 																	{
 																		formattedOptionValue
 																	}

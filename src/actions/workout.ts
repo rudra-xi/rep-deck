@@ -16,7 +16,6 @@ import { toCapitalized } from "@/lib/to-capitalized";
 import { parseWeightToKg } from "@/lib/units";
 import type { ExercisePerformanceSummary } from "@/types/workout-log";
 
-// Helper function to check if a set is a PR using 1RM comparison
 async function checkIfPR(
 	userId: string,
 	exerciseName: string,
@@ -51,7 +50,6 @@ async function checkIfPR(
 	return current1RM > maxPrevious1RM;
 }
 
-// 1. Get Active Workout Plan
 export async function getActiveWorkoutPlan() {
 	try {
 		const { dbUser } = await getCurrentUser();
@@ -106,7 +104,6 @@ export async function getActiveWorkoutPlan() {
 	}
 }
 
-// 2. Fetch both Last Session Best & Overall All-Time Best (PR) — single exercise
 export async function getExercisePerformanceHistory(
 	exerciseName: string,
 ): Promise<ExercisePerformanceSummary | null> {
@@ -195,7 +192,6 @@ export async function getExercisePerformanceHistory(
 	}
 }
 
-// 2b. BATCHED — fetch performance for multiple exercises in one query
 export async function getExercisePerformanceBatch(
 	exerciseNames: string[],
 ): Promise<Record<string, ExercisePerformanceSummary | null>> {
@@ -230,7 +226,6 @@ export async function getExercisePerformanceBatch(
 			)
 			.orderBy(desc(workoutSessions.date), desc(workoutSets.createdAt));
 
-		// Group sets by exercise name
 		const grouped = new Map<string, typeof allSets>();
 		for (const set of allSets) {
 			let bucket = grouped.get(set.exerciseName);
@@ -310,7 +305,6 @@ export async function getLastExercisePerformance(exerciseName: string) {
 	return history?.lastBest?.formatted ?? null;
 }
 
-// 3. Save Workout Session and Sets
 export async function finishWorkoutSession(data: {
 	programId?: string;
 	dayIndex?: number;
@@ -358,7 +352,6 @@ export async function finishWorkoutSession(data: {
 			});
 		}
 
-		// Group notes by exercise to guarantee note persistence across all sets
 		const exerciseNoteMap = new Map<string, string>();
 		data.sets.forEach((set) => {
 			const normalizedKey = toCapitalized(set.exerciseName)
@@ -369,7 +362,6 @@ export async function finishWorkoutSession(data: {
 			}
 		});
 
-		// Track PR count outside the transaction so we can return it
 		let prCount = 0;
 
 		const result = await db.transaction(async (tx) => {
@@ -408,7 +400,6 @@ export async function finishWorkoutSession(data: {
 							set.reps,
 						);
 
-						// Fallback to exerciseNoteMap if the set's individual note is empty
 						const finalNote =
 							set.notes?.trim() ||
 							exerciseNoteMap.get(normalizedName) ||
@@ -430,7 +421,6 @@ export async function finishWorkoutSession(data: {
 
 				await tx.insert(workoutSets).values(setsWithPR);
 
-				// Count PRs after insert resolves
 				prCount = setsWithPR.filter((s) => s.isPR).length;
 			}
 
@@ -451,7 +441,6 @@ export async function finishWorkoutSession(data: {
 	}
 }
 
-// 4. Get Last Session Note for a specific day
 export async function getLastSessionNote(
 	programId: string,
 	dayIndex: number,
@@ -482,7 +471,6 @@ export async function getLastSessionNote(
 	}
 }
 
-// 5. Get Personal Records
 export async function getPersonalRecords(exerciseName: string) {
 	try {
 		const { dbUser } = await getCurrentUser();
@@ -523,7 +511,6 @@ export async function getPersonalRecords(exerciseName: string) {
 	}
 }
 
-// 6. Get Workout Session Details
 export async function getWorkoutSessionDetails(sessionId: string) {
 	try {
 		const { dbUser } = await getCurrentUser();

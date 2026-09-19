@@ -31,7 +31,7 @@ export function usePreferences(initialPreferences: UserPreferences) {
 		const previousPrefs = { ...prefs };
 		const updated = { ...prefs, [key]: value };
 
-		setPrefs(updated); // optimistic
+		setPrefs(updated);
 		setSavingKey(key);
 
 		try {

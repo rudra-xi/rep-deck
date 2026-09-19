@@ -10,7 +10,6 @@ import {
 import { exerciseTemplates } from "./exerciseTemplates";
 import { programTemplates } from "./programTemplates";
 
-// ---------- Program Day Templates ----------
 export const programDayTemplates = pgTable(
 	"program_day_templates",
 	{

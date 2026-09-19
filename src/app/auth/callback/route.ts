@@ -28,7 +28,6 @@ export async function GET(request: Request) {
 
 	console.log("✅ Supabase OAuth session created");
 
-	// Sync authenticated Supabase user into Drizzle
 	const dbUser = await syncUserWithDatabase();
 
 	if (!dbUser) {

@@ -9,7 +9,6 @@ import Link from "next/link";
 import { Logo } from "@/common";
 import { socialLinksData } from "@/constants";
 
-// Icon mapping per Social Link ID
 const socialIconMap = {
 	1: GithubLogoIcon,
 	2: LinkedinLogoIcon,
@@ -20,7 +19,6 @@ export const Footer = () => {
 	return (
 		<footer className="w-full border-t border-border/80 bg-background py-8 px-6">
 			<div className="container max-w-6xl mx-auto fresp">
-				{/* Brand & Copyright */}
 				<div className="fg2">
 					<div className="fc size-7">
 						<Logo className="size-full text-primary" />
@@ -34,7 +32,6 @@ export const Footer = () => {
 					</span>
 				</div>
 
-				{/* Legal Links */}
 				<div className="fg6 text-xs text-muted-foreground uppercase tracking-wider font-medium">
 					<Link
 						href="/privacy"
@@ -50,7 +47,6 @@ export const Footer = () => {
 					</Link>
 				</div>
 
-				{/* Social Row mapped from constants */}
 				<div className="fg2">
 					{socialLinksData.map((item) => {
 						const SocialSpecificIcon =

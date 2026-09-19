@@ -1,8 +1,3 @@
-/**
- * Shared types for progress-page data.
- * Used by server actions, hooks, and progress cards.
- */
-
 export interface BodyMetricPoint {
 	date: string;
 	weight: number | null;

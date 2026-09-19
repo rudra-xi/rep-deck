@@ -12,10 +12,6 @@ import { Metrics, Plans, Progress, Workout } from "@/assets/image";
 import { showcaseTabs } from "@/constants";
 import { cn } from "@/lib/utils";
 
-/* ─────────────────────────────────────────────────────────────
-   ICON + IMAGE MAPS — stay in the component (UI concern)
-   ───────────────────────────────────────────────────────────── */
-
 const tabIconMap: Record<string, React.ElementType> = {
 	log: ClipboardTextIcon,
 	plans: FolderSimpleIcon,
@@ -30,10 +26,6 @@ const tabImageMap: Record<string, typeof Workout> = {
 	metrics: Metrics,
 };
 
-/* ─────────────────────────────────────────────────────────────
-   COMPONENT
-   ───────────────────────────────────────────────────────────── */
-
 export const ShowcaseSection = () => {
 	const [activeTabId, setActiveTabId] = useState<string>(showcaseTabs[0].id);
 	const active =
@@ -45,7 +37,6 @@ export const ShowcaseSection = () => {
 	return (
 		<section className="w-full py-20 px-6 bg-background/50">
 			<div className="container max-w-6xl mx-auto space-y-12">
-				{/* Header */}
 				<div className="text-center space-y-4 max-w-2xl mx-auto">
 					<h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-wider">
 						Everything you need.
@@ -56,7 +47,6 @@ export const ShowcaseSection = () => {
 					</p>
 				</div>
 
-				{/* Tab Switcher */}
 				<div className="fwrap justify-center gap-2">
 					{showcaseTabs.map(({ id, label }) => {
 						const Icon = tabIconMap[id] ?? ClipboardTextIcon;
@@ -84,9 +74,7 @@ export const ShowcaseSection = () => {
 					})}
 				</div>
 
-				{/* Content Panel */}
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center border border-border/60 bg-card/40 p-6 lg:p-10">
-					{/* Text side */}
 					<div className="space-y-5">
 						<div className="ficon-box">
 							<ActiveIcon className="size-4" weight="bold" />
@@ -113,7 +101,6 @@ export const ShowcaseSection = () => {
 						</ul>
 					</div>
 
-					{/* Screenshot */}
 					<div className="relative w-full aspect-video border border-border/60 bg-background overflow-hidden shadow-lg">
 						<Image
 							key={active.id}
@@ -126,7 +113,6 @@ export const ShowcaseSection = () => {
 							className="object-cover object-left-top"
 						/>
 
-						{/* Subtle top-left corner accent */}
 						<div className="absolute -top-10 -left-10 size-44 bg-linear-to-br from-primary/20 to-transparent pointer-events-none rounded-full blur-xl" />
 					</div>
 				</div>

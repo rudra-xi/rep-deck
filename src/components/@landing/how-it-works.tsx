@@ -12,7 +12,6 @@ export const HowItWorks = () => {
 	return (
 		<section className="w-full py-20 px-6 bg-background">
 			<div className="container max-w-6xl mx-auto space-y-12">
-				{/* Section Header */}
 				<div className="text-center space-y-4 max-w-2xl mx-auto">
 					<h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-wider">
 						How Rep Deck Works.
@@ -22,7 +21,6 @@ export const HowItWorks = () => {
 					</p>
 				</div>
 
-				{/* Steps Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
 					{onboardingSteps.map((item) => (
 						<Card
@@ -31,7 +29,6 @@ export const HowItWorks = () => {
 							className="border border-border/80 bg-card/50 shadow-sm hover:border-primary/50 hover:-translate-y-2 base-ease"
 						>
 							<CardHeader className="space-y-4">
-								{/* Step Indicator */}
 								<div className="size-10 fcc bg-primary text-primary-foreground font-bold text-lg">
 									0{item.step}
 								</div>

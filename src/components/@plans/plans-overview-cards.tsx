@@ -121,7 +121,6 @@ function PlanCardItem({
 			size="sm"
 			onClick={() => {
 				onSelectPlan(plan.id);
-				// Show toast when selecting a plan
 				if (!isSelected) {
 					toast.info(`Viewing "${plan.name}"`, {
 						description: `Plan version ${plan.version} - ${plan.active ? "Active" : "Archived"}`,
@@ -220,7 +219,6 @@ export function PlansOverviewCards({
 
 		setMobileIndex(newIndex);
 
-		// Show toast when navigating to a plan
 		if (newIndex > 0) {
 			const plan = plans[newIndex - 1];
 			toast.info(`Viewing "${plan.name}"`, {
@@ -238,7 +236,6 @@ export function PlansOverviewCards({
 	if (loading) return <PlansOverviewSkeleton count={plans.length || 3} />;
 	return (
 		<div className="space-y-3">
-			{/* Mobile View */}
 			<div className="block md:hidden space-y-2">
 				<div className="fcb px-1">
 					<span />
@@ -281,7 +278,6 @@ export function PlansOverviewCards({
 				)}
 			</div>
 
-			{/* Desktop View */}
 			<div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
 				<CreatePlanDialog />
 

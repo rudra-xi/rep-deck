@@ -1,4 +1,3 @@
-// hooks/useLiftDetails.ts
 import { useEffect, useState } from "react";
 import { getLiftDetails } from "@/actions/progress";
 import type { LiftDetailPoint } from "@/types/progress";

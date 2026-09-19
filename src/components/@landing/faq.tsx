@@ -17,20 +17,18 @@ import {
 } from "@/components/ui/accordion";
 import { faqData } from "@/constants";
 
-// Icon mapping per FAQ ID — updated to match new questions
 const faqIconMap = {
-	1: CurrencyDollarIcon, // Is Rep Deck free?
-	2: PencilSimpleLineIcon, // Do I need to set up my program?
-	3: SwapIcon, // Can I switch between programs?
-	4: GoogleLogoIcon, // How does Google login work?
-	5: RulerIcon, // What units does Rep Deck use?  ← was DatabaseIcon
+	1: CurrencyDollarIcon,
+	2: PencilSimpleLineIcon,
+	3: SwapIcon,
+	4: GoogleLogoIcon,
+	5: RulerIcon,
 };
 
 export const FAQ = () => {
 	return (
 		<section className="w-full py-20 px-6 bg-background">
 			<div className="container max-w-3xl mx-auto space-y-10">
-				{/* Header */}
 				<div className="text-center space-y-3">
 					<h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-wider">
 						Frequently Asked Questions.
@@ -40,7 +38,6 @@ export const FAQ = () => {
 					</p>
 				</div>
 
-				{/* Accordion List */}
 				<Accordion className="w-full space-y-4">
 					{faqData.map((item) => {
 						const QuestionSpecificIcon =

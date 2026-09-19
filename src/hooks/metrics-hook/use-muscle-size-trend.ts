@@ -1,4 +1,3 @@
-// hooks/useMuscleSizeTrend.ts
 import { useMemo } from "react";
 
 const MUSCLE_COLORS = {

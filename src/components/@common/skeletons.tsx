@@ -1,20 +1,7 @@
-// components/@common/skeletons.tsx
-
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-/* ══════════════════════════════════════════════════════════════════
-   SHARED PRIMITIVES
-   ══════════════════════════════════════════════════════════════════ */
-
-/** Mirrors <CardsHeader icon={..} title={..} trailing={..} />.
- *  - CardHeader: p-4 pb-2 flex fcb  (used by all CardsHeader-driven cards)
- *  - Left: ficon-box (size-7 rounded-md) + uppercase text-xs title
- *  - Right: ONLY rendered when `trailing` is explicitly passed.
- *    - `trailing={true}`           → default icon-button placeholder
- *    - `trailing={<Node />}`       → custom trailing content
- *    - omitted                     → nothing (matches CardsHeader with no trailing) */
 function CardsHeaderSkeleton({
 	titleWidth = "w-32",
 	trailing,
@@ -37,8 +24,6 @@ function CardsHeaderSkeleton({
 	);
 }
 
-/** KPI mini-box: matches the `p-2 border border-border/40 bg-background/50`
- *  pattern used in DataQualityCard, IndividualLiftDetailsCard, etc. */
 function KpiMiniBoxSkeleton({ lines = 2 }: { lines?: number }) {
 	return (
 		<div className="p-2 bg-background/50 border border-border/40 rounded-none space-y-1.5">
@@ -55,8 +40,6 @@ function KpiMiniBoxSkeleton({ lines = 2 }: { lines?: number }) {
 	);
 }
 
-/** Compact stat strip: `p-2 border border-border/40 bg-background/50`.
- *  Matches the 3-up KPI row in IndividualLiftDetailsCard. */
 function StatStripSkeleton() {
 	return (
 		<div className="grid grid-cols-3 gap-2">
@@ -67,17 +50,6 @@ function StatStripSkeleton() {
 	);
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   DASHBOARD
-   ══════════════════════════════════════════════════════════════════ */
-
-/** Matches `KpiCards` — 4-up grid.
- *  Real card:
- *   - CardHeader: flex row, justify-between, pb-2
- *   - Title: fcard-label (uppercase xs)
- *   - Icon:  ficon-box (size-8 rounded-md)
- *   - Value: text-2xl font-bold  → h-7
- *   - Footer: h-4 row (trend + subtext) */
 export function KpiCardsSkeleton({ count = 4 }: { count?: number }) {
 	return (
 		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -87,7 +59,7 @@ export function KpiCardsSkeleton({ count = 4 }: { count?: number }) {
 					size="sm"
 					className="relative fcard-flat hover:border-primary/50"
 				>
-					<CardHeader className="fr items-center justify-between space-y-0 pb-2">
+					<CardHeader className="flex fcb space-y-0 pb-2">
 						<Skeleton className="h-3 w-20 rounded-sm" />
 						<Skeleton className="size-8 rounded-md" />
 					</CardHeader>
@@ -105,11 +77,6 @@ export function KpiCardsSkeleton({ count = 4 }: { count?: number }) {
 	);
 }
 
-/** Matches `LastWorkoutCard` (non-empty branch):
- *  - CardsHeader(ClockCounterClockwise, "Last Workout", trailing=badges+Open)
- *  - Content: p-4 pt-1 fcol4
- *  - Meta row: fwrap gap-3 fcb p-3 border
- *  - <Table>: header row h-8, 50/25/25 split, body rows py-2.5 */
 export function WorkoutTableSkeleton({ rows = 4 }: { rows?: number }) {
 	return (
 		<Card size="sm" className="fcard-flat w-full">
@@ -123,7 +90,6 @@ export function WorkoutTableSkeleton({ rows = 4 }: { rows?: number }) {
 				}
 			/>
 			<CardContent className="p-4 pt-1 fcol4">
-				{/* Meta row */}
 				<div className="fwb gap-3 p-3 border border-border/40 bg-background/50 rounded-none">
 					<div className="fcy gap-1.5">
 						<Skeleton className="size-3.5 rounded-sm" />
@@ -135,9 +101,7 @@ export function WorkoutTableSkeleton({ rows = 4 }: { rows?: number }) {
 					</div>
 				</div>
 
-				{/* Table — matches shadcn <Table> structure */}
 				<div className="border border-border/40 overflow-hidden">
-					{/* TableHeader */}
 					<div className="border-b border-border/60">
 						<div className="grid grid-cols-[50%_25%_25%] gap-2 h-8 items-center px-3">
 							<Skeleton className="h-3 w-16 rounded-sm" />
@@ -145,7 +109,6 @@ export function WorkoutTableSkeleton({ rows = 4 }: { rows?: number }) {
 							<Skeleton className="h-3 w-10 rounded-sm ml-auto" />
 						</div>
 					</div>
-					{/* TableBody */}
 					{Array.from({ length: rows }).map((_, i) => (
 						<div
 							key={i}
@@ -165,15 +128,6 @@ export function WorkoutTableSkeleton({ rows = 4 }: { rows?: number }) {
 	);
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   METRICS
-   ══════════════════════════════════════════════════════════════════ */
-
-/** Matches `DataQualityCard`:
- *  - CardsHeader(ShieldCheck/Warning, "Data Quality") — NO trailing
- *  - Content: p-4 pt-1 fcol2_5
- *  - 2-up grid: p-2 border bg-background/50, with ftext-2xs label + text-xs value
- *  - Status line */
 export function DataQualityCardSkeleton() {
 	return (
 		<Card className="fcard-flat">
@@ -195,7 +149,6 @@ export function DataQualityCardSkeleton() {
 	);
 }
 
-/** Matches `QuickStats` — 2/4-up grid; body identical to KpiCard. */
 export function QuickStatsSkeleton({ count = 4 }: { count?: number }) {
 	return (
 		<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -205,7 +158,7 @@ export function QuickStatsSkeleton({ count = 4 }: { count?: number }) {
 					size="sm"
 					className="relative fcard-flat hover:border-primary/50"
 				>
-					<CardHeader className="fr items-center justify-between space-y-0 pb-2">
+					<CardHeader className="flex fcb space-y-0 pb-2">
 						<Skeleton className="h-3 w-20 rounded-sm" />
 						<Skeleton className="size-8 rounded-md" />
 					</CardHeader>
@@ -223,17 +176,9 @@ export function QuickStatsSkeleton({ count = 4 }: { count?: number }) {
 	);
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   PLANS
-   ══════════════════════════════════════════════════════════════════ */
-
-/** Matches `PlansOverviewCards`.
- *  Mobile: nav row + one card.
- *  Desktop: CreatePlanDialog card + N plan cards. */
 export function PlansOverviewSkeleton({ count = 4 }: { count?: number }) {
 	return (
 		<div className="space-y-3">
-			{/* Mobile: single card with nav */}
 			<div className="block md:hidden space-y-2">
 				<div className="fcb px-1">
 					<span />
@@ -246,9 +191,7 @@ export function PlansOverviewSkeleton({ count = 4 }: { count?: number }) {
 				<PlanCardItemSkeleton />
 			</div>
 
-			{/* Desktop: grid */}
 			<div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-				{/* CreatePlanDialog placeholder */}
 				<Card
 					size="sm"
 					className="relative cursor-pointer border border-dashed border-primary/40 bg-card/30 rounded-none shadow-none base-ease h-full fcol justify-between"
@@ -277,9 +220,6 @@ export function PlansOverviewSkeleton({ count = 4 }: { count?: number }) {
 	);
 }
 
-/** Matches `PlanCardItem`:
- *  - CardHeader: name + Badge(v{version}) | icon box (rounded-md size-7)
- *  - Body: Started row → Active/Archived + "Set Active" → Dup/Delete row */
 function PlanCardItemSkeleton() {
 	return (
 		<Card
@@ -311,10 +251,6 @@ function PlanCardItemSkeleton() {
 	);
 }
 
-/** Matches `PlanDetailsCard`:
- *  - CardsHeader(Blueprint, "{name} v{n}", trailing=CreateDayDialog)
- *  - Content: p-4 pt-1 fcol2
- *  - Day rows: fcb p-2.5 border */
 export function PlanDetailsCardSkeleton({
 	dayCount = 3,
 }: {
@@ -350,11 +286,6 @@ export function PlanDetailsCardSkeleton({
 	);
 }
 
-/** Matches `PlanSettingsCard`:
- *  - CardsHeader(Gear, "Configuration: {name} (v{n})") — NO trailing
- *  - Content: p-4 pt-1 fcol4
- *  - 3-up grid of form fields (label + h-8 input)
- *  - Footer: right-aligned Save button */
 export function PlanSettingsCardSkeleton() {
 	return (
 		<Card size="sm" className="fcard-flat">
@@ -376,10 +307,6 @@ export function PlanSettingsCardSkeleton() {
 	);
 }
 
-/** Matches `DayExercisesList`:
- *  - CardsHeader(SunDim, "Day {n} – {label}", trailing=CreateExerciseDialog)
- *  - Content: p-4 pt-1
- *  - 5-column <table> (Exercise | Type | Sets | Reps | Actions) */
 export function DayExercisesListSkeleton({ rows = 4 }: { rows?: number }) {
 	return (
 		<Card size="sm" className="fcard-flat">
@@ -438,24 +365,6 @@ export function DayExercisesListSkeleton({ rows = 4 }: { rows?: number }) {
 	);
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   PROGRESS / CHARTS
-   ══════════════════════════════════════════════════════════════════ */
-
-/** Matches every chart card in the app:
- *  - CardsHeader (icon, title) with optional toggle row in trailing
- *  - Content: p-4 pt-1 fcol3
- *  - Optional 3-up KPI strip (IndividualLiftDetailsCard only)
- *  - Chart body
- *
- *  Used by: StrengthChart, MuscleSizeTrend, WeightBodyFatTrend,
- *           IndividualLiftDetailsCard, StrengthOverviewCard,
- *           UpperBodyTrend / TorsoTrend (all-measurements-trend)
- *
- *  NOTE: `hasToggleRow=false` → no trailing placeholder (matches cards
- *  like WeightBodyFatTrend / MuscleSizeTrend that have no right-side
- *  content in their header). Pass `hasToggleRow` when the real card
- *  renders the lift/range toggle buttons. */
 export function ChartCardSkeleton({
 	height = "h-[220px]",
 	hasToggleRow = false,
@@ -465,7 +374,6 @@ export function ChartCardSkeleton({
 }: {
 	height?: string;
 	hasToggleRow?: boolean;
-	/** 3-up KPI strip — only IndividualLiftDetailsCard renders this */
 	hasKpiRow?: boolean;
 	toggleCount?: number;
 	titleWidth?: string;
@@ -495,11 +403,6 @@ export function ChartCardSkeleton({
 	);
 }
 
-/** Matches `SessionHistoryList`:
- *  - CardsHeader(ClockCounterClockwise, "Recent Session Volume") — NO trailing
- *  - Content: p-4 pt-1 fcol4
- *  - Horizontal bar chart (h-[140px]) with bottom border
- *  - Divide-y list of sessions */
 export function SessionHistoryListSkeleton({ rows = 4 }: { rows?: number }) {
 	return (
 		<Card size="sm" className="fcard-flat">
@@ -525,12 +428,6 @@ export function SessionHistoryListSkeleton({ rows = 4 }: { rows?: number }) {
 	);
 }
 
-/** Matches `TrainingFrequencyCard`:
- *  - CardsHeader(Activity, "Training Distribution") — NO trailing
- *  - Content: p-4 pt-1 fcol3
- *  - 2-up KPI boxes (bg-secondary/30, icon + 2-line text)
- *  - Radar chart (aspect-square, max-h-[200px])
- *  - Legend row (border-t) */
 export function TrainingFrequencyCardSkeleton() {
 	return (
 		<Card size="sm" className="fcard-flat overflow-hidden">
@@ -560,25 +457,12 @@ export function TrainingFrequencyCardSkeleton() {
 	);
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   MICRO / INLINE
-   ══════════════════════════════════════════════════════════════════ */
-
-/** Used in `PlannedExercises` for the "PR: ..." / "Last: ..." lines. */
 export function InlineStatSkeleton() {
 	return (
 		<Skeleton className="inline-block h-3 w-12 rounded-sm align-middle" />
 	);
 }
 
-/** Matches `UserAvatar` — square avatar, `rounded-none`.
- *  Sizes mirror shadcn's Avatar:
- *   - sm      → size-6
- *   - default → size-8
- *   - lg      → size-10
- *
- *  Accepts an optional `className` so callers that pass overrides
- *  (e.g. nav's `size-8 ring-2 ring-primary/20`) merge cleanly via cn(). */
 export function AvatarSkeleton({
 	size = "default",
 	className,

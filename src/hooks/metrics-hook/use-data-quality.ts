@@ -1,4 +1,3 @@
-// hooks/useDataQuality.ts
 import { useMemo } from "react";
 
 interface DataQualityProps {

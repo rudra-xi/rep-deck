@@ -1,9 +1,3 @@
-/**
- * Per-theme avatar palettes. Hex colors WITHOUT the `#` prefix,
- * as DiceBear's URL params expect.
- *
- * Keys must match the theme slugs used in `next-themes` and `themes.css`.
- */
 export const AVATAR_PALETTES = {
 	green: { backgroundColor: "1e293b", shapeColor: "aff33e" },
 	violateeye: { backgroundColor: "1d1b30", shapeColor: "846feb" },
@@ -19,9 +13,6 @@ export type ThemeSlug = keyof typeof AVATAR_PALETTES;
 
 export const DEFAULT_THEME: ThemeSlug = "violateeye";
 
-/**
- * Generates a DiceBear Thumbs SVG avatar URL with colors matching the given theme.
- */
 export function getDiceBearAvatarUrl(
 	seed: string,
 	theme: ThemeSlug = DEFAULT_THEME,

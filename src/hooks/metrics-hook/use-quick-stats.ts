@@ -1,4 +1,3 @@
-// hooks/metrics-hook/use-quick-stats.ts
 import { useMemo } from "react";
 
 interface QuickStatsData {
@@ -27,7 +26,6 @@ interface QuickStatsData {
 
 export function useQuickStats(stats?: QuickStatsData) {
 	const statCards = useMemo(() => {
-		// ✅ Read unit from server response, with safe fallbacks
 		const weightUnit = stats?.weight?.unit ?? "kg";
 		const armsUnit = stats?.arms?.unit ?? "in";
 

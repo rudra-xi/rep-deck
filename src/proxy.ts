@@ -23,7 +23,6 @@ export async function proxy(request: NextRequest) {
 		},
 	);
 
-	// This refreshes the session and gives you the user
 	const {
 		data: { user },
 	} = await supabase.auth.getUser();
@@ -35,14 +34,12 @@ export async function proxy(request: NextRequest) {
 		(route) => path === route || path.startsWith(`${route}/`),
 	);
 
-	// Authenticated users skip the landing page
 	if (user && path === "/") {
 		const url = request.nextUrl.clone();
 		url.pathname = "/dashboard";
 		return NextResponse.redirect(url);
 	}
 
-	// Everyone else must be signed in
 	if (!user && !isPublicRoute) {
 		const url = request.nextUrl.clone();
 		url.pathname = "/";

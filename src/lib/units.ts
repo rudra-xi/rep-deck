@@ -1,13 +1,8 @@
-// lib/units.ts
 export const KG_TO_LB = 2.20462;
 export const IN_TO_CM = 2.54;
 
 export type WeightUnit = "kg" | "lb";
 export type MeasurementUnit = "cm" | "in";
-
-/* ==========================================
-   WEIGHT (DB standard: KG)
-   ========================================== */
 
 export function formatWeight(weightKg: number, unit: WeightUnit): number {
 	if (unit === "lb") return Number((weightKg * KG_TO_LB).toFixed(2));
@@ -19,7 +14,6 @@ export function parseWeightToKg(input: number, unit: WeightUnit): number {
 	return Number(input.toFixed(2));
 }
 
-/** e.g. "75 kg" or "165.3 lb" */
 export function formatWeightString(
 	weightKg: number,
 	unit: WeightUnit,
@@ -28,10 +22,6 @@ export function formatWeightString(
 	const v = formatWeight(weightKg, unit);
 	return withUnit ? `${v} ${unit}` : `${v}`;
 }
-
-/* ==========================================
-   MEASUREMENT (DB standard: IN)
-   ========================================== */
 
 export function formatMeasurement(
 	lengthIn: number,
@@ -57,10 +47,6 @@ export function formatMeasurementString(
 	const v = formatMeasurement(lengthIn, unit);
 	return withUnit ? `${v} ${unit}` : `${v}`;
 }
-
-/* ==========================================
-   LABELS
-   ========================================== */
 
 export const WEIGHT_UNIT_LABEL: Record<WeightUnit, string> = {
 	kg: "kg",

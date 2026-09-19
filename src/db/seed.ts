@@ -13,10 +13,6 @@ import {
 
 const USER_ID = "2e2a4a9f-8fe9-470e-8b21-c58e67e8d8ea";
 
-/* ─────────────────────────────────────────────────────────────
-   HELPERS
-   ───────────────────────────────────────────────────────────── */
-
 const daysAgo = (n: number, hour = 18, minute = 0) => {
 	const d = new Date();
 	d.setDate(d.getDate() - n);
@@ -29,35 +25,23 @@ function rand(seed: number): number {
 	return x - Math.floor(x);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   1. USER
-   ───────────────────────────────────────────────────────────── */
 async function seedUser() {
 	await db.delete(users).where(eq(users.id, USER_ID));
 
 	await db.insert(users).values({
 		id: USER_ID,
 		email: "rudra@repdeck.app",
-		name: "Rudra",
-		avatarSeed: "thumb-2e2a4a9f",
-		weightUnit: "kg",
-		measurementUnit: "in",
+		name: "rudra",
+		avatarSeed: "thumb-2e2a4a9t",
 	});
 	console.log("✓ User seeded");
 }
 
-/* ─────────────────────────────────────────────────────────────
-   2. PROGRAMS — real names, versions 1–3
-   ───────────────────────────────────────────────────────────── */
 async function seedPrograms() {
 	await db
 		.delete(programTemplates)
 		.where(eq(programTemplates.userId, USER_ID));
 
-	// ─────────────────────────────────────────────────────────
-	// v1 — HYPERTROPHY FOUNDATION (archived)
-	// High volume, moderate weight. Built the base.
-	// ─────────────────────────────────────────────────────────
 	const [v1] = await db
 		.insert(programTemplates)
 		.values({
@@ -84,7 +68,6 @@ async function seedPrograms() {
 		.returning();
 
 	await db.insert(exerciseTemplates).values([
-		// Push
 		{
 			programDayId: v1d1.id,
 			name: "Bench Press",
@@ -125,7 +108,6 @@ async function seedPrograms() {
 			targetSets: 4,
 			targetRepRange: "12-15",
 		},
-		// Pull
 		{
 			programDayId: v1d2.id,
 			name: "Barbell Row",
@@ -166,7 +148,6 @@ async function seedPrograms() {
 			targetSets: 3,
 			targetRepRange: "15-20",
 		},
-		// Legs
 		{
 			programDayId: v1d3.id,
 			name: "Barbell Squat",
@@ -209,10 +190,6 @@ async function seedPrograms() {
 		},
 	]);
 
-	// ─────────────────────────────────────────────────────────
-	// v2 — STRENGTH BLOCK (archived)
-	// Lower volume, heavier loads. Built the strength base.
-	// ─────────────────────────────────────────────────────────
 	const [v2] = await db
 		.insert(programTemplates)
 		.values({
@@ -243,7 +220,6 @@ async function seedPrograms() {
 		.returning();
 
 	await db.insert(exerciseTemplates).values([
-		// Upper Power
 		{
 			programDayId: v2d1.id,
 			name: "Bench Press",
@@ -276,7 +252,6 @@ async function seedPrograms() {
 			targetSets: 3,
 			targetRepRange: "6-8",
 		},
-		// Lower Power
 		{
 			programDayId: v2d2.id,
 			name: "Barbell Squat",
@@ -309,7 +284,6 @@ async function seedPrograms() {
 			targetSets: 4,
 			targetRepRange: "8-10",
 		},
-		// Upper Volume
 		{
 			programDayId: v2d3.id,
 			name: "Incline Bench Press",
@@ -342,7 +316,6 @@ async function seedPrograms() {
 			targetSets: 3,
 			targetRepRange: "15-20",
 		},
-		// Lower Volume
 		{
 			programDayId: v2d4.id,
 			name: "Romanian Deadlift",
@@ -369,10 +342,6 @@ async function seedPrograms() {
 		},
 	]);
 
-	// ─────────────────────────────────────────────────────────
-	// v3 — POWER & PEAK (ACTIVE)
-	// Peak phase. High intensity, targeted max attempts.
-	// ─────────────────────────────────────────────────────────
 	const [v3] = await db
 		.insert(programTemplates)
 		.values({
@@ -409,7 +378,6 @@ async function seedPrograms() {
 		.returning();
 
 	await db.insert(exerciseTemplates).values([
-		// Day 1 — Heavy Push
 		{
 			programDayId: v3d1.id,
 			name: "Bench Press",
@@ -450,7 +418,6 @@ async function seedPrograms() {
 			targetSets: 3,
 			targetRepRange: "8-10",
 		},
-		// Day 2 — Heavy Pull
 		{
 			programDayId: v3d2.id,
 			name: "Deadlift",
@@ -483,7 +450,6 @@ async function seedPrograms() {
 			targetSets: 3,
 			targetRepRange: "12-15",
 		},
-		// Day 3 — Squat Focus
 		{
 			programDayId: v3d3.id,
 			name: "Barbell Squat",
@@ -508,7 +474,6 @@ async function seedPrograms() {
 			targetSets: 4,
 			targetRepRange: "12-15",
 		},
-		// Day 5 — Hypertrophy Push
 		{
 			programDayId: v3d5.id,
 			name: "Incline Bench Press",
@@ -533,7 +498,6 @@ async function seedPrograms() {
 			targetSets: 4,
 			targetRepRange: "15-20",
 		},
-		// Day 6 — Deadlift Focus
 		{
 			programDayId: v3d6.id,
 			name: "Front Squat",
@@ -567,10 +531,6 @@ async function seedPrograms() {
 
 	return { v3 };
 }
-
-/* ─────────────────────────────────────────────────────────────
-   3. WORKOUT SESSIONS + SETS — 6 months realistic history
-   ───────────────────────────────────────────────────────────── */
 
 const LIFT_TARGETS = {
 	squat: { start: 105, end: 148, step: 2.5, jitter: 0.03, deloadEvery: 22 },
@@ -761,30 +721,25 @@ function generateSetsForDay(
 	};
 
 	if (dayIndex === 1) {
-		// Heavy Push
 		pushExercise("Bench Press", 4, 5, { lift: "bench" });
 		pushExercise("Overhead Press", 4, 5, { lift: "ohp" });
 		pushExercise("Incline Dumbbell Press", 3, 9, { baseWeight: 30 });
 		pushExercise("Cable Flyes", 3, 13, { baseWeight: 15 });
 		pushExercise("Barbell Curl", 3, 9, { baseWeight: 32 });
 	} else if (dayIndex === 2) {
-		// Heavy Pull
 		pushExercise("Deadlift", 4, 4, { lift: "deadlift" });
 		pushExercise("Barbell Row", 4, 6, { baseWeight: 70 });
 		pushExercise("Lat Pulldown", 3, 9, { baseWeight: 58 });
 		pushExercise("Hanging Leg Raises", 3, 14, { baseWeight: 0 });
 	} else if (dayIndex === 3) {
-		// Squat Focus
 		pushExercise("Barbell Squat", 5, 4, { lift: "squat" });
 		pushExercise("Romanian Deadlift", 3, 9, { baseWeight: 85 });
 		pushExercise("Lateral Raise", 4, 13, { baseWeight: 12 });
 	} else if (dayIndex === 5) {
-		// Hypertrophy Push
 		pushExercise("Incline Bench Press", 4, 9, { baseWeight: 62 });
 		pushExercise("Dumbbell Row", 4, 11, { baseWeight: 34 });
 		pushExercise("Face Pull", 4, 17, { baseWeight: 25 });
 	} else if (dayIndex === 6) {
-		// Deadlift Focus
 		pushExercise("Front Squat", 4, 7, { baseWeight: 78 });
 		pushExercise("Leg Press", 3, 11, { baseWeight: 165 });
 		pushExercise("Calf Raise", 4, 13, { baseWeight: 62 });
@@ -793,9 +748,6 @@ function generateSetsForDay(
 	return sets;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   4. BODY MEASUREMENTS
-   ───────────────────────────────────────────────────────────── */
 async function seedMeasurements() {
 	await db
 		.delete(bodyMeasurements)
@@ -853,9 +805,6 @@ async function seedMeasurements() {
 	console.log(`✓ Measurements seeded (${entries.length} entries)`);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   RUN ALL
-   ───────────────────────────────────────────────────────────── */
 async function seed() {
 	console.log("\n🌱 Seeding 6 months of realistic photoshoot data...\n");
 

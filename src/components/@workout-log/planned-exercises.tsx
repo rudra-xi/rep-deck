@@ -157,7 +157,6 @@ export function PlannedExercises({
 				const isOpen = openStates[ex.id] ?? true;
 				const isCompleted = !!completed[ex.id];
 
-				// ← Lookup by NAME (was: lastLogs[ex.id])
 				const perfData = performanceMap[ex.name];
 
 				const lastBest = perfData?.lastBest
@@ -345,7 +344,7 @@ export function PlannedExercises({
 													: "bg-background/50 border-border/40"
 											}`}
 										>
-											<span className="col-span-3 text-[10px] font-mono font-bold text-foreground text-left pl-0.5">
+											<span className="col-span-3 text-[10px]  font-bold text-foreground text-left pl-0.5">
 												#{setNum}
 											</span>
 
@@ -354,7 +353,7 @@ export function PlannedExercises({
 												type="number"
 												step="any"
 												disabled={isCompleted}
-												className="col-span-3 rounded-none h-6 px-1 text-center font-mono text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
+												className="col-span-3 rounded-none h-6 px-1 text-center  text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
 												value={setData?.weight || ""}
 												onChange={(e) =>
 													handleInputChange(
@@ -369,7 +368,7 @@ export function PlannedExercises({
 												placeholder="reps"
 												type="number"
 												disabled={isCompleted}
-												className="col-span-3 rounded-none h-6 px-1 text-center font-mono text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
+												className="col-span-3 rounded-none h-6 px-1 text-center  text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
 												value={setData?.reps || ""}
 												onChange={(e) =>
 													handleInputChange(
@@ -387,7 +386,7 @@ export function PlannedExercises({
 												type="number"
 												step="any"
 												disabled={isCompleted}
-												className="col-span-3 rounded-none h-6 px-1 text-center font-mono text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
+												className="col-span-3 rounded-none h-6 px-1 text-center  text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
 												value={setData?.rpe || ""}
 												onChange={(e) =>
 													handleInputChange(

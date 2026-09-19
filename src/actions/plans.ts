@@ -17,16 +17,10 @@ async function requireAuth() {
 	return supabaseUser;
 }
 
-/** Helper function to purge all cache related to plans */
 function purgePlansCache() {
-	// Revalidates the page and all dynamic child paths under /plans
 	revalidatePath("/plans", "page");
 	revalidatePath("/plans/[id]", "page");
 }
-
-/* ==========================================
-   1. PLAN / PROGRAM TEMPLATE ACTIONS
-   ========================================== */
 
 export async function getUserPlans() {
 	const user = await requireAuth();
@@ -73,7 +67,7 @@ export async function createPlan(data: {
 		.insert(programTemplates)
 		.values({
 			userId: user.id,
-			name: toCapitalized(data.name), // ✅ Apply toCapitalized
+			name: toCapitalized(data.name),
 			version: data.version ?? 1,
 			startDate: data.startDate ? new Date(data.startDate) : null,
 			active: false,
@@ -93,7 +87,7 @@ export async function updatePlan(
 	await db
 		.update(programTemplates)
 		.set({
-			...(data.name && { name: toCapitalized(data.name) }), // ✅ Apply toCapitalized
+			...(data.name && { name: toCapitalized(data.name) }),
 			...(data.version !== undefined && { version: data.version }),
 			...(data.startDate !== undefined && {
 				startDate: data.startDate ? new Date(data.startDate) : null,
@@ -148,10 +142,6 @@ export async function deletePlan(planId: string) {
 	return { success: true };
 }
 
-/* ==========================================
-   2. DAY TEMPLATE ACTIONS
-   ========================================== */
-
 export async function addPlanDay(planId: string, label: string) {
 	await requireAuth();
 
@@ -164,7 +154,7 @@ export async function addPlanDay(planId: string, label: string) {
 		.insert(programDayTemplates)
 		.values({
 			programId: planId,
-			label: toCapitalized(label), // ✅ Apply toCapitalized
+			label: toCapitalized(label),
 			dayIndex: existingDays.length + 1,
 		})
 		.returning();
@@ -184,10 +174,6 @@ export async function deletePlanDay(dayId: string) {
 	return { success: true };
 }
 
-/* ==========================================
-   3. EXERCISE TEMPLATE ACTIONS
-   ========================================== */
-
 export async function addExerciseToDay(data: {
 	programDayId: string;
 	name: string;
@@ -206,7 +192,7 @@ export async function addExerciseToDay(data: {
 		.insert(exerciseTemplates)
 		.values({
 			programDayId: data.programDayId,
-			name: toCapitalized(data.name), // ✅ Apply toCapitalized
+			name: toCapitalized(data.name),
 			type: data.type || "General",
 			targetSets: data.targetSets ?? 3,
 			targetRepRange: data.targetRepRange || "8-12",
@@ -232,7 +218,7 @@ export async function updateExercise(
 	await db
 		.update(exerciseTemplates)
 		.set({
-			...(data.name && { name: toCapitalized(data.name) }), // ✅ Apply toCapitalized
+			...(data.name && { name: toCapitalized(data.name) }),
 			...(data.type && { type: data.type }),
 			...(data.targetSets !== undefined && {
 				targetSets: data.targetSets,
@@ -269,7 +255,6 @@ export async function duplicatePlan(
 			return { success: false, error: "Plan ID is required" };
 		}
 
-		// 1. Fetch original plan using standard query builder
 		const [originalPlan] = await db
 			.select()
 			.from(programTemplates)
@@ -285,34 +270,31 @@ export async function duplicatePlan(
 			return { success: false, error: "Plan not found" };
 		}
 
-		// 2. Insert duplicated parent plan
 		const [newPlan] = await db
 			.insert(programTemplates)
 			.values({
 				userId: user.id,
 				name: options?.name?.trim()
-					? toCapitalized(options.name.trim()) // ✅ Apply toCapitalized
-					: `${toCapitalized(originalPlan.name)} (Copy)`, // ✅ Apply toCapitalized
+					? toCapitalized(options.name.trim())
+					: `${toCapitalized(originalPlan.name)} (Copy)`,
 				version: options?.version ?? originalPlan.version + 1,
 				startDate: null,
 				active: false,
 			})
 			.returning();
 
-		// 3. Fetch days belonging to the original plan
 		const days = await db
 			.select()
 			.from(programDayTemplates)
 			.where(eq(programDayTemplates.programId, planId))
 			.orderBy(asc(programDayTemplates.dayIndex));
 
-		// 4. Duplicate days and their associated exercises
 		for (const day of days) {
 			const [newDay] = await db
 				.insert(programDayTemplates)
 				.values({
 					programId: newPlan.id,
-					label: toCapitalized(day.label), // ✅ Apply toCapitalized
+					label: toCapitalized(day.label),
 					dayIndex: day.dayIndex,
 				})
 				.returning();
@@ -327,7 +309,7 @@ export async function duplicatePlan(
 				await db.insert(exerciseTemplates).values(
 					exercises.map((e) => ({
 						programDayId: newDay.id,
-						name: toCapitalized(e.name), // ✅ Apply toCapitalized
+						name: toCapitalized(e.name),
 						type: e.type,
 						targetSets: e.targetSets,
 						targetRepRange: e.targetRepRange,

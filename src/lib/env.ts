@@ -1,8 +1,3 @@
-/**
- * Centralized environment variable validation.
- * Throws at boot if any required var is missing.
- */
-
 function requireEnv(key: string): string {
 	const value = process.env[key];
 	if (!value) {

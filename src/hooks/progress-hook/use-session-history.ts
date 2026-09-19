@@ -1,9 +1,7 @@
-// hooks/progress-hook/use-session-history.ts
-
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getRecentSessions } from "@/actions/progress";
-import { useUnits } from "@/common"; // ✅ ADD
+import { useUnits } from "@/common";
 import type { SessionHistoryItem } from "@/types/progress";
 
 export function useSessionHistory(
@@ -11,7 +9,7 @@ export function useSessionHistory(
 	propLoading: boolean = false,
 ) {
 	const router = useRouter();
-	const { fmtWeight } = useUnits(); // ✅ ADD
+	const { fmtWeight } = useUnits();
 
 	const [sessions, setSessions] = useState(initialData);
 	const [loading, setLoading] = useState(
@@ -36,11 +34,8 @@ export function useSessionHistory(
 		}
 	}, [initialData, propLoading]);
 
-	// ✅ Convert volume to user's unit for chart display
 	const chartData = useMemo(() => {
 		return sessions.map((s) => {
-			// Support both new shape (totalVolumeKg: number)
-			// and legacy shape (totalVolume: "1,234 kg")
 			const rawKg =
 				typeof s.totalVolumeKg === "number"
 					? s.totalVolumeKg
@@ -54,7 +49,7 @@ export function useSessionHistory(
 
 			return {
 				...s,
-				volume: fmtWeight(rawKg), // ✅ user's unit
+				volume: fmtWeight(rawKg),
 			};
 		});
 	}, [sessions, fmtWeight]);

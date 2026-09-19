@@ -22,7 +22,6 @@ export default function ProgressClientPage() {
 				subTitle="Track strength, size, and body composition over time"
 			/>
 
-			{/* Section 1: Body Composition */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Body Composition" />
 				<WeightBodyFatTrend />
@@ -30,7 +29,6 @@ export default function ProgressClientPage() {
 
 			<Separator />
 
-			{/* Section 2: Measurements (2 charts side-by-side) */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Measurements Progress" />
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
@@ -41,7 +39,6 @@ export default function ProgressClientPage() {
 
 			<Separator />
 
-			{/* Section 3: Strength Performance */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Strength Performance" />
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
@@ -55,7 +52,6 @@ export default function ProgressClientPage() {
 
 			<Separator />
 
-			{/* Section 4: Activity & Consistency (combined) */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Activity & Consistency" />
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">

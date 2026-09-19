@@ -1,4 +1,3 @@
-// actions/progress.ts
 "use server";
 
 import { format, subDays } from "date-fns";
@@ -8,16 +7,13 @@ import { db } from "@/db";
 import { bodyMeasurements, workoutSessions, workoutSets } from "@/db/schema";
 import { toCapitalized } from "@/lib/to-capitalized";
 
-// Reference current date aligned to Sep 10, 2026
 const CURRENT_DATE = new Date(2026, 8, 10);
 
-// Helper to estimate 1RM using the Epley formula
 const calculateEpley1RM = (weight: number, reps: number) => {
 	if (reps === 1) return weight;
 	return Math.round(weight * (1 + reps / 30));
 };
 
-// 1. Get Big 4 Combined Trend Data
 export async function getStrengthOverview(
 	timeRange: "2M" | "3M" | "6M" | "1Y",
 ) {
@@ -81,7 +77,6 @@ export async function getStrengthOverview(
 	}
 }
 
-// 2. Get Individual Lift Progression Data
 export async function getLiftDetails(
 	liftType: "bench" | "squat" | "deadlift" | "ohp",
 ) {
@@ -155,7 +150,6 @@ export async function getLiftDetails(
 	}
 }
 
-// 3. Get Recent Past Sessions (Optimized batch query to avoid N+1)
 export async function getRecentSessions(limit = 5) {
 	try {
 		const { dbUser } = await getCurrentUser();
@@ -181,7 +175,6 @@ export async function getRecentSessions(limit = 5) {
 			.from(workoutSets)
 			.where(inArray(workoutSets.sessionId, sessionIds));
 
-		// actions/progress.ts — getRecentSessions, last block
 		return sessions.map((s) => {
 			const sets = allSets.filter((set) => set.sessionId === s.id);
 
@@ -202,7 +195,7 @@ export async function getRecentSessions(limit = 5) {
 					s.dayIndex !== null ? `Day ${s.dayIndex + 1}` : "Custom",
 				keyLiftsSummary:
 					uniqueExercises.join(", ") || "No exercises logged",
-				totalVolumeKg: totalVol, // ✅ number, not string
+				totalVolumeKg: totalVol,
 			};
 		});
 	} catch (error) {
@@ -211,7 +204,6 @@ export async function getRecentSessions(limit = 5) {
 	}
 }
 
-// 4. Get Training Frequency
 export async function getTrainingFrequency() {
 	try {
 		const { dbUser } = await getCurrentUser();
@@ -256,7 +248,6 @@ export async function getTrainingFrequency() {
 	}
 }
 
-// 5. Get Body Metrics
 export async function getBodyMetrics() {
 	try {
 		const { dbUser } = await getCurrentUser();

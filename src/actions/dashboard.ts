@@ -26,7 +26,6 @@ export interface StrengthTrendDataPoint {
 	};
 }
 
-// ✅ Shared trend shape with raw diff
 export interface KpiTrendShape {
 	direction: "up" | "down" | "neutral";
 	value?: string;
@@ -39,8 +38,6 @@ export async function getDashboardData() {
 		if (!dbUser) return null;
 
 		const userId = dbUser.id;
-
-		/* ... unchanged sections 1 & 2 ... */
 
 		const [activeProgram] = await db
 			.select({
@@ -86,7 +83,6 @@ export async function getDashboardData() {
 
 		const sessionsCount = Number(weeklySessions[0]?.count || 0);
 
-		// ✅ 3. Body weight trend — explicit KpiTrendShape typing
 		const recentWeights = await db
 			.select()
 			.from(bodyMeasurements)
@@ -126,7 +122,6 @@ export async function getDashboardData() {
 			}
 		}
 
-		// ... 4. Last workout (unchanged) ...
 		const [lastSession] = await db
 			.select({
 				id: workoutSessions.id,
@@ -178,7 +173,6 @@ export async function getDashboardData() {
 			};
 		}
 
-		// ✅ 5. Best lifts — dropdown options with rawWeightKg + rawDiffKg
 		const thirtyDaysAgo = new Date();
 		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -277,7 +271,6 @@ export async function getDashboardData() {
 			}),
 		);
 
-		// ... 6. Strength trend (unchanged) ...
 		const sixtyDaysAgo = new Date();
 		sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
 
@@ -381,7 +374,6 @@ export async function getDashboardData() {
 				return dateA.getTime() - dateB.getTime();
 			});
 
-		// ✅ 7. KPI object
 		const kpis = {
 			program: {
 				id: "program",

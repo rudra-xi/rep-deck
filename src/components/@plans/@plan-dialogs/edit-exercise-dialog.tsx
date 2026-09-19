@@ -119,7 +119,6 @@ export function EditExerciseDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			{/* ✅ Removed nativeButton={true} — not needed on a ghost icon button */}
 			<DialogTrigger
 				render={
 					<Button

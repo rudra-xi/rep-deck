@@ -32,7 +32,6 @@ export function useExercisePerformance(exercises: Exercise[]) {
 
 				if (!isMounted) return;
 
-				// Normalize into ExercisePerformanceWithPR, keyed by exercise name
 				const normalized: Record<
 					string,
 					ExercisePerformanceWithPR | null
@@ -60,10 +59,6 @@ export function useExercisePerformance(exercises: Exercise[]) {
 	return { performanceMap, isLoading };
 }
 
-/**
- * Client-side PR check using the Epley 1RM formula.
- * Returns true if the given set beats the previous all-time best.
- */
 export function wouldBePR(
 	weight: number | string,
 	reps: number | string,
@@ -76,7 +71,6 @@ export function wouldBePR(
 		return false;
 	}
 
-	// No prior data → first-ever set is always a PR
 	if (!previousBest) return true;
 
 	const current1RM = w * (1 + r / 30);

@@ -1,4 +1,3 @@
-// components/@common/unit-provider.tsx
 "use client";
 
 import { createContext, type ReactNode, useContext, useMemo } from "react";
@@ -26,18 +25,12 @@ interface UnitContextValue {
 	weightLabelFull: string;
 	measurementLabelFull: string;
 
-	/** DB kg → user unit (number) */
 	fmtWeight: (weightKg: number) => number;
-	/** DB kg → user unit (string, e.g. "165.3 lb") */
 	fmtWeightStr: (weightKg: number, withUnit?: boolean) => string;
-	/** user input → DB kg */
 	toKg: (input: number) => number;
 
-	/** DB in → user unit (number) */
 	fmtMeasurement: (lengthIn: number) => number;
-	/** DB in → user unit (string) */
 	fmtMeasurementStr: (lengthIn: number, withUnit?: boolean) => string;
-	/** user input → DB in */
 	toIn: (input: number) => number;
 }
 
@@ -83,7 +76,6 @@ export function UnitProvider({ preferences, children }: UnitProviderProps) {
 export function useUnits(): UnitContextValue {
 	const ctx = useContext(UnitContext);
 	if (!ctx) {
-		// Safe fallback — won't crash the app if provider missing
 		return {
 			weightUnit: "kg",
 			measurementUnit: "in",

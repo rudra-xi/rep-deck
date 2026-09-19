@@ -35,7 +35,6 @@ export function QuickAddMeasurementForm() {
 		<Card className="fcard-flat card-ease">
 			<CardContent className="p-5">
 				<form onSubmit={handleSubmit} className="fcol4">
-					{/* Date */}
 					<div className="fcol1_5">
 						<Label className="ftext-2xs fupper font-semibold fmuted">
 							Date
@@ -76,7 +75,6 @@ export function QuickAddMeasurementForm() {
 						</Popover>
 					</div>
 
-					{/* Weight & Body Fat */}
 					<div className="grid grid-cols-2 gap-3">
 						<div className="fcol1">
 							<Label className="ftext-2xs fupper font-semibold fmuted">
@@ -108,7 +106,6 @@ export function QuickAddMeasurementForm() {
 						</div>
 					</div>
 
-					{/* Arms, Forearms, Thighs */}
 					<div className="grid grid-cols-3 gap-3">
 						<div className="fcol1">
 							<Label className="ftext-2xs fupper font-semibold fmuted">
@@ -154,7 +151,6 @@ export function QuickAddMeasurementForm() {
 						</div>
 					</div>
 
-					{/* Chest, Waist, Hips */}
 					<div className="grid grid-cols-3 gap-3">
 						<div className="fcol1">
 							<Label className="ftext-2xs fupper font-semibold fmuted">
@@ -200,7 +196,6 @@ export function QuickAddMeasurementForm() {
 						</div>
 					</div>
 
-					{/* Notes */}
 					<div className="fcol1">
 						<Label className="ftext-2xs fupper font-semibold fmuted">
 							Notes

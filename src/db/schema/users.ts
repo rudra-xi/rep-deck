@@ -1,4 +1,3 @@
-// db/schema/users.ts
 import { relations } from "drizzle-orm/_relations";
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { bodyMeasurements } from "./bodyMeasurements";

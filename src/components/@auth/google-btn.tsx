@@ -32,7 +32,6 @@ export function GoogleBtn({
 		try {
 			const result = await signInWithGoogle(redirectTo);
 
-			// Dismiss loading toast
 			toast.dismiss(toastId);
 
 			if (result?.error) {
@@ -42,16 +41,11 @@ export function GoogleBtn({
 				setLoading(false);
 			}
 		} catch (error) {
-			// ✅ Check if it's a NEXT_REDIRECT error (this is expected, not an error)
 			if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-				// This is expected - the user is being redirected
-				// Don't show any error toast
 				toast.dismiss(toastId);
-				// Don't setLoading(false) because we're redirecting
 				return;
 			}
 
-			// Only show error for actual errors
 			console.error("Google sign in error:", error);
 			toast.dismiss(toastId);
 			toast.error("Sign in error", {

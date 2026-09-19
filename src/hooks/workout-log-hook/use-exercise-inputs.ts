@@ -1,4 +1,3 @@
-// hooks/useExerciseInputs.ts
 import { useCallback, useEffect, useState } from "react";
 import { STORAGE_KEYS } from "@/lib/storage";
 
@@ -11,7 +10,6 @@ interface SetInput {
 
 type SetInputState = Record<string, Record<number, SetInput>>;
 
-// Validation rules
 const VALIDATION = {
 	weight: { min: 0, max: 1000 },
 	reps: { min: 1, max: 100 },
@@ -24,7 +22,6 @@ export function useExerciseInputs() {
 	const [inputs, setInputs] = useState<SetInputState>({});
 	const [isInitialized, setIsInitialized] = useState(false);
 
-	// Load from localStorage
 	useEffect(() => {
 		try {
 			const saved = localStorage.getItem(STORAGE_KEYS.EXERCISE_INPUTS);
@@ -38,7 +35,6 @@ export function useExerciseInputs() {
 		}
 	}, []);
 
-	// Save to localStorage
 	useEffect(() => {
 		if (!isInitialized) return;
 		try {
@@ -51,7 +47,6 @@ export function useExerciseInputs() {
 		}
 	}, [inputs, isInitialized]);
 
-	// Core ranged validation logic (same as useRangedInput)
 	const validateAndCorrect = useCallback(
 		(field: FieldType, value: string): string => {
 			if (value === "") return value;
@@ -122,7 +117,6 @@ export function useExerciseInputs() {
 		[inputs],
 	);
 
-	// Get validation rules for a field
 	const getValidationRules = useCallback((field: FieldType) => {
 		return VALIDATION[field];
 	}, []);

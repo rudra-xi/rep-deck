@@ -19,7 +19,6 @@ export default function GlobalError({
 	reset: () => void;
 }) {
 	useEffect(() => {
-		// Hook in your error reporting here (Sentry, LogRocket, etc.)
 		console.error("[GlobalError]", error);
 	}, [error]);
 
@@ -27,40 +26,33 @@ export default function GlobalError({
 		<main className="min-h-screen fc p-6 bg-background">
 			<div className="w-full max-w-md">
 				<div className="fcard-flat p-8 sm:p-10 text-center">
-					{/* Brand */}
 					<div className="fc mb-8">
 						<div className="fc size-12">
 							<Logo className="size-full text-primary" />
 						</div>
 					</div>
 
-					{/* Icon */}
 					<div className="inline-flex border border-destructive/30 bg-destructive/10 p-3 text-destructive mb-4">
 						<WarningIcon className="size-6" weight="fill" />
 					</div>
 
-					{/* Title */}
 					<h1 className="text-sm font-bold uppercase tracking-wider text-foreground">
 						Something went wrong
 					</h1>
 
-					{/* Description */}
 					<p className="mt-2 text-[11px] text-muted-foreground max-w-xs mx-auto">
 						An unexpected error occurred. Try refreshing the page —
 						if it keeps happening, let us know.
 					</p>
 
-					{/* Error digest for support */}
 					{error.digest && (
-						<p className="mt-3 text-[10px] font-mono text-muted-foreground/60 break-all">
+						<p className="mt-3 text-[10px]  text-muted-foreground/60 break-all">
 							Ref: {error.digest}
 						</p>
 					)}
 
-					{/* Divider */}
 					<Separator className={"my-6"} />
 
-					{/* Actions */}
 					<div className="fcol sm:flex-row items-stretch sm:items-center gap-2">
 						<Button
 							nativeButton={false}

@@ -82,7 +82,6 @@ function VersionSection({
 
 	return (
 		<div className="space-y-4">
-			{/* Sticky version header */}
 			<div className="sticky top-0 z-10 -mx-1 px-1 pb-2 pt-1 bg-card/95 backdrop-blur-sm border-b border-border/40">
 				<h3 className="text-[11px] font-bold uppercase tracking-wider text-foreground">
 					{version.label}
@@ -92,7 +91,6 @@ function VersionSection({
 				</p>
 			</div>
 
-			{/* Pillars */}
 			<div className="space-y-4">
 				{Object.entries(byPillar).map(([pillar, pillarItems]) => (
 					<div
@@ -146,7 +144,6 @@ export function RoadmapDialog() {
 			/>
 
 			<DialogContent className="w-[calc(100vw-2rem)] max-w-lg max-h-[90vh] p-0 rounded-none border-border/50 bg-card/95 backdrop-blur-sm fcol gap-0">
-				{/* Header */}
 				<DialogHeader className="p-5 pb-3 border-b border-border/40 sh0">
 					<DialogTitle className="text-xs font-bold uppercase tracking-wider text-foreground fcy gap-2.5">
 						<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md sh0">
@@ -159,7 +156,6 @@ export function RoadmapDialog() {
 					</DialogDescription>
 				</DialogHeader>
 
-				{/* Scrollable body */}
 				<div className="fgrow min-h-0 overflow-y-auto p-5 space-y-6">
 					{visible.length === 0 ? (
 						<p className="text-[11px] text-muted-foreground text-center py-8">
@@ -176,7 +172,6 @@ export function RoadmapDialog() {
 					)}
 				</div>
 
-				{/* Footer toggle — only if there are shipped versions to reveal */}
 				{hasShippedSection && (
 					<div className="border-t border-border/40 p-3 sh0">
 						<button

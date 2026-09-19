@@ -16,12 +16,10 @@ export const Hero = () => {
 
 	return (
 		<section className="relative w-full overflow-hidden px-6 lg:px-0 pt-24 pb-16 sm:pt-28 lg:pt-0 lg:pb-0">
-			{/* ── Ambient background layers ───────────────────────── */}
 			<div className="absolute -top-40 -left-40 size-72 sm:size-96 bg-primary/15 rounded-full blur-3xl pointer-events-none" />
 			<div className="absolute bottom-10 -right-40 size-64 sm:size-86 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-100 sm:size-150 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-			{/* Grid pattern overlay */}
 			<div
 				className="absolute inset-0 pointer-events-none opacity-[0.04]"
 				style={{
@@ -33,11 +31,8 @@ export const Hero = () => {
 				}}
 			/>
 
-			{/* Outer wrapper */}
 			<div className="container max-w-7xl mx-auto z-10 fcol lg:flex-row items-center justify-center gap-12 lg:gap-16 lg:min-h-screen">
-				{/* ── Left content ───────────────────────────────────── */}
 				<div className="w-full lg:fgrow text-center lg:text-left lg:max-w-xl">
-					{/* Eyebrow badge */}
 					<Badge
 						variant="outline"
 						className="px-3.5 pt-2.5 pb-2 text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-primary border-primary/30 bg-primary/5 gap-1.5"
@@ -46,7 +41,6 @@ export const Hero = () => {
 						Built for lifters who demand progress
 					</Badge>
 
-					{/* Headline — uppercase */}
 					<h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black uppercase tracking-[-0.02em] leading-[0.95] mt-5 sm:mt-6">
 						<span className="block text-foreground">
 							Stop guessing.
@@ -56,7 +50,6 @@ export const Hero = () => {
 						</span>
 					</h1>
 
-					{/* Subhead */}
 					<p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-md sm:max-w-xl mx-auto lg:mx-0 leading-relaxed mt-5 sm:mt-7">
 						Log every set in seconds. Track real strength gains,
 						analyze body composition trends, and optimize
@@ -64,7 +57,6 @@ export const Hero = () => {
 						spreadsheets required.
 					</p>
 
-					{/* CTA row */}
 					<div className="fcol sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-7 sm:pt-9">
 						<GoogleBtn
 							text="Start Tracking Free"
@@ -82,7 +74,6 @@ export const Hero = () => {
 						</Button>
 					</div>
 
-					{/* Inline micro-features */}
 					<div className="fwc lg:justify-start gap-x-5 sm:gap-x-6 gap-y-2 pt-6 sm:pt-8 text-[11px] sm:text-xs text-muted-foreground">
 						<div className="fcy gap-1.5">
 							<span className="size-1.5 rounded-full bg-primary" />
@@ -99,9 +90,7 @@ export const Hero = () => {
 					</div>
 				</div>
 
-				{/* ── Right image ────────────────────────────────────── */}
 				<div className="w-full lg:fgrow max-w-lg sm:max-w-xl lg:max-w-2xl relative mt-4 sm:mt-6 lg:mt-0">
-					{/* Frame glow */}
 					<div className="absolute -inset-4 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
 
 					<div className="relative w-full aspect-video overflow-hidden bg-background shadow-2xl border border-border/60">
@@ -116,16 +105,13 @@ export const Hero = () => {
 							className="object-cover object-left-top"
 						/>
 
-						{/* Top-down gradient for depth */}
 						<div className="absolute inset-0 bg-linear-to-t from-background/60 via-transparent to-transparent pointer-events-none" />
 
-						{/* Corner accent */}
 						<div className="absolute -top-10 -left-10 size-44 bg-linear-to-br from-primary/20 to-transparent pointer-events-none rounded-full blur-xl" />
 					</div>
 				</div>
 			</div>
 
-			{/* ── Scroll hint (desktop only) ───────────────────────── */}
 			<div className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden lg:fcol items-center gap-2 text-muted-foreground/50">
 				<span className="text-[10px] uppercase tracking-widest">
 					Scroll

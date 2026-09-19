@@ -9,9 +9,6 @@ import type { UserPreferences } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { getCurrentUser } from "./auth";
 
-/**
- * Fetch user profile
- */
 export async function getUserProfile() {
 	const supabase = await createClient();
 	const {
@@ -37,9 +34,6 @@ export async function getUserProfile() {
 	};
 }
 
-/**
- * Update user display name
- */
 export async function updateProfile(data: { name: string }) {
 	try {
 		const supabase = await createClient();

@@ -4,12 +4,12 @@ interface KpiCardOption {
 	label: string;
 	value: string;
 	targetValue: string;
-	rawWeightKg?: number; // ✅ ADD
+	rawWeightKg?: number;
 	subtext?: string;
 	trend?: {
 		direction: "up" | "down" | "neutral";
 		value?: string;
-		rawDiffKg?: number; // ✅ ADD
+		rawDiffKg?: number;
 	};
 }
 

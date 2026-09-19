@@ -1,4 +1,3 @@
-// hooks/useWorkoutDraft.ts
 import { useEffect, useState } from "react";
 import { clearAllWorkoutData, STORAGE_KEYS } from "@/lib/storage";
 import type { LoggedSet } from "@/types";
@@ -10,10 +9,8 @@ export function useWorkoutDraft(initialDayIndex: number) {
 	const [isInitialized, setIsInitialized] = useState(false);
 	const [draftExists, setDraftExists] = useState(false);
 
-	// Load all draft data on mount
 	useEffect(() => {
 		try {
-			// Load selected day first
 			const savedDay = localStorage.getItem(
 				STORAGE_KEYS.WORKOUT_SELECTED_DAY,
 			);
@@ -24,7 +21,6 @@ export function useWorkoutDraft(initialDayIndex: number) {
 				}
 			}
 
-			// Load session data
 			const savedSession = localStorage.getItem(
 				STORAGE_KEYS.WORKOUT_SESSION,
 			);
@@ -38,7 +34,6 @@ export function useWorkoutDraft(initialDayIndex: number) {
 				setDraftExists(parsed.loggedSets?.length > 0);
 			}
 
-			// Load notes separately if not in session
 			const savedNotes = localStorage.getItem(STORAGE_KEYS.WORKOUT_NOTES);
 			if (savedNotes && !savedSession) {
 				setNotes(savedNotes);
@@ -50,7 +45,6 @@ export function useWorkoutDraft(initialDayIndex: number) {
 		}
 	}, []);
 
-	// Save all draft data
 	useEffect(() => {
 		if (!isInitialized) return;
 
@@ -71,7 +65,6 @@ export function useWorkoutDraft(initialDayIndex: number) {
 		}
 	}, [loggedSets, notes, selectedDayIndex, isInitialized]);
 
-	// Save selected day separately
 	useEffect(() => {
 		if (!isInitialized) return;
 		try {
@@ -84,7 +77,6 @@ export function useWorkoutDraft(initialDayIndex: number) {
 		}
 	}, [selectedDayIndex, isInitialized]);
 
-	// Clear all draft data using centralized function
 	const clearDraft = () => {
 		clearAllWorkoutData();
 		setLoggedSets([]);
@@ -92,16 +84,13 @@ export function useWorkoutDraft(initialDayIndex: number) {
 		setDraftExists(false);
 	};
 
-	// Add a set
 	const addSet = (
 		newSet: Omit<LoggedSet, "id"> & { templateId?: string },
 	) => {
-		console.log("📝 Adding set with notes:", newSet.notes); // ✅ Debug log
 		const setWithId = { ...newSet, id: crypto.randomUUID() };
 		setLoggedSets((prev) => [...prev, setWithId]);
 	};
 
-	// Clear just the session data (keep notes and day selection)
 	const clearSession = () => {
 		localStorage.removeItem(STORAGE_KEYS.WORKOUT_SESSION);
 		setLoggedSets([]);

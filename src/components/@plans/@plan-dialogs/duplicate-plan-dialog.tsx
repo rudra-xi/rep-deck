@@ -123,7 +123,6 @@ export function DuplicatePlanDialog({
 				</DialogHeader>
 
 				<form onSubmit={handleDuplicate} className="space-y-4 pt-2">
-					{/* New Name Input */}
 					<div className="space-y-1">
 						<span className="ftext-xs2 font-medium fupper fmuted block">
 							New Plan Name
@@ -138,7 +137,6 @@ export function DuplicatePlanDialog({
 						/>
 					</div>
 
-					{/* New Version Input */}
 					<div className="space-y-1">
 						<span className="ftext-xs2 font-medium fupper fmuted block">
 							Version Number

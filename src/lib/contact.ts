@@ -14,11 +14,6 @@ export function buildMailtoUrl({
 	return `mailto:${SUPPORT_EMAIL}?${parts.join("&")}`;
 }
 
-/**
- * Builds a prefilled feedback email with the Rep Deck template.
- * Uses \r\n for line breaks — encodeURIComponent turns them into %0D%0A,
- * the RFC 6068 spec, which every mail client respects.
- */
 export function buildFeedbackMailtoUrl({
 	appVersion = "v0.1.0",
 	userAgent,

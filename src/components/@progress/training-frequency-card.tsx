@@ -110,7 +110,7 @@ export function TrainingFrequencyCard({
 							<span className="ftext-3xs fmuted fupper font-medium">
 								12-Wk Total
 							</span>
-							<span className="font-bold text-foreground font-mono">
+							<span className="font-bold text-foreground ">
 								{totalSessions}{" "}
 								<span className="ftext-2xs font-normal fmuted">
 									sessions

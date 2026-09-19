@@ -80,7 +80,6 @@ export function ActiveSessionSummary({
 				return currentScore > bestScore ? current : best;
 			}, sets[0]);
 
-			// Look up prior best by exercise name (case-insensitive fallback)
 			const perfEntry =
 				performanceMap[exercise] ??
 				Object.entries(performanceMap).find(
@@ -92,7 +91,6 @@ export function ActiveSessionSummary({
 
 			const previousBest = perfEntry?.overallBest ?? null;
 
-			// Live client-side PR check
 			const isPR = wouldBePR(
 				bestSet.weight,
 				bestSet.reps,
@@ -137,7 +135,6 @@ export function ActiveSessionSummary({
 		programId,
 		dayIndex,
 		onSuccess: () => {
-			// Cleanup only — toasts handled in handleFinish below
 			setNotes("");
 			onSuccess?.();
 		},
@@ -360,7 +357,6 @@ export function ActiveSessionSummary({
 
 										<div className="fwrap gap-1.5">
 											{sets.map((s, idx) => {
-												// Per-set PR check — uses the same prior best
 												const perfEntry =
 													performanceMap[exercise] ??
 													Object.entries(
@@ -399,13 +395,13 @@ export function ActiveSessionSummary({
 															nativeButton={false}
 															render={
 																<span
-																	className={`text-xs font-mono px-2 py-0.5 rounded-none border cursor-pointer fcy gap-1 ${
+																	className={`text-xs  px-2 py-0.5 rounded-none border cursor-pointer fcy gap-1 ${
 																		isSetPR
 																			? "bg-primary/20 border-primary/50 text-primary dark:text-primary"
 																			: "bg-accent/50 border-border/50 text-foreground"
 																	}`}
 																>
-																	<span className="text-xs font-mono">
+																	<span className="text-xs ">
 																		Set{" "}
 																		{idx +
 																			1}
@@ -442,7 +438,7 @@ export function ActiveSessionSummary({
 																	Record!
 																</p>
 															)}
-															<p className="text-muted-foreground font-mono">
+															<p className="text-muted-foreground ">
 																{s.weight}
 																{weightUnit} ×{" "}
 																{s.reps}

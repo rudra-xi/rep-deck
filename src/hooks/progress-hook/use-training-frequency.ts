@@ -1,4 +1,3 @@
-// hooks/useTrainingFrequency.ts
 import { useEffect, useMemo, useState } from "react";
 import { getTrainingFrequency } from "@/actions/progress";
 import { TWELVE_WEEK_BENCHMARK } from "@/constants";

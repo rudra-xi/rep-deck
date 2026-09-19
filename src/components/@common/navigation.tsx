@@ -31,20 +31,12 @@ import { navigationData, navigationGroupOrder } from "@/constants";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 
-/* ─────────────────────────────────────────────────────────────
-   ICON MAP — stays in the component (UI concern, not data)
-   ───────────────────────────────────────────────────────────── */
-
 const navIconMap: Record<string, React.ElementType> = {
 	log: BarbellIcon,
 	metrics: RulerIcon,
 	progress: TrendUpIcon,
 	plans: NotebookIcon,
 };
-
-/* ─────────────────────────────────────────────────────────────
-   MOBILE DRAWER — HELPERS
-   ───────────────────────────────────────────────────────────── */
 
 function NavGroup({
 	label,
@@ -129,10 +121,6 @@ function NavLink({
 	);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   NAVIGATION
-   ───────────────────────────────────────────────────────────── */
-
 interface NavigationProps {
 	userName?: string;
 }
@@ -144,7 +132,6 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 	const isActive = (href: string) =>
 		pathname === href || pathname?.startsWith(`${href}/`);
 
-	// Group items for the mobile drawer using the order from constants
 	const groupedItems = navigationGroupOrder
 		.map((group) => ({
 			group,
@@ -155,7 +142,6 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 	return (
 		<div className="fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] max-w-full lg:max-w-3xl top-4">
 			<header className="fcy justify-between gap-2 border border-border/60 bg-background px-2.5 py-2">
-				{/* ── Brand ──────────────────────────────────────── */}
 				<Link
 					href="/dashboard"
 					className="group fcy gap-2 pl-1.5 pr-2 text-sm font-bold tracking-tight text-foreground transition-opacity hover:opacity-80"
@@ -166,7 +152,6 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 					<span className="text-xl tracking-tighter">Rep Deck</span>
 				</Link>
 
-				{/* ── Desktop nav ────────────────────────────────── */}
 				<NavigationMenu className="hidden lg:flex">
 					<NavigationMenuList className="fcy gap-0.5">
 						{navigationData.map((item) => {
@@ -194,7 +179,6 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 							);
 						})}
 
-						{/* Divider + account cluster */}
 						<NavigationMenuItem className="ml-2 fcy gap-3 pl-4">
 							<Separator orientation="vertical" className="h-6" />
 							<Link
@@ -212,7 +196,6 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 					</NavigationMenuList>
 				</NavigationMenu>
 
-				{/* ── Mobile trigger ────────────────────────────── */}
 				<div className="lg:hidden">
 					<Sheet open={open} onOpenChange={setOpen}>
 						<SheetTrigger
@@ -229,7 +212,6 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 							side="right"
 							className="flex w-[85vw] max-w-sm flex-col p-0"
 						>
-							{/* Header */}
 							<SheetHeader className="fr items-center justify-between p-5 border-b border-border/60">
 								<SheetTitle className="fcy gap-2 text-sm font-bold tracking-tight">
 									<div className="flex size-6 items-center justify-center">
@@ -239,7 +221,6 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 								</SheetTitle>
 							</SheetHeader>
 
-							{/* Scrollable body */}
 							<div className="fgrow overflow-y-auto px-3 py-4">
 								{groupedItems.map(({ group, items }) => (
 									<NavGroup key={group} label={group}>
@@ -264,7 +245,6 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 								))}
 							</div>
 
-							{/* Footer: account + sign out */}
 							<div className="border-t border-border/60 p-3 space-y-1">
 								<SheetClose
 									nativeButton={false}

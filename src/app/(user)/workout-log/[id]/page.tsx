@@ -1,5 +1,3 @@
-// app/(user)/workout-log/[id]/page.tsx
-
 import { notFound } from "next/navigation";
 import { getWorkoutSessionDetails } from "@/actions/workout";
 import { WorkoutDetail } from "@/workout-log";

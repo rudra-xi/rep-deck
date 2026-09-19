@@ -47,10 +47,8 @@ export default function Privacy() {
 	return (
 		<main className="w-full">
 			<div className="container max-w-4xl mx-auto fcol6">
-				{/* Back nav */}
 				<BackButton text="Back" />
 
-				{/* Page header */}
 				<div className="fcol3">
 					<Badge
 						variant="outline"
@@ -66,13 +64,12 @@ export default function Privacy() {
 					/>
 				</div>
 
-				{/* Meta + TOC card */}
 				<Card className="fcard-flat">
 					<CardsHeader
 						icon={ShieldCheckIcon}
 						title="Overview"
 						trailing={
-							<span className="ftext-2xs fmuted font-mono">
+							<span className="ftext-2xs fmuted">
 								Updated {LAST_UPDATED}
 							</span>
 						}
@@ -84,7 +81,6 @@ export default function Privacy() {
 							control it.
 						</p>
 
-						{/* TOC — hidden on mobile, useful on desktop */}
 						<div className="hidden sm:block">
 							<p className="ftext-2xs fmuted fupper font-bold tracking-widest mb-2">
 								On this page
@@ -96,7 +92,7 @@ export default function Privacy() {
 										href={`#${s.id}`}
 										className="ftext-xs2 fmuted hover:text-primary transition-colors fcy gap-2"
 									>
-										<span className="font-mono text-primary/60">
+										<span className="text-primary/60">
 											{s.num}.
 										</span>
 										<span className="truncate">
@@ -111,7 +107,6 @@ export default function Privacy() {
 
 				<Separator />
 
-				{/* ── Sections (unchanged) ─────────────────────────── */}
 				<section id="cover" className="fcol3 scroll-mt-24">
 					<SectionTitleCard title="What this policy covers" />
 					<Card className="fcard-flat">
@@ -328,7 +323,7 @@ export default function Privacy() {
 										</p>
 										<a
 											href={`mailto:${SUPPORT_EMAIL}`}
-											className="text-sm text-foreground hover:text-primary transition-colors font-mono truncate block"
+											className="text-sm text-foreground hover:text-primary transition-colors truncate block"
 										>
 											{SUPPORT_EMAIL}
 										</a>
@@ -346,7 +341,7 @@ export default function Privacy() {
 										<p className="ftext-2xs fmuted fupper font-bold tracking-widest">
 											Maintainer
 										</p>
-										<p className="text-sm text-foreground font-mono">
+										<p className="text-sm text-foreground">
 											rudra-xi
 										</p>
 									</div>

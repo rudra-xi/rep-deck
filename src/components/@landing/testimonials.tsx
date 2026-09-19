@@ -28,7 +28,6 @@ export const Testimonials = () => {
 	return (
 		<section className="w-full py-20 px-6 bg-background">
 			<div className="container max-w-6xl mx-auto space-y-12">
-				{/* Header */}
 				<div className="text-center space-y-4 max-w-2xl mx-auto">
 					<h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-wider">
 						Built for lifters.
@@ -38,7 +37,6 @@ export const Testimonials = () => {
 					</p>
 				</div>
 
-				{/* Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 					{TESTIMONIALS.map((t) => (
 						<div
@@ -50,7 +48,6 @@ export const Testimonials = () => {
 								weight="fill"
 							/>
 
-							{/* Stars */}
 							<div className="flex gap-0.5">
 								{Array.from({ length: 5 }).map((_, i) => (
 									<StarIcon

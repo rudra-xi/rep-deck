@@ -177,13 +177,13 @@ export function MuscleSizeTrend({
 												}}
 											/>
 											<span
-												className="ftext-3xs font-mono fupper font-bold"
+												className="ftext-3xs fupper font-bold"
 												style={{ color: cfg.color }}
 											>
 												{String(key).slice(0, 3)}
 											</span>
 											<span
-												className="ftext-3xs font-mono tabular-nums font-bold"
+												className="ftext-3xs  tabular-nums font-bold"
 												style={{ color: cfg.color }}
 											>
 												{value > 0 ? "+" : ""}

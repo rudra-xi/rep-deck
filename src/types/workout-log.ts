@@ -24,10 +24,6 @@ export type Day = {
 	exercises?: Exercise[];
 };
 
-/* ─────────────────────────────────────────────────────────────
-   Exercise performance — used by workout-log hooks and cards.
-   ───────────────────────────────────────────────────────────── */
-
 export interface ExercisePerformanceSummary {
 	lastBest: {
 		weight: number;
@@ -46,7 +42,6 @@ export interface ExercisePerformanceSummary {
 }
 
 export interface ExercisePerformanceWithPR extends ExercisePerformanceSummary {
-	/** Exercise name — used as the map key for O(1) lookup */
 	name: string;
 	isPR: boolean;
 }

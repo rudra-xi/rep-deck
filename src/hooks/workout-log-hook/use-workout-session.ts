@@ -1,4 +1,3 @@
-// hooks/useWorkoutSession.ts
 import { useState } from "react";
 import { toast } from "sonner";
 import { finishWorkoutSession } from "@/actions/workout";
@@ -28,7 +27,6 @@ export function useWorkoutSession({
 		setIsSubmitting(true);
 
 		try {
-			// Group set numbers per exercise sequentially
 			const setCounts: Record<string, number> = {};
 			const formattedSets = loggedSets.map((s) => {
 				setCounts[s.exerciseName] =

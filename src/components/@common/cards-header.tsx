@@ -6,13 +6,9 @@ import { CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface CardsHeaderProps {
-	/** Phosphor icon component */
 	icon: Icon;
-	/** Title text (rendered uppercase via `fupper`) */
 	title: string | ReactNode;
-	/** Optional trailing content: badges, buttons, actions */
 	trailing?: ReactNode;
-	/** Optional className overrides on the CardHeader */
 	className?: string;
 }
 

@@ -11,7 +11,6 @@ import { programTemplates } from "./programTemplates";
 import { users } from "./users";
 import { workoutSets } from "./workoutSets";
 
-// ---------- Workout Sessions ----------
 export const workoutSessions = pgTable(
 	"workout_sessions",
 	{

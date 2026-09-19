@@ -1,10 +1,8 @@
-// hooks/useMeasurementReminders.ts
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// Map short day names to full day names
 const FULL_DAY_NAMES: Record<string, string> = {
 	Mon: "Monday",
 	Tue: "Tuesday",
@@ -15,7 +13,6 @@ const FULL_DAY_NAMES: Record<string, string> = {
 	Sun: "Sunday",
 };
 
-// Map short day names to plural full day names
 const PLURAL_DAY_NAMES: Record<string, string> = {
 	Mon: "Mondays",
 	Tue: "Tuesdays",
@@ -72,7 +69,6 @@ export function useMeasurementReminders(
 			prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
 		);
 
-		// Show toast feedback with proper pluralization
 		if (isAdding) {
 			const pluralDay = getPluralDayName(day);
 			toast.success(`Added ${getFullDayName(day)} to tracking days`, {

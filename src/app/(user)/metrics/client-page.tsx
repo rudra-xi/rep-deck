@@ -46,7 +46,6 @@ export function MetricsClientPage() {
 				subTitle="Log body measurements and follow the trend"
 			/>
 
-			{/* Section 1: Quick Stats */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Quick Stats" />
 				<QuickStats stats={initialData?.stats} loading={loading} />
@@ -54,7 +53,6 @@ export function MetricsClientPage() {
 
 			<Separator />
 
-			{/* Section 2: Quick Add & Guide */}
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
 				<div className="space-y-3 w-full">
 					<SectionTitleCard title="New Measurement" />
@@ -71,7 +69,6 @@ export function MetricsClientPage() {
 
 			<Separator />
 
-			{/* Section 3: Tracking Health (Data Quality + Reminders) */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Tracking Health" />
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start w-full">
@@ -91,7 +88,6 @@ export function MetricsClientPage() {
 
 			<Separator />
 
-			{/* Section 4: Body Trends (Weight & Body Fat + Muscle Size) */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Body Trends" />
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">

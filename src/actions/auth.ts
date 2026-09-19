@@ -8,17 +8,14 @@ import { users } from "@/db/schema";
 import { toCapitalized } from "@/lib/to-capitalized";
 import { createClient } from "@/utils/supabase/server";
 
-// Helper to generate a default avatar seed
 function generateDefaultAvatarSeed(identifier: string) {
 	return `thumb-${identifier.slice(0, 8)}`;
 }
 
-// Sign in with Google
 export async function signInWithGoogle(redirectTo?: string) {
 	try {
 		const supabase = await createClient();
 
-		// Fallback order for header parsing in Next.js Server Actions
 		const headersList = await headers();
 		const host = headersList.get("host");
 		const protocol = headersList.get("x-forwarded-proto") || "http";
@@ -29,7 +26,6 @@ export async function signInWithGoogle(redirectTo?: string) {
 				? `${protocol}://${host}`
 				: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
 
-		// Construct the absolute callback endpoint
 		const callbackUrl = new URL("/auth/callback", origin);
 		if (redirectTo) {
 			callbackUrl.searchParams.set("next", redirectTo);
@@ -67,7 +63,6 @@ export async function signInWithGoogle(redirectTo?: string) {
 	}
 }
 
-// Sign out
 export async function signOut() {
 	try {
 		const supabase = await createClient();
@@ -87,7 +82,6 @@ export async function signOut() {
 	}
 }
 
-// Get current user
 export async function getCurrentUser() {
 	try {
 		const supabase = await createClient();
@@ -96,7 +90,6 @@ export async function getCurrentUser() {
 			return { supabaseUser: null, dbUser: null };
 		}
 
-		// Direct, secure server-side user fetch (avoids insecure getSession)
 		const {
 			data: { user },
 			error,
@@ -106,19 +99,16 @@ export async function getCurrentUser() {
 			return { supabaseUser: null, dbUser: null };
 		}
 
-		// Fetch database profile
 		const [dbUser] = await db
 			.select()
 			.from(users)
 			.where(eq(users.id, user.id));
 
-		// If user exists in Auth but not in DB yet, attempt sync
 		if (!dbUser) {
 			const syncedUser = await syncUserWithDatabase();
 			return { supabaseUser: user, dbUser: syncedUser };
 		}
 
-		// Backfill avatarSeed if user exists in DB but doesn't have an avatarSeed set
 		if (!dbUser.avatarSeed) {
 			const [updatedUser] = await db
 				.update(users)
@@ -138,7 +128,6 @@ export async function getCurrentUser() {
 	}
 }
 
-// Sync or create user in your database
 export async function syncUserWithDatabase() {
 	try {
 		const supabase = await createClient();
@@ -157,7 +146,6 @@ export async function syncUserWithDatabase() {
 			return null;
 		}
 
-		// Check if user exists in database
 		const [existingUser] = await db
 			.select()
 			.from(users)
@@ -169,7 +157,6 @@ export async function syncUserWithDatabase() {
 			"User";
 
 		if (existingUser) {
-			// Update user profile metadata and seed if missing
 			const [updatedUser] = await db
 				.update(users)
 				.set({
@@ -184,7 +171,6 @@ export async function syncUserWithDatabase() {
 			return updatedUser || existingUser;
 		}
 
-		// Insert new database record with generated avatar seed
 		const [newUser] = await db
 			.insert(users)
 			.values({

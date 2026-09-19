@@ -38,11 +38,9 @@ export default function PlansClientView({
 	);
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-	// Sync local state whenever server props (initialPlans) change via revalidation
 	useEffect(() => {
 		setPlans(initialPlans);
 
-		// Fallback for selected plan if current selection was deleted or if first plan was just created
 		const currentPlanExists = initialPlans.some(
 			(p) => p.id === selectedPlanId,
 		);
@@ -52,7 +50,6 @@ export default function PlansClientView({
 
 		setSelectedPlanId(targetPlanId);
 
-		// Fallback for selected day
 		const active = initialPlans.find((p) => p.id === targetPlanId);
 		const currentDayExists = active?.days.some(
 			(d) => d.id === selectedDayId,
@@ -69,7 +66,6 @@ export default function PlansClientView({
 		activePlan?.days[0];
 
 	const handleSetActivePlan = async (id: string) => {
-		// Optimistic UI update
 		setPlans((prev) =>
 			prev.map((plan) => ({
 				...plan,
@@ -77,15 +73,12 @@ export default function PlansClientView({
 			})),
 		);
 
-		// Persist to Database
 		const res = await setActivePlan(id);
 		if (!res?.success) {
-			// Revert state if backend call fails
 			setPlans(initialPlans);
 		}
 	};
 
-	// --- EMPTY STATE FOR NEW USERS ---
 	if (!activePlan) {
 		return (
 			<section className="space-y-6 py-12 text-center max-w-md mx-auto">
@@ -120,13 +113,11 @@ export default function PlansClientView({
 
 	return (
 		<section className="lg:space-y-6 space-y-8">
-			{/* Page Header */}
 			<PageTitleCard
 				title="Plans"
 				subTitle="Build, version, and switch between training programs"
 			/>
 
-			{/* Section 1: Plans Overview */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Your Plans" />
 				<PlansOverviewCards
@@ -145,9 +136,7 @@ export default function PlansClientView({
 
 			<Separator />
 
-			{/* Section 2 & 3 Grid: Plan Structure vs Day Exercises */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">
-				{/* Plan Details (1 Col) */}
 				<div className="lg:col-span-1 space-y-3 w-full">
 					<SectionTitleCard title="Plan Structure" />
 					<PlanDetailsCard
@@ -159,7 +148,6 @@ export default function PlansClientView({
 
 				<Separator className="block lg:hidden" />
 
-				{/* Day Exercises (2 Cols) */}
 				<div className="lg:col-span-2 space-y-3 w-full">
 					<SectionTitleCard title="Day Exercises" />
 					<DayExercisesList day={selectedDay} />
@@ -168,7 +156,6 @@ export default function PlansClientView({
 
 			<Separator />
 
-			{/* Section 4: Settings */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Plan Settings" />
 				<PlanSettingsCard plan={activePlan} />

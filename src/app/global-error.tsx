@@ -36,7 +36,7 @@ export default function RootGlobalError({
 						</p>
 
 						{error.digest && (
-							<p className="mt-3 text-[10px] font-mono text-muted-foreground/60 break-all">
+							<p className="mt-3 text-[10px]  text-muted-foreground/60 break-all">
 								Ref: {error.digest}
 							</p>
 						)}

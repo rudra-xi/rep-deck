@@ -1,6 +1,5 @@
 interface SectionTitleCardProps {
 	title: string;
-	/** Optional: suppress trailing "." */
 	noPeriod?: boolean;
 }
 

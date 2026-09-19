@@ -28,7 +28,6 @@ export function PreferencesSection({
 			<CardsHeader icon={SlidersHorizontalIcon} title="Preferences" />
 
 			<CardContent className="p-5 pt-1 fcol4">
-				{/* Weight Unit */}
 				<div className="p-3.5 border border-border/40 bg-background/50 rounded-none base-ease hover:border-primary/30 group">
 					<div className="ft gap-3">
 						<div className="fc border border-primary/20 bg-primary/5 p-2 text-primary rounded-md sh0 group-hover:bg-primary/10 group-hover:border-primary/40 base-ease">
@@ -50,7 +49,7 @@ export function PreferencesSection({
 					</div>
 
 					<div className="mt-3 fcb gap-3 p-2 border border-border/30 bg-muted/20">
-						<div className="flex items-baseline gap-2 font-mono tabular-nums min-w-0">
+						<div className="flex items-baseline gap-2  tabular-nums min-w-0">
 							<span
 								className={cn(
 									"text-sm font-bold base-ease",
@@ -83,7 +82,6 @@ export function PreferencesSection({
 					</div>
 				</div>
 
-				{/* Measurement Unit */}
 				<div className="p-3.5 border border-border/40 bg-background/50 rounded-none base-ease hover:border-primary/30 group">
 					<div className="ft gap-3">
 						<div className="fc border border-primary/20 bg-primary/5 p-2 text-primary rounded-md sh0 group-hover:bg-primary/10 group-hover:border-primary/40 base-ease">

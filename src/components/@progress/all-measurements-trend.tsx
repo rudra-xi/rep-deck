@@ -122,10 +122,6 @@ export function LowerBodyTrend() {
 	);
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Shared hooks & helpers
-// ─────────────────────────────────────────────────────────────────
-
 function useAllMeasurements() {
 	const [data, setData] = useState<MeasurementPoint[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -262,10 +258,6 @@ function useLatestGrowth(
 	}, [normalizedData, rawData, config]);
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Shared UI
-// ─────────────────────────────────────────────────────────────────
-
 interface MeasurementsChartCardProps {
 	icon: Icon;
 	title: string;
@@ -336,7 +328,7 @@ function MeasurementsChartCard({
 									{entry.label}
 								</span>
 
-								<span className="ftext-3xs font-mono tabular-nums font-bold text-foreground">
+								<span className="ftext-3xs  tabular-nums font-bold text-foreground">
 									{entry.rawLatest != null
 										? `${fmtMeasurement(entry.rawLatest)}${measurementUnit}`
 										: "—"}
@@ -345,7 +337,7 @@ function MeasurementsChartCard({
 								{entry.rawDelta != null && !isFlat && (
 									<span
 										className={cn(
-											"ftext-3xs font-mono tabular-nums font-bold fcy gap-0.5",
+											"ftext-3xs  tabular-nums font-bold fcy gap-0.5",
 											isUp && "text-primary",
 											isDown && "text-destructive",
 										)}
@@ -431,7 +423,7 @@ function MeasurementsChartCard({
 														{cfg?.label ?? name}
 													</span>
 												</div>
-												<span className="font-mono font-medium text-foreground tabular-nums">
+												<span className=" font-medium text-foreground tabular-nums">
 													{formatted}
 												</span>
 											</div>

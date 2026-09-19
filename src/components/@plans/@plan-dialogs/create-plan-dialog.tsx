@@ -59,7 +59,6 @@ export function CreatePlanDialog() {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			{/* Card styled directly as the DialogTrigger */}
 			<DialogTrigger
 				nativeButton={false}
 				render={
@@ -105,7 +104,6 @@ export function CreatePlanDialog() {
 				}
 			/>
 
-			{/* Modal Dialog Content */}
 			<DialogContent className="sm:max-w-[425px] rounded-none border-secondary/50 bg-card">
 				<form onSubmit={handleFormSubmit}>
 					<DialogHeader>
@@ -115,7 +113,6 @@ export function CreatePlanDialog() {
 					</DialogHeader>
 
 					<div className="py-4 space-y-4">
-						{/* Plan Name Input */}
 						<div className="space-y-1">
 							<span className="ftext-xs2 font-medium fupper fmuted">
 								Plan Name
@@ -130,7 +127,6 @@ export function CreatePlanDialog() {
 							/>
 						</div>
 
-						{/* Shadcn Calendar Date Picker */}
 						<div className="space-y-1 fcol">
 							<span className="ftext-xs2 font-medium fupper fmuted">
 								Start Date

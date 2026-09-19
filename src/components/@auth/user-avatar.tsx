@@ -45,7 +45,6 @@ export function UserAvatar({ className = "", size = "lg" }: UserAvatarProps) {
 		user.email ||
 		"User";
 
-	// next-themes returns undefined during SSR — fall back to default
 	const activeTheme = (theme as ThemeSlug) || DEFAULT_THEME;
 
 	const avatarUrl = getDiceBearAvatarUrl(

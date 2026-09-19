@@ -185,7 +185,6 @@ export const navigationData = [
 	},
 ] as const;
 
-/** Order in which groups render in the mobile drawer */
 export const navigationGroupOrder = [
 	"Do",
 	"Track",
@@ -215,7 +214,7 @@ export const aboutData = {
 	badge: "About Rep Deck",
 	title: "Built for lifters who want clarity.",
 	description:
-		"Rep Deck is a clean workout tracker made to help you log sessions, follow your training plans, and review progress without noise. It’s designed for people who care about the numbers that matter — strength, size, and consistency.",
+		"Rep Deck is a clean workout tracker made to help you log sessions, follow your training plans, and review progress without noise. It's designed for people who care about the numbers that matter — strength, size, and consistency.",
 	bullets: [
 		{
 			id: 1,
@@ -324,7 +323,6 @@ export const CHALLENGES: Challenge[] = [
 ];
 
 export const PRESET_EXERCISES = [
-	// Chest
 	{ name: "Bench Press", type: "Chest" },
 	{ name: "Incline Bench Press", type: "Chest" },
 	{ name: "Decline Bench Press", type: "Chest" },
@@ -335,7 +333,6 @@ export const PRESET_EXERCISES = [
 	{ name: "Pec Deck Flyes", type: "Chest" },
 	{ name: "Push-Ups", type: "Chest" },
 
-	// Shoulders
 	{ name: "Overhead Press", type: "Shoulders" },
 	{ name: "Dumbbell Shoulder Press", type: "Shoulders" },
 	{ name: "Arnold Press", type: "Shoulders" },
@@ -346,7 +343,6 @@ export const PRESET_EXERCISES = [
 	{ name: "Upright Row", type: "Shoulders" },
 	{ name: "Shrugs", type: "Shoulders" },
 
-	// Back
 	{ name: "Lat Pulldown", type: "Back" },
 	{ name: "Barbell Row", type: "Back" },
 	{ name: "Dumbbell Row", type: "Back" },
@@ -359,7 +355,6 @@ export const PRESET_EXERCISES = [
 	{ name: "Good Mornings", type: "Back" },
 	{ name: "Hyperextensions", type: "Back" },
 
-	// Legs
 	{ name: "Barbell Squat", type: "Legs" },
 	{ name: "Front Squat", type: "Legs" },
 	{ name: "Goblet Squat", type: "Legs" },
@@ -376,21 +371,18 @@ export const PRESET_EXERCISES = [
 	{ name: "Hip Thrusts", type: "Legs" },
 	{ name: "Glute Bridges", type: "Legs" },
 
-	// Arms - Biceps
 	{ name: "Barbell Curl", type: "Biceps" },
 	{ name: "Dumbbell Curl", type: "Biceps" },
 	{ name: "Hammer Curl", type: "Biceps" },
 	{ name: "Preacher Curl", type: "Biceps" },
 	{ name: "Concentration Curl", type: "Biceps" },
 
-	// Arms - Triceps
 	{ name: "Tricep Pushdown", type: "Triceps" },
 	{ name: "Tricep Extension", type: "Triceps" },
 	{ name: "Skull Crushers", type: "Triceps" },
 	{ name: "Close Grip Bench Press", type: "Triceps" },
 	{ name: "Overhead Tricep Extension", type: "Triceps" },
 
-	// Core
 	{ name: "Plank", type: "Core" },
 	{ name: "Side Plank", type: "Core" },
 	{ name: "Leg Raises", type: "Core" },
@@ -402,7 +394,6 @@ export const PRESET_EXERCISES = [
 	{ name: "Cable Crunches", type: "Core" },
 	{ name: "Ab Rollouts", type: "Core" },
 
-	// Full Body
 	{ name: "Clean and Jerk", type: "Full Body" },
 	{ name: "Snatch", type: "Full Body" },
 	{ name: "Power Clean", type: "Full Body" },

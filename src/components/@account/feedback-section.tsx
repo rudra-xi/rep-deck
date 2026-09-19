@@ -33,7 +33,6 @@ export function FeedbackSection() {
 			<CardsHeader icon={ChatTextIcon} title="Feedback" />
 
 			<CardContent className="p-5 pt-1 fcol3">
-				{/* Description */}
 				<div className="p-3 border border-border/40 bg-background/50 rounded-none">
 					<p className="text-xs font-bold text-foreground">
 						Something not working? Have an idea?
@@ -44,7 +43,6 @@ export function FeedbackSection() {
 					</p>
 				</div>
 
-				{/* Action Buttons */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 					<Button
 						nativeButton={false}

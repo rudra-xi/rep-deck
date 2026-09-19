@@ -36,7 +36,6 @@ interface QuickStatsProps {
 export function QuickStats({ stats, loading = false }: QuickStatsProps) {
 	const { statCards } = useQuickStats(stats);
 
-	// Loading State
 	if (loading) return <QuickStatsSkeleton count={4} />;
 
 	return (

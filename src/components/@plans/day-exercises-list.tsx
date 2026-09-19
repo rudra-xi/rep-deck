@@ -69,7 +69,6 @@ export function DayExercisesList({
 	if (loading)
 		return <DayExercisesListSkeleton rows={day?.exercises.length ?? 4} />;
 
-	// Empty state when no day is selected
 	if (!day) {
 		return (
 			<Card size="sm" className="fcard-flat h-full min-h-50 w-full">

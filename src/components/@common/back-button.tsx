@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 
 interface BackButtonProps {
 	text?: string;
-	/** Optional className overrides */
 	className?: string;
 }
 
