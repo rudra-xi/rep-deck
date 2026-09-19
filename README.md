@@ -114,7 +114,7 @@ rep-deck/
 ### Prerequisites
 
 - [![Node.js](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white)](#) — `v20.0.0` or higher
-- [![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)](#) or [![Bun](https://img.shields.io/badge/Bun-000?logo=bun&logoColor=fff)](#) — Package manager
+- [![Bun](https://img.shields.io/badge/Bun-000?logo=bun&logoColor=fff)](#) or [![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)](#) — Package manager
 - [![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](#) — Instance via [![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=fff)](#) or local installation
 
 ### Installation
@@ -175,12 +175,12 @@ rep-deck/
 
 | Script     | Command             | Description                                    |
 | :--------- | :------------------ | :--------------------------------------------- |
-| **Dev**    | `npm run dev`       | Launches Next.js dev server with hot reloading |
-| **Build**  | `npm run build`     | Compiles production bundle with React Compiler |
-| **Start**  | `npm run start`     | Runs production built server                   |
-| **Lint**   | `npm run lint`      | Runs Biome code checks                         |
-| **Format** | `npm run format`    | Auto-formats code via Biome                    |
-| **Fix**    | `npm run check:fix` | Performs automated lint fixes and formatting   |
+| **Dev**    | `bun run dev`       | Launches Next.js dev server with hot reloading |
+| **Build**  | `bun run build`     | Compiles production bundle with React Compiler |
+| **Start**  | `bun run start`     | Runs production built server                   |
+| **Lint**   | `bun run lint`      | Runs Biome code checks                         |
+| **Format** | `bun run format`    | Auto-formats code via Biome                    |
+| **Fix**    | `bun run check:fix` | Performs automated lint fixes and formatting   |
 
 ---
 
