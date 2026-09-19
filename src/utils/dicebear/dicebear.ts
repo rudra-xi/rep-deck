@@ -28,5 +28,5 @@ export function getDiceBearAvatarUrl(
 		animationVariant: "fastest",
 	});
 
-	return `https://api.dicebear.com/10.x/thumbs/svg?${params}`;
+	return `https://api.dicebear.com/10.x/thumbs/svg?${params}&flip=none,horizontal`;
 }
