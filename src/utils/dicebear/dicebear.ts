@@ -26,6 +26,7 @@ export function getDiceBearAvatarUrl(
 		shapeColor,
 		borderRadius: "0",
 		animationVariant: "fastest",
+		flip: "none,horizontal",
 	});
 
 	return `https://api.dicebear.com/10.x/thumbs/svg?${params}`;
