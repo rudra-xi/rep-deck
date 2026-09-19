@@ -95,7 +95,7 @@ rep-deck/
 2. **Estimated 1RM Engine**
    Strength PRs are evaluated dynamically per set using the standard Epley formula:
 
-        $$
+   $$
         \text{Estimated 1RM} = \text{Weight} \times \left( 1 + \frac{\text{Reps}}{30} \right)
         $$
 
