@@ -13,6 +13,7 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
+import type { PlanWithStructure } from "@/db/schema";
 import { CreatePlanDialog } from "@/plan-dialogs";
 import {
 	DayExercisesList,
@@ -20,7 +21,6 @@ import {
 	PlanSettingsCard,
 	PlansOverviewCards,
 } from "@/plans";
-import type { PlanWithStructure } from "@/db/schema";
 
 interface PlansClientViewProps {
 	initialPlans: PlanWithStructure[];

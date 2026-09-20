@@ -29,7 +29,6 @@ export const Features = () => {
 	return (
 		<section id="features" className="w-full py-20 px-6 bg-background/50">
 			<div className="container max-w-6xl mx-auto space-y-12">
-				{/* Section Header */}
 				<div className="text-center space-y-4 max-w-2xl mx-auto">
 					<h2 className="text-3xl sm:text-4xl font-extrabold tracking-wider uppercase">
 						Built for lifters.
@@ -40,7 +39,6 @@ export const Features = () => {
 					</p>
 				</div>
 
-				{/* Features Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{featuresData.map((item) => {
 						const IconComponent =
@@ -53,7 +51,6 @@ export const Features = () => {
 								key={item.id}
 								className="relative border border-border/80 bg-card/60 hover:border-primary/50 hover:-translate-y-2 base-ease"
 							>
-								{/* Accent glow */}
 								<div className="absolute top-0 right-0 size-24 bg-primary/5 blur-2xl pointer-events-none" />
 
 								<CardHeader className="space-y-4 relative">

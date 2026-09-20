@@ -30,10 +30,8 @@ export const programDayTemplates = pgTable(
 	}),
 );
 
-// ✅ Named type
 export type ProgramDayTemplate = typeof programDayTemplates.$inferSelect;
 
-// ✅ ONE relations block
 export const programDayTemplatesRelations = relations(
 	programDayTemplates,
 	({ one, many }) => ({

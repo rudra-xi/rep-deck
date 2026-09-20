@@ -80,7 +80,6 @@ export function SessionHistoryList({
 		);
 	}
 
-	// Last 6 sessions, oldest → newest for left-to-right reading
 	const recentBars = chartData.slice(0, 6).reverse();
 
 	return (
@@ -91,7 +90,6 @@ export function SessionHistoryList({
 			/>
 
 			<CardContent className="p-4 pt-1 fcol4">
-				{/* Horizontal bar chart — date inside bar, volume + unit outside right */}
 				<ChartContainer
 					config={sessionChartConfig}
 					className="h-[140px] w-full border-b border-border/30 pb-2"
@@ -102,7 +100,6 @@ export function SessionHistoryList({
 						layout="vertical"
 						margin={{ right: 60, top: 6, bottom: 6 }}
 					>
-						{/* Both axes hidden — labels live inside/outside the bars */}
 						<XAxis type="number" dataKey="volume" hide />
 						<YAxis
 							type="category"
@@ -120,7 +117,6 @@ export function SessionHistoryList({
 							animationDuration={800}
 							animationEasing="ease-out"
 						>
-							{/* Date label — inside the bar, left-aligned */}
 							<LabelList
 								dataKey="date"
 								position="insideLeft"
@@ -129,7 +125,6 @@ export function SessionHistoryList({
 								fontSize={10}
 							/>
 
-							{/* Volume value + unit — outside the bar, right-aligned */}
 							<LabelList
 								dataKey="volume"
 								position="right"
@@ -144,7 +139,6 @@ export function SessionHistoryList({
 					</BarChart>
 				</ChartContainer>
 
-				{/* Session list */}
 				<div className="divide-y divide-border/30">
 					{sessions.map((session) => {
 						const hasVolume =

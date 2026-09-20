@@ -73,7 +73,6 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 
 	const activeLiftOption = getActiveLiftOption(bestLift?.dropdownOptions);
 
-	// Dynamically format Best Lift value & trend
 	const formattedBestLiftValue = activeLiftOption?.rawWeightKg
 		? fmtWeightStr(activeLiftOption.rawWeightKg)
 		: (activeLiftOption?.targetValue ?? bestLift?.value ?? "—");
@@ -84,7 +83,6 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 			? `${activeLiftTrend.direction === "up" ? "+" : activeLiftTrend.direction === "down" ? "-" : ""}${fmtWeightStr(activeLiftTrend.rawDiffKg)}`
 			: activeLiftTrend?.value;
 
-	// Dynamically format Body Weight value & trend
 	const formattedBodyWeightValue = bodyWeight?.rawWeightKg
 		? fmtWeightStr(bodyWeight.rawWeightKg)
 		: (bodyWeight?.value ?? "—");
@@ -138,7 +136,6 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 		},
 	];
 
-	// Loading State
 	if (loading) return <KpiCardsSkeleton count={4} />;
 
 	return (
@@ -163,7 +160,6 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 
 						<CardContent>
 							<div className="flex items-baseline justify-between gap-2 min-h-8">
-								{/* remove the loading ? branch — already handled above */}
 								<div className="text-2xl font-bold tracking-tight text-foreground ">
 									{card.value}
 								</div>

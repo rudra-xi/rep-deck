@@ -7,9 +7,9 @@ import { addPlanDay, deletePlanDay } from "@/actions/plans";
 import { CardsHeader } from "@/common";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import type { PlanWithStructure } from "@/db/schema";
 import { CreateDayDialog, DeleteDayDialog } from "@/plan-dialogs";
 import { PlanDetailsCardSkeleton } from "@/skeletons";
-import type { PlanWithStructure } from "@/db/schema";
 
 interface PlanDetailsCardProps {
 	plan: PlanWithStructure;

@@ -140,7 +140,6 @@ export function ChallengeCard() {
 
 	return (
 		<div>
-			{/* Mobile */}
 			<div className="block md:hidden fcol2">
 				<div className="fcb px-1">
 					<span />
@@ -176,7 +175,6 @@ export function ChallengeCard() {
 				/>
 			</div>
 
-			{/* Desktop */}
 			<div className="hidden md:grid md:grid-cols-3 gap-3">
 				<ChallengeCardItem
 					variant="past"

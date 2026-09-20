@@ -20,9 +20,9 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import type { PlanWithStructure } from "@/db/schema";
 import { cn } from "@/lib/utils";
 import { PlanSettingsCardSkeleton } from "@/skeletons";
-import type { PlanWithStructure } from "@/db/schema";
 
 interface PlanSettingsCardProps {
 	plan: PlanWithStructure;
@@ -80,7 +80,6 @@ export function PlanSettingsCard({
 
 			<CardContent className="p-4 pt-1 fcol4">
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-					{/* Plan Name */}
 					<div className="space-y-1">
 						<span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground block">
 							Plan Name
@@ -92,7 +91,6 @@ export function PlanSettingsCard({
 						/>
 					</div>
 
-					{/* Version Number */}
 					<div className="space-y-1">
 						<span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground block">
 							Version Number
@@ -105,7 +103,6 @@ export function PlanSettingsCard({
 						/>
 					</div>
 
-					{/* Start Date */}
 					<div className="space-y-1">
 						<span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground block">
 							Start Date

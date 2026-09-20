@@ -16,13 +16,13 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import type { DayWithExercises } from "@/db/schema";
 import {
 	CreateExerciseDialog,
 	DeleteExerciseDialog,
 	EditExerciseDialog,
 } from "@/plan-dialogs";
 import { DayExercisesListSkeleton } from "@/skeletons";
-import type { DayWithExercises } from "@/db/schema";
 
 interface DayExercisesListProps {
 	day?: DayWithExercises;

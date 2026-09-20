@@ -82,7 +82,7 @@ function PlanCardItem({
 		});
 
 		try {
-			 onSetActivePlan(plan.id);
+			onSetActivePlan(plan.id);
 			toast.dismiss(loadingToast);
 			toast.success(`"${plan.name}" is now active!`, {
 				description:

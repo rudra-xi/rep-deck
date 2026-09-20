@@ -10,7 +10,7 @@ const client = postgres(process.env.DATABASE_URL, {
 	max: 10,
 	idle_timeout: 20,
 	connect_timeout: 10,
-	prepare: false, // Required for Supabase Transaction Pooler
+	prepare: false,
 });
 
 export const db = drizzle({ client });

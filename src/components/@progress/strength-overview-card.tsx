@@ -72,7 +72,6 @@ export function StrengthOverviewCard({
 		);
 	}
 
-	// Time range toggle bar
 	const rangeToggle = (
 		<div className="flex border border-border/50 p-0.5 bg-background">
 			{timeRanges.map((range) => (

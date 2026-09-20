@@ -33,10 +33,8 @@ export const programTemplates = pgTable(
 	}),
 );
 
-// ✅ Named type — placed between table and relations
 export type ProgramTemplate = typeof programTemplates.$inferSelect;
 
-// ✅ ONE relations block
 export const programTemplatesRelations = relations(
 	programTemplates,
 	({ one, many }) => ({

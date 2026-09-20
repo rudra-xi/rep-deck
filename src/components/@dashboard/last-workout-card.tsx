@@ -169,7 +169,6 @@ export function LastWorkoutCard({
 			/>
 
 			<CardContent className="p-4 pt-1 fcol4">
-				{/* Meta row */}
 				<div className="fwrap gap-3 fcb p-3 border border-border/40 bg-background/50 rounded-none">
 					<div className="fcy gap-1.5 text-xs fmuted">
 						<CalendarDotsIcon
@@ -194,7 +193,6 @@ export function LastWorkoutCard({
 					</div>
 				</div>
 
-				{/* Table */}
 				<div className="border border-border/40 overflow-hidden">
 					<Table>
 						<TableHeader>

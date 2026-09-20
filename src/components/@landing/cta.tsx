@@ -13,7 +13,6 @@ const BULLETS = [
 export const CTA = () => {
 	return (
 		<section className="w-full py-24 px-6 border-t border-border/40 relative overflow-hidden">
-			{/* Background glow */}
 			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[500px] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
 			<div className="container max-w-4xl mx-auto text-center space-y-6 relative">
@@ -32,7 +31,6 @@ export const CTA = () => {
 					/>
 				</div>
 
-				{/* Trust bullets */}
 				<div className="fwc gap-x-6 gap-y-2 pt-4">
 					{BULLETS.map((b) => (
 						<div

@@ -79,7 +79,6 @@ export function StrengthChart({
 		);
 	}
 
-	// Toggle buttons for lift selection
 	const liftToggles = (
 		<div className="fg1 fwrap w-full justify-end">
 			{Object.entries(chartConfig).map(([key, config]) => {
@@ -153,10 +152,8 @@ export function StrengthChart({
 			<CardsHeader icon={TrendUpIcon} title="Estimated ORM" />
 
 			<CardContent className="p-4 pt-1 fcol3">
-				{/* Toggle row — right-aligned above chart */}
 				{liftToggles}
 
-				{/* Chart */}
 				<ChartContainer
 					config={chartConfig}
 					className="h-55 lg:h-70 w-full"

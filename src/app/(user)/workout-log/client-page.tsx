@@ -14,13 +14,13 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
+import type { PlanWithStructure } from "@/db/schema";
 import {
 	useExerciseInputs,
 	useExercisePerformance,
 	useWorkoutDraft,
 } from "@/hooks";
 import type { LoggedSet } from "@/types";
-import type { PlanWithStructure } from "@/db/schema";
 import {
 	ActiveSessionSummary,
 	DaySelector,

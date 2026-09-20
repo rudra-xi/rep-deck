@@ -32,7 +32,6 @@ export function useRangedInput(
 						setValue(newValue);
 					}
 				} else {
-					// Just validate without auto-correction
 					if (num >= min && num <= max) {
 						setValue(newValue);
 					}

@@ -1,3 +1,4 @@
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/actions/auth";
 import {
@@ -15,10 +16,9 @@ import {
 export default async function Landing() {
 	try {
 		const { supabaseUser } = await getCurrentUser();
-		if (supabaseUser) {
-			redirect("/dashboard");
-		}
+		if (supabaseUser) redirect("/dashboard");
 	} catch (error) {
+		if (isRedirectError(error)) throw error;
 		console.error("Error checking authentication:", error);
 	}
 

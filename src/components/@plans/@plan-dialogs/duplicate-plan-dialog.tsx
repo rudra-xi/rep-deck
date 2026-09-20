@@ -16,8 +16,8 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useDialog } from "@/hooks";
 import type { PlanWithStructure } from "@/db/schema";
+import { useDialog } from "@/hooks";
 
 interface DuplicatePlanDialogProps {
 	plan: PlanWithStructure;
