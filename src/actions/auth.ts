@@ -1,6 +1,8 @@
 "use server";
 
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
@@ -31,8 +33,6 @@ export async function signInWithGoogle(redirectTo?: string) {
 			callbackUrl.searchParams.set("next", redirectTo);
 		}
 
-		console.log("OAuth Redirect Target:", callbackUrl.toString());
-
 		const { data, error } = await supabase.auth.signInWithOAuth({
 			provider: "google",
 			options: {
@@ -50,36 +50,24 @@ export async function signInWithGoogle(redirectTo?: string) {
 		}
 
 		if (data?.url) {
-			return redirect(data.url);
+			redirect(data.url);
 		}
 
 		return { error: "No redirect URL received" };
 	} catch (error) {
-		if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-			throw error;
-		}
+		if (isRedirectError(error)) throw error;
 		console.error("Sign in error:", error);
 		return { error: "Failed to sign in with Google" };
 	}
 }
 
 export async function signOut() {
-	try {
-		const supabase = await createClient();
-		await supabase.auth.signOut();
+	const supabase = await createClient();
+	await supabase.auth.signOut();
 
-		return {
-			success: true,
-			message: "Signed out successfully",
-		};
-	} catch (error) {
-		console.error("Sign out error:", error);
-		return {
-			success: false,
-			message:
-				error instanceof Error ? error.message : "Failed to sign out",
-		};
-	}
+	revalidatePath("/", "layout");
+
+	redirect("/");
 }
 
 export async function getCurrentUser() {
@@ -106,6 +94,7 @@ export async function getCurrentUser() {
 
 		if (!dbUser) {
 			const syncedUser = await syncUserWithDatabase();
+			if (!syncedUser) return { supabaseUser: null, dbUser: null };
 			return { supabaseUser: user, dbUser: syncedUser };
 		}
 

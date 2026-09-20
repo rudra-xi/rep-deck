@@ -13,7 +13,7 @@ import { toCapitalized } from "@/lib/to-capitalized";
 
 async function requireAuth() {
 	const { supabaseUser } = await getCurrentUser();
-	if (!supabaseUser) throw new Error("Unauthorized");
+	if (!supabaseUser) return null;
 	return supabaseUser;
 }
 
@@ -24,6 +24,7 @@ function purgePlansCache() {
 
 export async function getUserPlans() {
 	const user = await requireAuth();
+	if (!user) return [];
 
 	const plans = await db
 		.select()
@@ -62,6 +63,7 @@ export async function createPlan(data: {
 	startDate?: string | null;
 }) {
 	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
 
 	const [newPlan] = await db
 		.insert(programTemplates)
@@ -83,6 +85,7 @@ export async function updatePlan(
 	data: { name?: string; version?: number; startDate?: string | null },
 ) {
 	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
 
 	await db
 		.update(programTemplates)
@@ -106,6 +109,7 @@ export async function updatePlan(
 
 export async function setActivePlan(planId: string) {
 	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
 
 	await db
 		.update(programTemplates)
@@ -128,6 +132,7 @@ export async function setActivePlan(planId: string) {
 
 export async function deletePlan(planId: string) {
 	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
 
 	await db
 		.delete(programTemplates)
@@ -143,7 +148,8 @@ export async function deletePlan(planId: string) {
 }
 
 export async function addPlanDay(planId: string, label: string) {
-	await requireAuth();
+	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
 
 	const existingDays = await db
 		.select()
@@ -164,7 +170,8 @@ export async function addPlanDay(planId: string, label: string) {
 }
 
 export async function deletePlanDay(dayId: string) {
-	await requireAuth();
+	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
 
 	await db
 		.delete(programDayTemplates)
@@ -181,7 +188,8 @@ export async function addExerciseToDay(data: {
 	targetSets?: number;
 	targetRepRange?: string;
 }) {
-	await requireAuth();
+	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
 
 	const currentExercises = await db
 		.select()
@@ -213,7 +221,8 @@ export async function updateExercise(
 		targetRepRange?: string;
 	},
 ) {
-	await requireAuth();
+	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
 
 	await db
 		.update(exerciseTemplates)
@@ -234,7 +243,8 @@ export async function updateExercise(
 }
 
 export async function deleteExercise(exerciseId: string) {
-	await requireAuth();
+	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
 
 	await db
 		.delete(exerciseTemplates)
@@ -250,6 +260,7 @@ export async function duplicatePlan(
 ) {
 	try {
 		const user = await requireAuth();
+		if (!user) return { success: false, error: "Unauthorized" };
 
 		if (!planId) {
 			return { success: false, error: "Plan ID is required" };
