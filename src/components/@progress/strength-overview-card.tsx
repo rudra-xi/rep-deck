@@ -121,7 +121,7 @@ export function StrengthOverviewCard({
 							size="sm"
 							className="text-xs mt-1"
 							render={
-								<Link href="/workouts/new">Log Workout</Link>
+								<Link href="/workout-log">Log Workout</Link>
 							}
 						/>
 					</EmptyContent>

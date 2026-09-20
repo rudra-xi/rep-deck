@@ -137,7 +137,7 @@ export function StrengthChart({
 							size="sm"
 							className="text-xs mt-1 rounded-none"
 							render={
-								<Link href="/workouts/new">
+								<Link href="/workout-log">
 									Log Your First Workout
 								</Link>
 							}
