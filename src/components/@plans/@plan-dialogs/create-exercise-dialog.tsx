@@ -128,8 +128,14 @@ export function CreateExerciseDialog({
 							</span>
 							<Combobox
 								items={PRESET_EXERCISES}
-								itemToStringValue={(item) =>
-									typeof item === "string" ? item : item.name
+								itemToStringValue={(
+									item: PresetExercise | string | null,
+								) =>
+									item == null
+										? ""
+										: typeof item === "string"
+											? item
+											: item.name
 								}
 								onValueChange={handleSelectExercise}
 							>
@@ -148,7 +154,11 @@ export function CreateExerciseDialog({
 									</ComboboxEmpty>
 									<ComboboxList>
 										{(item: PresetExercise) => (
-											<ComboboxItem className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer fcb">
+											<ComboboxItem
+												key={item.name}
+												value={item}
+												className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer fcb"
+											>
 												<span>{item.name}</span>
 												<span className="ftext-2xs fmuted fupper">
 													{item.type}
@@ -233,7 +243,7 @@ export function CreateExerciseDialog({
 							type="button"
 							variant="outline"
 							onClick={() => setOpen(false)}
-							className="rounded-none h-8 text-xs border-border/50"
+							className="rounded-none h-8 text-xs border-border/50 mr-2"
 						>
 							Cancel
 						</Button>

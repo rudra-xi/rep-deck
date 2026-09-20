@@ -139,7 +139,7 @@ export function WeightBodyFatTrend({
 					<ComposedChart
 						accessibilityLayer
 						data={convertedData}
-						margin={{ left: 0, right: 0, top: 8, bottom: 4 }}
+						margin={{ left: 15, right: 13, top: 8, bottom: 4 }}
 					>
 						<defs>
 							<linearGradient

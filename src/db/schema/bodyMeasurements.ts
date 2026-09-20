@@ -77,3 +77,5 @@ export const bodyMeasurementsRelations = relations(
 		}),
 	}),
 );
+
+export type BodyMeasurement = typeof bodyMeasurements.$inferSelect;

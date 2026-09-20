@@ -168,7 +168,7 @@ export function CreatePlanDialog() {
 							type="button"
 							variant="outline"
 							onClick={() => setOpen(false)}
-							className="rounded-none h-8 text-xs border-border/50"
+							className="rounded-none h-8 text-xs border-border/50 mr-2"
 						>
 							Cancel
 						</Button>

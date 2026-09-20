@@ -20,7 +20,7 @@ import {
 	useWorkoutDraft,
 } from "@/hooks";
 import type { LoggedSet } from "@/types";
-import type { PlanWithStructure } from "@/types/plans";
+import type { PlanWithStructure } from "@/db/schema";
 import {
 	ActiveSessionSummary,
 	DaySelector,

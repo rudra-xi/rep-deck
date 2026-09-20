@@ -22,7 +22,7 @@ import {
 	EditExerciseDialog,
 } from "@/plan-dialogs";
 import { DayExercisesListSkeleton } from "@/skeletons";
-import type { DayWithExercises } from "@/types/plans";
+import type { DayWithExercises } from "@/db/schema";
 
 interface DayExercisesListProps {
 	day?: DayWithExercises;

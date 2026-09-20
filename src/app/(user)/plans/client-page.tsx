@@ -20,7 +20,7 @@ import {
 	PlanSettingsCard,
 	PlansOverviewCards,
 } from "@/plans";
-import type { PlanWithStructure } from "@/types/plans";
+import type { PlanWithStructure } from "@/db/schema";
 
 interface PlansClientViewProps {
 	initialPlans: PlanWithStructure[];
@@ -36,7 +36,6 @@ export default function PlansClientView({
 	const [selectedDayId, setSelectedDayId] = useState<string>(
 		initialPlans[0]?.days[0]?.id || "",
 	);
-	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
 	useEffect(() => {
 		setPlans(initialPlans);
@@ -101,10 +100,7 @@ export default function PlansClientView({
 						</EmptyDescription>
 					</EmptyHeader>
 					<EmptyContent className="w-full items-stretch">
-						<CreatePlanDialog
-							open={isCreateModalOpen}
-							onOpenChange={setIsCreateModalOpen}
-						/>
+						<CreatePlanDialog />
 					</EmptyContent>
 				</Empty>
 			</section>

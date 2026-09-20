@@ -145,8 +145,14 @@ export function EditExerciseDialog({
 							</span>
 							<Combobox
 								items={PRESET_EXERCISES}
-								itemToStringValue={(item) =>
-									typeof item === "string" ? item : item.name
+								itemToStringValue={(
+									item: PresetExercise | string | null,
+								) =>
+									item == null
+										? ""
+										: typeof item === "string"
+											? item
+											: item.name
 								}
 								onValueChange={handleSelectExercise}
 							>
@@ -253,7 +259,7 @@ export function EditExerciseDialog({
 							type="button"
 							variant="outline"
 							onClick={() => setOpen(false)}
-							className="rounded-none h-8 text-xs border-border/50"
+							className="rounded-none h-8 text-xs border-border/50 mr-2"
 						>
 							Cancel
 						</Button>

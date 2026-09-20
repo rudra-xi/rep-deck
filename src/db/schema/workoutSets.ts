@@ -55,3 +55,5 @@ export const workoutSetsRelations = relations(workoutSets, ({ one }) => ({
 		references: [exerciseTemplates.id],
 	}),
 }));
+
+export type WorkoutSet = typeof workoutSets.$inferSelect;

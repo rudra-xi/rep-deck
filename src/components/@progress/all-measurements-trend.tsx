@@ -135,7 +135,7 @@ function useAllMeasurements() {
 				const res = await getMetricsData("3M");
 				if (!isMounted) return;
 
-				const chartData = res?.chartData ?? res?.measurements ?? [];
+				const chartData = res?.chartData ?? [];
 				setData(chartData);
 			} catch (err) {
 				console.error("Failed to load measurements:", err);
@@ -365,7 +365,7 @@ function MeasurementsChartCard({
 					<LineChart
 						accessibilityLayer
 						data={data}
-						margin={{ left: -10, right: 0, top: 8, bottom: 4 }}
+						margin={{ left: 4, right: 0, top: 8, bottom: 4 }}
 					>
 						<CartesianGrid vertical={false} strokeDasharray="3 3" />
 

@@ -178,8 +178,9 @@ export async function getRecentSessions(limit = 5) {
 		return sessions.map((s) => {
 			const sets = allSets.filter((set) => set.sessionId === s.id);
 
-			const totalVol = sets.reduce(
-				(acc, curr) => acc + Number(curr.weight) * curr.reps,
+			const totalVol: number = sets.reduce<number>(
+				(acc, curr) =>
+					acc + Number(curr.weight ?? 0) * (curr.reps ?? 0),
 				0,
 			);
 
@@ -195,7 +196,7 @@ export async function getRecentSessions(limit = 5) {
 					s.dayIndex !== null ? `Day ${s.dayIndex + 1}` : "Custom",
 				keyLiftsSummary:
 					uniqueExercises.join(", ") || "No exercises logged",
-				totalVolumeKg: totalVol,
+				totalVolumeKg: Number(totalVol),
 			};
 		});
 	} catch (error) {

@@ -21,3 +21,5 @@ export const usersRelations = relations(users, ({ many }) => ({
 	sessions: many(workoutSessions),
 	measurements: many(bodyMeasurements),
 }));
+
+export type User = typeof users.$inferSelect;

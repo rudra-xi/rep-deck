@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { getUserPreferences, getUserProfile } from "@/actions/account";
 import { Navigation, UnitProvider } from "@/common";
 
+export const dynamic = "force-dynamic";
+
 export default async function UserLayout({
 	children,
 }: {

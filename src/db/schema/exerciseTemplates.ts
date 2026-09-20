@@ -32,6 +32,8 @@ export const exerciseTemplates = pgTable(
 	}),
 );
 
+export type ExerciseTemplate = typeof exerciseTemplates.$inferSelect;
+
 export const exerciseTemplatesRelations = relations(
 	exerciseTemplates,
 	({ one }) => ({

@@ -33,6 +33,7 @@ interface MuscleSizeTrendProps {
 		forearms: number | null;
 		thighs: number | null;
 		chest: number | null;
+		waist: number | null; 
 	}>;
 	loading?: boolean;
 }

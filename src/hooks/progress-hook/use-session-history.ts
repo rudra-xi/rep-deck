@@ -37,15 +37,7 @@ export function useSessionHistory(
 	const chartData = useMemo(() => {
 		return sessions.map((s) => {
 			const rawKg =
-				typeof s.totalVolumeKg === "number"
-					? s.totalVolumeKg
-					: typeof s.totalVolume === "number"
-						? s.totalVolume
-						: Number(
-								s.totalVolume
-									?.toString()
-									.replace(/[^0-9.]/g, ""),
-							) || 0;
+				typeof s.totalVolumeKg === "number" ? s.totalVolumeKg : 0;
 
 			return {
 				...s,

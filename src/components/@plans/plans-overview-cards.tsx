@@ -13,13 +13,13 @@ import { deletePlan } from "@/actions/plans";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { PlanWithStructure } from "@/db/schema";
 import {
 	CreatePlanDialog,
 	DeletePlanDialog,
 	DuplicatePlanDialog,
 } from "@/plan-dialogs";
 import { PlansOverviewSkeleton } from "@/skeletons";
-import type { PlanWithStructure } from "@/types/plans";
 
 interface PlansOverviewCardsProps {
 	plans: PlanWithStructure[];
@@ -43,11 +43,9 @@ function PlanCardItem({
 	onSetActivePlan,
 }: PlanCardItemProps) {
 	const router = useRouter();
-	const [isDeleting, setIsDeleting] = useState(false);
 	const [isActivating, setIsActivating] = useState(false);
 
 	const handleDelete = async () => {
-		setIsDeleting(true);
 		try {
 			await deletePlan(plan.id);
 			toast.success(`Plan "${plan.name}" deleted`, {
@@ -63,8 +61,6 @@ function PlanCardItem({
 						: "An unexpected error occurred.",
 				duration: 4000,
 			});
-		} finally {
-			setIsDeleting(false);
 		}
 	};
 
@@ -86,7 +82,7 @@ function PlanCardItem({
 		});
 
 		try {
-			await onSetActivePlan(plan.id);
+			 onSetActivePlan(plan.id);
 			toast.dismiss(loadingToast);
 			toast.success(`"${plan.name}" is now active!`, {
 				description:
@@ -186,7 +182,6 @@ function PlanCardItem({
 					<DeletePlanDialog
 						planName={plan.name}
 						onDelete={handleDelete}
-						isDeleting={isDeleting}
 					/>
 				</div>
 			</CardContent>

@@ -97,8 +97,14 @@ export function QuickAddExtra({
 					<div className="space-y-1">
 						<Combobox
 							items={PRESET_EXERCISES}
-							itemToStringValue={(item) =>
-								typeof item === "string" ? item : item.name
+							itemToStringValue={(
+								item: PresetExercise | string | null,
+							) =>
+								item == null
+									? ""
+									: typeof item === "string"
+										? item
+										: item.name
 							}
 							onValueChange={handleSelectExercise}
 						>

@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { CreateDayDialog, DeleteDayDialog } from "@/plan-dialogs";
 import { PlanDetailsCardSkeleton } from "@/skeletons";
-import type { PlanWithStructure } from "@/types/plans";
+import type { PlanWithStructure } from "@/db/schema";
 
 interface PlanDetailsCardProps {
 	plan: PlanWithStructure;

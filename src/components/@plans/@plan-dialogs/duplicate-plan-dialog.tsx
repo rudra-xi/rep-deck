@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useDialog } from "@/hooks";
-import type { PlanWithStructure } from "@/types/plans";
+import type { PlanWithStructure } from "@/db/schema";
 
 interface DuplicatePlanDialogProps {
 	plan: PlanWithStructure;
@@ -154,13 +154,13 @@ export function DuplicatePlanDialog({
 						/>
 					</div>
 
-					<DialogFooter className="pt-2 gap-2">
+					<DialogFooter className="gap-2">
 						<Button
 							type="button"
 							variant="outline"
 							size="sm"
 							onClick={() => setOpen(false)}
-							className="rounded-none h-8 text-xs"
+							className="rounded-none h-8 text-xs mr-2"
 						>
 							Cancel
 						</Button>
@@ -170,8 +170,8 @@ export function DuplicatePlanDialog({
 							disabled={loading || !name.trim()}
 							className="rounded-none h-8 text-xs gap-1.5 font-semibold"
 						>
-							<CopyIcon className="size-3.5" weight="bold" />
 							{loading ? "Duplicating..." : "Duplicate"}
+							<CopyIcon className="size-3.5" weight="bold" />
 						</Button>
 					</DialogFooter>
 				</form>

@@ -66,7 +66,7 @@ export function DeleteExerciseDialog({
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel className="rounded-none h-8 text-xs">
+					<AlertDialogCancel className="rounded-none h-8 text-xs mr-2">
 						Cancel
 					</AlertDialogCancel>
 					<AlertDialogAction

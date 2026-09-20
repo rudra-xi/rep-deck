@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { PlanSettingsCardSkeleton } from "@/skeletons";
-import type { PlanWithStructure } from "@/types/plans";
+import type { PlanWithStructure } from "@/db/schema";
 
 interface PlanSettingsCardProps {
 	plan: PlanWithStructure;

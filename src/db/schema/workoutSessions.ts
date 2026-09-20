@@ -51,3 +51,5 @@ export const workoutSessionsRelations = relations(
 		sets: many(workoutSets),
 	}),
 );
+
+export type WorkoutSession = typeof workoutSessions.$inferSelect;

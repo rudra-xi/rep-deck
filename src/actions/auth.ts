@@ -146,15 +146,18 @@ export async function syncUserWithDatabase() {
 			return null;
 		}
 
+		if (!user.email) {
+			console.error("User has no email — cannot sync to database");
+			return null;
+		}
+
 		const [existingUser] = await db
 			.select()
 			.from(users)
 			.where(eq(users.id, user.id));
 
 		const rawName =
-			user.user_metadata?.full_name ||
-			user.email?.split("@")[0] ||
-			"User";
+			user.user_metadata?.full_name || user.email.split("@")[0] || "User";
 
 		if (existingUser) {
 			const [updatedUser] = await db

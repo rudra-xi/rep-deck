@@ -136,7 +136,7 @@ export function SessionHistoryList({
 								offset={8}
 								className="fill-foreground"
 								fontSize={10}
-								formatter={(value: number) =>
+								formatter={(value) =>
 									`${Number(value).toLocaleString()} ${weightUnit}`
 								}
 							/>
