@@ -53,7 +53,8 @@ export async function updateProfile(data: { name: string }) {
 	} catch (err) {
 		return {
 			success: false,
-			error: err.message || "Failed to update profile",
+			error:
+				err instanceof Error ? err.message : "Failed to update profile",
 		};
 	}
 }
@@ -88,7 +89,10 @@ export async function updatePreferences(preferences: UserPreferences) {
 	} catch (err) {
 		return {
 			success: false,
-			error: err.message || "Failed to save preferences",
+			error:
+				err instanceof Error
+					? err.message
+					: "Failed to save preferences",
 		};
 	}
 }
