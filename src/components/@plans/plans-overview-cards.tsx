@@ -25,7 +25,7 @@ interface PlansOverviewCardsProps {
 	plans: PlanWithStructure[];
 	selectedPlanId: string;
 	onSelectPlan: (id: string) => void;
-	onSetActivePlan: (id: string) => void;
+	onSetActivePlan: (id: string) => Promise<void>;
 	loading?: boolean;
 }
 
@@ -33,7 +33,7 @@ interface PlanCardItemProps {
 	plan: PlanWithStructure;
 	isSelected: boolean;
 	onSelectPlan: (id: string) => void;
-	onSetActivePlan: (id: string) => void;
+	onSetActivePlan: (id: string) => Promise<void>;
 }
 
 function PlanCardItem({
@@ -79,10 +79,11 @@ function PlanCardItem({
 		setIsActivating(true);
 		const loadingToast = toast.loading(`Activating "${plan.name}"...`, {
 			description: "Please wait while we update your active plan.",
+			duration: 2500,
 		});
 
 		try {
-			onSetActivePlan(plan.id);
+			await onSetActivePlan(plan.id);
 			toast.dismiss(loadingToast);
 			toast.success(`"${plan.name}" is now active!`, {
 				description:
