@@ -148,7 +148,7 @@ export function CreateExerciseDialog({
 									className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50 w-full"
 									autoFocus
 								/>
-								<ComboboxContent className="rounded-none border-secondary/50 bg-card max-h-48 overflow-y-auto">
+								<ComboboxContent className="rounded-none border-secondary/50 bg-card overflow-y-auto">
 									<ComboboxEmpty className="text-xs text-muted-foreground p-2">
 										No matching exercise found.
 									</ComboboxEmpty>
@@ -157,12 +157,14 @@ export function CreateExerciseDialog({
 											<ComboboxItem
 												key={item.name}
 												value={item}
-												className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer fcb"
+												className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer"
 											>
-												<span>{item.name}</span>
-												<span className="ftext-2xs fmuted fupper">
-													{item.type}
-												</span>
+												<div className="flex items-center justify-between gap-2 w-full">
+													<span>{item.name}</span>
+													<span className="ftext-2xs fmuted fupper">
+														{item.type}
+													</span>
+												</div>
 											</ComboboxItem>
 										)}
 									</ComboboxList>
@@ -210,8 +212,11 @@ export function CreateExerciseDialog({
 								<Combobox
 									items={PRESET_REP_RANGES}
 									value={targetRepRange.value.toString()}
-									onValueChange={(val) =>
-										targetRepRange.setValue(val || "")
+									onValueChange={(val: string | null) =>
+										targetRepRange.setValue(val ?? "")
+									}
+									itemToStringValue={(item: string | null) =>
+										item ?? ""
 									}
 								>
 									<ComboboxInput
@@ -220,9 +225,9 @@ export function CreateExerciseDialog({
 										onChange={targetRepRange.onChange}
 										className="rounded-none h-8 text-xs border-border/50 bg-background/50"
 									/>
-									<ComboboxContent className="rounded-none border-secondary/50 bg-card max-h-36 overflow-y-auto">
+									<ComboboxContent className="rounded-none border-secondary/50 bg-card overflow-y-auto">
 										<ComboboxList>
-											{(repRange) => (
+											{(repRange: string) => (
 												<ComboboxItem
 													key={repRange}
 													value={repRange}
