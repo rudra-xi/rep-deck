@@ -458,7 +458,7 @@ function MeasurementsChartCard({
 
 function MeasurementsEmptyState({ subtitle }: { subtitle: string }) {
 	return (
-		<Card size="sm" className="fcard-flat min-h-[240px]">
+		<Card size="sm" className="fcard-flat min-h-60 card-ease">
 			<Empty className="p-6 text-center w-full">
 				<EmptyHeader>
 					<EmptyMedia className="ficon-box-lg">

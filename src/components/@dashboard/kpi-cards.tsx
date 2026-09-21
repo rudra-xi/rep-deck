@@ -147,7 +147,7 @@ export function KpiCards({ data, loading = false }: KpiCardsProps) {
 					<Card
 						key={card.id}
 						size="sm"
-						className="relative fcard-flat base-ease"
+						className="relative fcard-flat base-ease card-ease"
 					>
 						<CardHeader className="flex fr items-center justify-between space-y-0 pb-2">
 							<CardTitle className="fcard-label">

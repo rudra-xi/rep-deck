@@ -79,7 +79,7 @@ export function KpiCardsSkeleton({ count = 4 }: { count?: number }) {
 
 export function WorkoutTableSkeleton({ rows = 4 }: { rows?: number }) {
 	return (
-		<Card size="sm" className="fcard-flat w-full">
+		<Card size="sm" className="fcard-flat w-full card-ease">
 			<CardsHeaderSkeleton
 				titleWidth="w-24"
 				trailing={
@@ -130,7 +130,7 @@ export function WorkoutTableSkeleton({ rows = 4 }: { rows?: number }) {
 
 export function DataQualityCardSkeleton() {
 	return (
-		<Card size="sm" className="fcard-flat">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeaderSkeleton titleWidth="w-28" />
 			<CardContent className="p-4 pt-1 fcol2_5">
 				<div className="grid grid-cols-2 gap-2">
@@ -257,7 +257,7 @@ export function PlanDetailsCardSkeleton({
 	dayCount?: number;
 }) {
 	return (
-		<Card size="sm" className="fcard-flat">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeaderSkeleton
 				titleWidth="w-40"
 				trailing={<Skeleton className="h-7 w-20 rounded-none" />}
@@ -288,7 +288,7 @@ export function PlanDetailsCardSkeleton({
 
 export function PlanSettingsCardSkeleton() {
 	return (
-		<Card size="sm" className="fcard-flat">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeaderSkeleton titleWidth="w-48" />
 			<CardContent className="p-4 pt-1 fcol4">
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -309,7 +309,7 @@ export function PlanSettingsCardSkeleton() {
 
 export function DayExercisesListSkeleton({ rows = 4 }: { rows?: number }) {
 	return (
-		<Card size="sm" className="fcard-flat">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeaderSkeleton
 				titleWidth="w-36"
 				trailing={<Skeleton className="h-7 w-28 rounded-none" />}
@@ -379,7 +379,7 @@ export function ChartCardSkeleton({
 	titleWidth?: string;
 }) {
 	return (
-		<Card size="sm" className="relative fcard-flat">
+		<Card size="sm" className="relative fcard-flat card-ease">
 			<CardsHeaderSkeleton
 				titleWidth={titleWidth}
 				trailing={
@@ -405,7 +405,7 @@ export function ChartCardSkeleton({
 
 export function SessionHistoryListSkeleton({ rows = 4 }: { rows?: number }) {
 	return (
-		<Card size="sm" className="fcard-flat">
+		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeaderSkeleton titleWidth="w-40" />
 			<CardContent className="p-4 pt-1 fcol4">
 				<Skeleton className="h-[140px] w-full rounded-none border-b border-border/30" />
@@ -430,7 +430,7 @@ export function SessionHistoryListSkeleton({ rows = 4 }: { rows?: number }) {
 
 export function TrainingFrequencyCardSkeleton() {
 	return (
-		<Card size="sm" className="fcard-flat overflow-hidden">
+		<Card size="sm" className="fcard-flat overflow-hidden card-ease">
 			<CardsHeaderSkeleton titleWidth="w-40" />
 			<CardContent className="p-4 pt-1 fcol3">
 				<div className="grid grid-cols-2 gap-2">

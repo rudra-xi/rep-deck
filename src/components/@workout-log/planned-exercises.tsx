@@ -116,7 +116,7 @@ export function PlannedExercises({
 
 	if (!exercises || exercises.length === 0) {
 		return (
-			<Card size="sm" className="fcard-flat min-h-50 w-full">
+			<Card size="sm" className="fcard-flat min-h-50 w-full card-ease">
 				<Empty className="p-6 sm:p-8 text-center w-full">
 					<EmptyHeader>
 						<EmptyMedia className="ficon-box-lg">

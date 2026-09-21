@@ -47,7 +47,7 @@ export function SessionHistoryList({
 
 	if (!hasData) {
 		return (
-			<Card size="sm" className="fcard-flat min-h-[220px]">
+			<Card size="sm" className="fcard-flat min-h-55 card-ease">
 				<Empty className="p-6 text-center w-full">
 					<EmptyHeader>
 						<EmptyMedia className="ficon-box-lg">

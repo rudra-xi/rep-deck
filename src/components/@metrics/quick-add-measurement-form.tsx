@@ -83,7 +83,7 @@ export function QuickAddMeasurementForm() {
 							<Input
 								type="number"
 								step="0.1"
-								name="weight"
+								name="weightKg"
 								placeholder="e.g. 74.2"
 								value={formData.weightKg}
 								onChange={handleChange}

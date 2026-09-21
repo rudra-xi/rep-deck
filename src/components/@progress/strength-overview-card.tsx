@@ -90,7 +90,7 @@ export function StrengthOverviewCard({
 
 	if (!hasData && !isFetching) {
 		return (
-			<Card size="sm" className="fcard-flat min-h-[280px]">
+			<Card size="sm" className="fcard-flat min-h-70 card-ease">
 				<CardsHeader
 					icon={GaugeIcon}
 					title="Big 4 Strength Trend"
