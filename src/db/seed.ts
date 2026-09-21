@@ -11,7 +11,15 @@ import {
 	workoutSets,
 } from "./index";
 
-const USER_ID = "2e2a4a9f-8fe9-470e-8b21-c58e67e8d8ea";
+const USER_ID = process.env.SEED_USER_ID;
+
+if (!USER_ID) {
+	console.error("❌ SEED_USER_ID is not set. Add it to .env");
+	process.exit(1);
+}
+
+// Narrowed from here on
+const SEED_USER_ID: string = USER_ID;
 
 const daysAgo = (n: number, hour = 18, minute = 0) => {
 	const d = new Date();
@@ -26,10 +34,10 @@ function rand(seed: number): number {
 }
 
 async function seedUser() {
-	await db.delete(users).where(eq(users.id, USER_ID));
+	await db.delete(users).where(eq(users.id, SEED_USER_ID));
 
 	await db.insert(users).values({
-		id: USER_ID,
+		id: SEED_USER_ID,
 		email: "rudra@repdeck.app",
 		name: "rudra",
 		avatarSeed: "thumb-2e2a4a9t",
@@ -40,12 +48,12 @@ async function seedUser() {
 async function seedPrograms() {
 	await db
 		.delete(programTemplates)
-		.where(eq(programTemplates.userId, USER_ID));
+		.where(eq(programTemplates.userId, SEED_USER_ID));
 
 	const [v1] = await db
 		.insert(programTemplates)
 		.values({
-			userId: USER_ID,
+			userId: SEED_USER_ID,
 			name: "Hypertrophy Foundation",
 			version: 1,
 			startDate: daysAgo(365),
@@ -193,7 +201,7 @@ async function seedPrograms() {
 	const [v2] = await db
 		.insert(programTemplates)
 		.values({
-			userId: USER_ID,
+			userId: SEED_USER_ID,
 			name: "Strength Block",
 			version: 2,
 			startDate: daysAgo(240),
@@ -345,7 +353,7 @@ async function seedPrograms() {
 	const [v3] = await db
 		.insert(programTemplates)
 		.values({
-			userId: USER_ID,
+			userId: SEED_USER_ID,
 			name: "Power & Peak",
 			version: 3,
 			startDate: daysAgo(120),
@@ -575,7 +583,9 @@ function targetWeight(
 }
 
 async function seedWorkouts(programIds: { v3: any }) {
-	await db.delete(workoutSessions).where(eq(workoutSessions.userId, USER_ID));
+	await db
+		.delete(workoutSessions)
+		.where(eq(workoutSessions.userId, SEED_USER_ID));
 
 	const TOTAL_SESSIONS = 100;
 	const START_DAYS_AGO = 182;
@@ -604,7 +614,7 @@ async function seedWorkouts(programIds: { v3: any }) {
 		const [session] = await db
 			.insert(workoutSessions)
 			.values({
-				userId: USER_ID,
+				userId: SEED_USER_ID,
 				programId: programIds.v3.id,
 				dayIndex: cycle.dayIndex,
 				date: sessionDate,
@@ -751,7 +761,7 @@ function generateSetsForDay(
 async function seedMeasurements() {
 	await db
 		.delete(bodyMeasurements)
-		.where(eq(bodyMeasurements.userId, USER_ID));
+		.where(eq(bodyMeasurements.userId, SEED_USER_ID));
 
 	const entries: any[] = [];
 	const WEEKS = 26;
@@ -772,7 +782,7 @@ async function seedMeasurements() {
 		const noise = () => (rand(w * 7 + 11) - 0.5) * 0.2;
 
 		entries.push({
-			userId: USER_ID,
+			userId: SEED_USER_ID,
 			date: daysAgo(daysBack, 7 + (w % 2), (w * 17) % 40),
 			weightKg: Number(weightKg.toFixed(1)),
 			bodyFatPercent: Number(bodyFatPercent.toFixed(1)),
