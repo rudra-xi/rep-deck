@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { Footer, Navigation } from "@/common";
 import { Toaster } from "@/components/ui/sonner";
 import { useToastPosition } from "@/hooks";
+import { ProgressProvider } from "@bprogress/next/app";
 
 export default function LayoutProvider({ children }: { children: ReactNode }) {
 	const pathname = usePathname();
@@ -34,13 +35,24 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
 			]}
 			disableTransitionOnChange
 		>
-			{show && <Navigation />}
-			{children}
-			<Toaster
-				position={toastPosition}
-				mobileOffset={{ bottom: "5rem" }}
-			/>
-			{show && <Footer />}
+			<ProgressProvider
+				height="1px"
+				color="var(--primary)"
+				options={{
+					showSpinner: false,
+					minimum: 0.1,
+					trickleSpeed: 200,
+				}}
+				shallowRouting
+			>
+				{show && <Navigation />}
+				{children}
+				<Toaster
+					position={toastPosition}
+					mobileOffset={{ bottom: "5rem" }}
+				/>
+				{show && <Footer />}
+			</ProgressProvider>
 		</ThemeProvider>
 	);
 }
