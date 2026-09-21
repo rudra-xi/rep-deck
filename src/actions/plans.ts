@@ -1,6 +1,6 @@
 "use server";
 
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/actions/auth";
 import { db } from "@/db";
@@ -30,7 +30,7 @@ export async function getUserPlans() {
 		.select()
 		.from(programTemplates)
 		.where(eq(programTemplates.userId, user.id))
-		.orderBy(desc(programTemplates.createdAt));
+		.orderBy(asc(programTemplates.startDate));
 
 	return Promise.all(
 		plans.map(async (plan) => {
