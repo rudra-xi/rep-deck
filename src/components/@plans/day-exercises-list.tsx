@@ -71,7 +71,10 @@ export function DayExercisesList({
 
 	if (!day) {
 		return (
-			<Card size="sm" className="fcard-flat h-full min-h-50 w-full card-ease">
+			<Card
+				size="sm"
+				className="fcard-flat h-full min-h-50 w-full card-ease"
+			>
 				<Empty className="p-8 text-center w-full">
 					<EmptyHeader>
 						<EmptyMedia className="ficon-box-lg">
