@@ -29,7 +29,7 @@ export async function proxy(request: NextRequest) {
 
 	const path = request.nextUrl.pathname;
 
-	const publicRoutes = ["/", "/auth/callback"];
+	const publicRoutes = ["/", "/auth/callback", "/terms", "/privacy"];
 	const isPublicRoute = publicRoutes.some(
 		(route) => path === route || path.startsWith(`${route}/`),
 	);
