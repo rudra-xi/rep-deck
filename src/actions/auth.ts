@@ -120,25 +120,13 @@ export async function getCurrentUser() {
 export async function syncUserWithDatabase() {
 	try {
 		const supabase = await createClient();
-
-		if (!supabase || !supabase.auth) {
-			console.error("Supabase client or auth is undefined");
-			return null;
-		}
+		if (!supabase || !supabase.auth) return null;
 
 		const {
 			data: { user },
 		} = await supabase.auth.getUser();
-
-		if (!user) {
-			console.error("No authenticated user found to sync");
-			return null;
-		}
-
-		if (!user.email) {
-			console.error("User has no email — cannot sync to database");
-			return null;
-		}
+		if (!user) return null;
+		if (!user.email) return null;
 
 		const [existingUser] = await db
 			.select()
@@ -149,14 +137,23 @@ export async function syncUserWithDatabase() {
 			user.user_metadata?.full_name || user.email.split("@")[0] || "User";
 
 		if (existingUser) {
+			const updates: Record<string, unknown> = {};
+
+			if (!existingUser.name) {
+				updates.name = toCapitalized(rawName);
+			}
+
+			if (!existingUser.avatarSeed) {
+				updates.avatarSeed = generateDefaultAvatarSeed(user.id);
+			}
+
+			if (Object.keys(updates).length === 0) {
+				return existingUser;
+			}
+
 			const [updatedUser] = await db
 				.update(users)
-				.set({
-					name: toCapitalized(rawName),
-					avatarSeed:
-						existingUser.avatarSeed ||
-						generateDefaultAvatarSeed(user.id),
-				})
+				.set(updates)
 				.where(eq(users.id, existingUser.id))
 				.returning();
 
