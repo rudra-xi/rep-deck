@@ -7,7 +7,7 @@ import {
 } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { deletePlan } from "@/actions/plans";
 import { Badge } from "@/components/ui/badge";
@@ -156,10 +156,10 @@ function PlanCardItem({
 
 				<div className="fcb gap-2 border-t border-border/40 pt-2.5">
 					<span
-						className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-none border base-ease ${
+						className={`text-[10px] border font-bold uppercase px-2 py-0.5 rounded-none base-ease ${
 							plan.active
-								? "bg-primary/10 text-primary-foreground border-primary"
-								: "bg-muted text-muted-foreground border-border/50"
+								? "bg-primary/10 text-primary border-primary"
+								: "text-muted-foreground border-border"
 						}`}
 					>
 						{plan.active ? "Active" : "Archived"}
@@ -168,7 +168,7 @@ function PlanCardItem({
 					{!plan.active && (
 						<Button
 							size="sm"
-							variant="ghost"
+							variant="outline"
 							onClick={handleSetActive}
 							disabled={isActivating}
 							className="h-6 px-2 text-[10px] rounded-none hover:bg-primary/10 hover:text-primary disabled:opacity-50"
@@ -197,14 +197,12 @@ export function PlansOverviewCards({
 	onSetActivePlan,
 	loading = false,
 }: PlansOverviewCardsProps) {
-	const _activeIndex = useMemo(() => {
-		const idx = plans.findIndex((p) => p.active);
-		return idx !== -1 ? idx : 0;
-	}, [plans]);
+	const [mobileIndex, setMobileIndex] = useState<number>(() => {
+		const activeIdx = plans.findIndex((p) => p.active);
+		return activeIdx >= 0 ? activeIdx + 1 : 1;
+	});
 
 	const totalItems = plans.length + 1;
-	const [mobileIndex, setMobileIndex] = useState<number>(0);
-
 	const currentMobilePlan = mobileIndex > 0 ? plans[mobileIndex - 1] : null;
 
 	const handleMobileNav = (direction: "prev" | "next") => {
@@ -230,6 +228,7 @@ export function PlansOverviewCards({
 	};
 
 	if (loading) return <PlansOverviewSkeleton count={plans.length || 3} />;
+
 	return (
 		<div className="space-y-3">
 			<div className="block md:hidden space-y-2">
