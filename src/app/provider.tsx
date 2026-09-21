@@ -1,12 +1,12 @@
 "use client";
 
+import { ProgressProvider } from "@bprogress/next/app";
 import { usePathname } from "next/navigation";
 import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
 import { Footer, Navigation } from "@/common";
 import { Toaster } from "@/components/ui/sonner";
 import { useToastPosition } from "@/hooks";
-import { ProgressProvider } from "@bprogress/next/app";
 
 export default function LayoutProvider({ children }: { children: ReactNode }) {
 	const pathname = usePathname();
