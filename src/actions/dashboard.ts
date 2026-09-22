@@ -10,6 +10,7 @@ import {
 	workoutSessions,
 	workoutSets,
 } from "@/db/schema";
+import { type Big4Key, resolveBig4Key } from "@/lib/big4-mapping";
 import { toCapitalized } from "@/lib/to-capitalized";
 
 export interface StrengthTrendDataPoint {
@@ -274,13 +275,7 @@ export async function getDashboardData() {
 		const sixtyDaysAgo = new Date();
 		sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
 
-		const strengthLifts = [
-			"Barbell Squat",
-			"Bench Press",
-			"Deadlift",
-			"Overhead Press",
-		];
-		const liftKeys = ["squat", "bench", "deadlift", "ohp"];
+		const liftKeys: Big4Key[] = ["squat", "bench", "deadlift", "ohp"];
 
 		const strengthSets = await db
 			.select({
@@ -299,21 +294,23 @@ export async function getDashboardData() {
 				and(
 					eq(workoutSessions.userId, userId),
 					gte(workoutSessions.date, sixtyDaysAgo),
-					sql`${workoutSets.exerciseName} IN (${sql.join(
-						strengthLifts.map((l) => sql`${l}`),
-						sql`, `,
-					)})`,
 				),
 			)
 			.orderBy(desc(workoutSessions.date));
 
 		const groupedByDate: Record<
 			string,
-			Record<string, { weight: number; reps: number; isPR: boolean }>
+			Partial<
+				Record<Big4Key, { weight: number; reps: number; isPR: boolean }>
+			>
 		> = {};
 
 		strengthSets.forEach((set) => {
+			const liftKey = resolveBig4Key(set.exercise);
+			if (!liftKey) return;
+
 			const dateKey = new Date(set.date).toLocaleDateString("en-US", {
+				year: "numeric",
 				month: "short",
 				day: "numeric",
 			});
@@ -322,23 +319,16 @@ export async function getDashboardData() {
 				groupedByDate[dateKey] = {};
 			}
 
-			const liftIndex = strengthLifts.indexOf(set.exercise);
-			const liftKey = liftKeys[liftIndex];
+			const estimated1RM =
+				Number(set.weight) * (1 + Number(set.reps) / 30);
+			const existing = groupedByDate[dateKey][liftKey];
 
-			if (liftKey) {
-				const estimated1RM =
-					Number(set.weight) * (1 + Number(set.reps) / 30);
-
-				if (
-					!groupedByDate[dateKey][liftKey] ||
-					estimated1RM > groupedByDate[dateKey][liftKey].weight
-				) {
-					groupedByDate[dateKey][liftKey] = {
-						weight: estimated1RM,
-						reps: set.reps,
-						isPR: set.isPR || false,
-					};
-				}
+			if (!existing || estimated1RM > existing.weight) {
+				groupedByDate[dateKey][liftKey] = {
+					weight: estimated1RM,
+					reps: set.reps,
+					isPR: set.isPR || false,
+				};
 			}
 		});
 
@@ -352,27 +342,21 @@ export async function getDashboardData() {
 				};
 
 				liftKeys.forEach((key) => {
-					if (lifts[key]) {
-						const liftData = lifts[key];
-						point[
-							key as keyof Omit<
-								StrengthTrendDataPoint,
-								"date" | "prs"
-							>
-						] = Math.round(liftData.weight);
+					const liftData = lifts[key];
+					if (liftData) {
+						point[key] = Math.round(liftData.weight);
 						if (liftData.isPR && point.prs) {
-							point.prs[key as keyof typeof point.prs] = true;
+							point.prs[key] = true;
 						}
 					}
 				});
 
 				return point;
 			})
-			.sort((a, b) => {
-				const dateA = new Date(`${a.date}, 2026`);
-				const dateB = new Date(`${b.date}, 2026`);
-				return dateA.getTime() - dateB.getTime();
-			});
+			.sort(
+				(a, b) =>
+					new Date(a.date).getTime() - new Date(b.date).getTime(),
+			);
 
 		const kpis = {
 			program: {
