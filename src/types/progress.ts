@@ -31,6 +31,14 @@ export interface StrengthOverviewPoint {
 	bench?: number;
 	deadlift?: number;
 	ohp?: number;
+	squatReps?: number;
+	benchReps?: number;
+	deadliftReps?: number;
+	ohpReps?: number;
+	squatRpe?: number | null;
+	benchRpe?: number | null;
+	deadliftRpe?: number | null;
+	ohpRpe?: number | null;
 }
 
 export interface MeasurementPoint {

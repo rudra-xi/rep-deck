@@ -2,14 +2,8 @@
 
 import { GaugeIcon, TrendUpIcon } from "@phosphor-icons/react";
 import Link from "next/link";
-import {
-	CartesianGrid,
-	Line,
-	LineChart,
-	ReferenceLine,
-	XAxis,
-	YAxis,
-} from "recharts";
+import { useMemo } from "react";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { CardsHeader, useUnits } from "@/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -34,13 +28,6 @@ import { useStrengthOverview } from "@/hooks";
 import { ChartCardSkeleton } from "@/skeletons";
 import type { StrengthOverviewPoint } from "@/types/progress";
 
-const strengthChartConfig = {
-	squat: { label: "Squat", color: "var(--chart-1)" },
-	bench: { label: "Bench", color: "var(--chart-2)" },
-	deadlift: { label: "Deadlift", color: "var(--chart-3)" },
-	ohp: { label: "OHP", color: "var(--chart-4)" },
-} satisfies ChartConfig;
-
 type TimeRange = "2M" | "3M" | "6M" | "1Y";
 
 interface StrengthOverviewCardProps {
@@ -56,10 +43,49 @@ export function StrengthOverviewCard({
 	initialData = [],
 	loading: propLoading = false,
 }: StrengthOverviewCardProps) {
-	const { weightUnit } = useUnits();
+	const { weightUnit, fmtWeight } = useUnits();
 
 	const { data, loading, isFetching, hasData, timeRanges } =
 		useStrengthOverview(initialData, propLoading, timeRange);
+
+	const strengthChartConfig = useMemo<ChartConfig>(
+		() => ({
+			squat: {
+				label: `Squat (${weightUnit})`,
+				color: "var(--chart-1)",
+			},
+			bench: {
+				label: `Bench (${weightUnit})`,
+				color: "var(--chart-2)",
+			},
+			deadlift: {
+				label: `Deadlift (${weightUnit})`,
+				color: "var(--chart-3)",
+			},
+			ohp: {
+				label: `OHP (${weightUnit})`,
+				color: "var(--chart-4)",
+			},
+		}),
+		[weightUnit],
+	);
+
+	const convertedData = useMemo(
+		() =>
+			data.map((d) => ({
+				...d,
+				squat:
+					typeof d.squat === "number" ? fmtWeight(d.squat) : d.squat,
+				bench:
+					typeof d.bench === "number" ? fmtWeight(d.bench) : d.bench,
+				deadlift:
+					typeof d.deadlift === "number"
+						? fmtWeight(d.deadlift)
+						: d.deadlift,
+				ohp: typeof d.ohp === "number" ? fmtWeight(d.ohp) : d.ohp,
+			})),
+		[data, fmtWeight],
+	);
 
 	if (loading) {
 		return (
@@ -109,7 +135,7 @@ export function StrengthOverviewCard({
 						</EmptyTitle>
 						<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
 							Log workouts with Squat, Bench Press, Deadlift, or
-							Overhead Press to see your strength progression over
+							Overhead Press to see your top-set progression over
 							time.
 						</EmptyDescription>
 					</EmptyHeader>
@@ -151,7 +177,7 @@ export function StrengthOverviewCard({
 				>
 					<LineChart
 						accessibilityLayer
-						data={data}
+						data={convertedData}
 						margin={{ left: 12, right: 8, top: 8, bottom: 4 }}
 					>
 						<CartesianGrid vertical={false} strokeDasharray="3 3" />
@@ -161,6 +187,12 @@ export function StrengthOverviewCard({
 							axisLine={false}
 							tickMargin={6}
 							fontSize={10}
+							tickFormatter={(value: string) =>
+								new Date(value).toLocaleDateString("en-US", {
+									month: "short",
+									day: "numeric",
+								})
+							}
 						/>
 						<YAxis
 							tickLine={false}
@@ -169,19 +201,26 @@ export function StrengthOverviewCard({
 							unit={weightUnit}
 							domain={["auto", "auto"]}
 							fontSize={10}
-							width={28}
+							width={32}
 						/>
 						<ChartTooltip
-							content={<ChartTooltipContent indicator="line" />}
+							cursor={false}
+							content={
+								<ChartTooltipContent
+									indicator="line"
+									labelFormatter={(value) =>
+										new Date(
+											value as string,
+										).toLocaleDateString("en-US", {
+											month: "short",
+											day: "numeric",
+											year: "numeric",
+										})
+									}
+								/>
+							}
 						/>
 						<ChartLegend content={<ChartLegendContent />} />
-
-						<ReferenceLine
-							y={100}
-							stroke="var(--muted-foreground)"
-							strokeDasharray="2 2"
-							strokeOpacity={0.4}
-						/>
 
 						<Line
 							type="monotone"

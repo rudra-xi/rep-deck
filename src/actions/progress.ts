@@ -5,9 +5,9 @@ import { and, asc, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import { getCurrentUser } from "@/actions/auth";
 import { db } from "@/db";
 import { bodyMeasurements, workoutSessions, workoutSets } from "@/db/schema";
+import { type Big4Key, resolveBig4Key } from "@/lib/big4-mapping";
 import { toCapitalized } from "@/lib/to-capitalized";
-
-const CURRENT_DATE = new Date(2026, 8, 10);
+import type { StrengthOverviewPoint } from "@/types";
 
 const calculateEpley1RM = (weight: number, reps: number) => {
 	if (reps === 1) return weight;
@@ -16,13 +16,13 @@ const calculateEpley1RM = (weight: number, reps: number) => {
 
 export async function getStrengthOverview(
 	timeRange: "2M" | "3M" | "6M" | "1Y",
-) {
+): Promise<StrengthOverviewPoint[]> {
 	try {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return [];
 
 		const daysMap = { "2M": 60, "3M": 90, "6M": 180, "1Y": 365 };
-		const startDate = subDays(CURRENT_DATE, daysMap[timeRange] || 90);
+		const startDate = subDays(new Date(), daysMap[timeRange] || 90);
 
 		const sets = await db
 			.select({
@@ -30,6 +30,7 @@ export async function getStrengthOverview(
 				exerciseName: workoutSets.exerciseName,
 				weight: workoutSets.weight,
 				reps: workoutSets.reps,
+				rpe: workoutSets.rpe,
 			})
 			.from(workoutSets)
 			.innerJoin(
@@ -44,33 +45,55 @@ export async function getStrengthOverview(
 			)
 			.orderBy(asc(workoutSessions.date));
 
-		const aggregated: Record<string, Record<string, number>> = {};
+		const aggregated: Record<
+			string,
+			Partial<
+				Record<
+					Big4Key,
+					{ weight: number; reps: number; rpe: number | null }
+				>
+			>
+		> = {};
 
 		sets.forEach((set) => {
-			const dateStr = format(new Date(set.date), "MMM d");
-			const name = set.exerciseName.toLowerCase();
+			const liftKey = resolveBig4Key(set.exerciseName);
+			if (!liftKey) return;
 
-			let liftKey: string | null = null;
-			if (name.includes("bench")) liftKey = "bench";
-			else if (name.includes("squat")) liftKey = "squat";
-			else if (name.includes("deadlift")) liftKey = "deadlift";
-			else if (name.includes("ohp") || name.includes("overhead press"))
-				liftKey = "ohp";
+			const dateStr = format(new Date(set.date), "MMM d, yyyy");
+			const weight = Number(set.weight);
+			const reps = set.reps;
+			const rpe = set.rpe != null ? Number(set.rpe) : null;
 
-			if (liftKey) {
-				const e1rm = calculateEpley1RM(Number(set.weight), set.reps);
-				if (!aggregated[dateStr]) aggregated[dateStr] = {};
-				aggregated[dateStr][liftKey] = Math.max(
-					aggregated[dateStr][liftKey] || 0,
-					e1rm,
-				);
+			if (!aggregated[dateStr]) {
+				aggregated[dateStr] = {};
+			}
+
+			const existing = aggregated[dateStr][liftKey];
+			if (
+				!existing ||
+				weight > existing.weight ||
+				(weight === existing.weight && reps > existing.reps)
+			) {
+				aggregated[dateStr][liftKey] = { weight, reps, rpe };
 			}
 		});
 
-		return Object.entries(aggregated).map(([date, lifts]) => ({
-			date,
-			...lifts,
-		}));
+		return Object.entries(aggregated)
+			.map(([date, lifts]): StrengthOverviewPoint => {
+				const point: StrengthOverviewPoint = { date };
+				(Object.keys(lifts) as Big4Key[]).forEach((liftKey) => {
+					const entry = lifts[liftKey];
+					if (!entry) return;
+					point[liftKey] = entry.weight;
+					point[`${liftKey}Reps`] = entry.reps;
+					point[`${liftKey}Rpe`] = entry.rpe;
+				});
+				return point;
+			})
+			.sort(
+				(a, b) =>
+					new Date(a.date).getTime() - new Date(b.date).getTime(),
+			);
 	} catch (error) {
 		console.error("Error fetching strength overview:", error);
 		return [];
@@ -100,13 +123,9 @@ export async function getLiftDetails(
 			.where(eq(workoutSessions.userId, dbUser.id))
 			.orderBy(asc(workoutSessions.date));
 
-		const filteredSets = sets.filter((s) => {
-			const name = s.exerciseName.toLowerCase();
-			if (liftType === "ohp") {
-				return name.includes("ohp") || name.includes("overhead press");
-			}
-			return name.includes(liftType);
-		});
+		const filteredSets = sets.filter(
+			(s) => resolveBig4Key(s.exerciseName) === liftType,
+		);
 
 		const grouped: Record<
 			string,
@@ -119,7 +138,7 @@ export async function getLiftDetails(
 		> = {};
 
 		filteredSets.forEach((s) => {
-			const dateStr = format(new Date(s.date), "MMM d");
+			const dateStr = format(new Date(s.date), "MMM d, yyyy");
 			const weight = Number(s.weight);
 			const e1rm = calculateEpley1RM(weight, s.reps);
 
@@ -143,7 +162,9 @@ export async function getLiftDetails(
 			}
 		});
 
-		return Object.values(grouped);
+		return Object.values(grouped).sort(
+			(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+		);
 	} catch (error) {
 		console.error("Error fetching lift details:", error);
 		return [];
@@ -210,7 +231,7 @@ export async function getTrainingFrequency() {
 		const { dbUser } = await getCurrentUser();
 		if (!dbUser) return [];
 
-		const twelveWeeksAgo = subDays(CURRENT_DATE, 84);
+		const twelveWeeksAgo = subDays(new Date(), 84);
 
 		const queryResult = await db
 			.select({
@@ -265,7 +286,7 @@ export async function getBodyMetrics() {
 			.orderBy(asc(bodyMeasurements.date));
 
 		return measurements.map((m) => ({
-			date: format(new Date(m.date), "MMM d"),
+			date: format(new Date(m.date), "MMM d, yyyy"),
 			weight: m.weight ? Number(m.weight) : null,
 			bodyFat: m.bodyFat ? Number(m.bodyFat) : null,
 		}));
