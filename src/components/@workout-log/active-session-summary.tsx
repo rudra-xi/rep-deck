@@ -59,6 +59,14 @@ export function ActiveSessionSummary({
 
 	const { weightUnit } = useUnits();
 
+	const findPerfEntry = (exercise: string) =>
+		performanceMap[exercise] ??
+		Object.entries(performanceMap).find(
+			([name]) =>
+				name.trim().toLowerCase() === exercise.trim().toLowerCase(),
+		)?.[1] ??
+		null;
+
 	const grouped = loggedSets.reduce<Record<string, LoggedSet[]>>(
 		(acc, set) => {
 			acc[set.exerciseName] = acc[set.exerciseName] || [];
@@ -80,16 +88,7 @@ export function ActiveSessionSummary({
 				return currentScore > bestScore ? current : best;
 			}, sets[0]);
 
-			const perfEntry =
-				performanceMap[exercise] ??
-				Object.entries(performanceMap).find(
-					([name]) =>
-						name.trim().toLowerCase() ===
-						exercise.trim().toLowerCase(),
-				)?.[1] ??
-				null;
-
-			const previousBest = perfEntry?.overallBest ?? null;
+			const previousBest = findPerfEntry(exercise)?.overallBest ?? null;
 
 			const isPR = wouldBePR(
 				bestSet.weight,
@@ -103,15 +102,13 @@ export function ActiveSessionSummary({
 				sets.find((s) => s.notes && s.notes.trim() !== "")?.notes ||
 				null;
 
-			return {
-				exercise,
-				sets,
-				isPR,
-				bestSet,
-				exerciseNote,
-			};
+			return { exercise, sets, isPR, bestSet, exerciseNote };
 		},
 	);
+
+	const totalSets = loggedSets.length;
+	const totalExercises = Object.keys(grouped).length;
+	const prCount = exerciseSummaries.filter((ex) => ex.isPR).length;
 
 	useEffect(() => {
 		async function fetchLastSessionNote() {
@@ -163,13 +160,15 @@ export function ActiveSessionSummary({
 
 				if (serverPRCount > 0) {
 					toast.success("New Personal Records!", {
-						description: `You achieved ${serverPRCount} PR${serverPRCount > 1 ? "s" : ""} in this session!`,
+						description: `You achieved ${serverPRCount} PR${
+							serverPRCount > 1 ? "s" : ""
+						} in this session!`,
 						duration: 5000,
 					});
 				}
 
 				toast.success("Workout completed!", {
-					description: `Successfully logged ${loggedSets.length} sets across ${Object.keys(grouped).length} exercises.`,
+					description: `Successfully logged ${totalSets} sets across ${totalExercises} exercises.`,
 					duration: 4000,
 				});
 			} else {
@@ -180,7 +179,7 @@ export function ActiveSessionSummary({
 					duration: 4000,
 				});
 			}
-		} catch (_error) {
+		} catch {
 			toast.dismiss(loadingToast);
 			toast.error("Unexpected error", {
 				description:
@@ -189,10 +188,6 @@ export function ActiveSessionSummary({
 			});
 		}
 	};
-
-	const totalSets = loggedSets.length;
-	const totalExercises = Object.keys(grouped).length;
-	const prCount = exerciseSummaries.filter((ex) => ex.isPR).length;
 
 	return (
 		<Card size="sm" className="relative fcard-flat card-ease">
@@ -220,64 +215,19 @@ export function ActiveSessionSummary({
 								</strong>
 							</span>
 							{prCount > 0 && (
-								<Popover>
-									<PopoverTrigger
-										nativeButton={false}
-										render={
-											<span className="text-primary font-bold cursor-pointer hover:underline fcy gap-1">
-												<TrophyIcon
-													className="size-3.5"
-													weight="duotone"
-												/>
-												{prCount} PR
-												{prCount > 1 ? "s" : ""}
-											</span>
-										}
+								<span className="text-primary font-bold fcy gap-1">
+									<TrophyIcon
+										className="size-3.5"
+										weight="duotone"
 									/>
-									<PopoverContent className="w-auto p-2.5 text-xs">
-										<div className="space-y-1.5">
-											<p className="font-semibold fcy gap-1">
-												<TrophyIcon
-													className="size-3.5"
-													weight="duotone"
-												/>
-												PR Achievements
-											</p>
-											<ul className="space-y-1 text-muted-foreground">
-												{exerciseSummaries
-													.filter((ex) => ex.isPR)
-													.map((ex) => (
-														<li
-															key={ex.exercise}
-															className="text-xs"
-														>
-															<strong className="text-foreground">
-																{ex.exercise}:
-															</strong>{" "}
-															{ex.bestSet?.weight}
-															{weightUnit} ×{" "}
-															{ex.bestSet?.reps}
-															{ex.bestSet?.rpe
-																? ` @ RPE ${ex.bestSet.rpe}`
-																: ""}
-														</li>
-													))}
-											</ul>
-										</div>
-									</PopoverContent>
-								</Popover>
+									{prCount} PR{prCount > 1 ? "s" : ""}
+								</span>
 							)}
 						</div>
 
 						<div className="space-y-2.5">
 							{exerciseSummaries.map(
-								({
-									exercise,
-									sets,
-									isPR,
-									bestSet,
-									exerciseNote,
-								}) => (
+								({ exercise, sets, isPR, exerciseNote }) => (
 									<div
 										key={exercise}
 										className={`rounded-none border p-3 bg-background/50 space-y-2 ${
@@ -292,49 +242,16 @@ export function ActiveSessionSummary({
 													{exercise}
 												</h3>
 												{isPR && (
-													<Popover>
-														<PopoverTrigger
-															nativeButton={false}
-															render={
-																<Badge
-																	variant="default"
-																	className="h-4 px-1.5 text-[8px] font-bold uppercase tracking-wider bg-primary hover:bg-primary text-primary-foreground border-0 cursor-pointer"
-																>
-																	<TrophyIcon
-																		className="size-2.5 mr-0.5"
-																		weight="duotone"
-																	/>
-																	PR
-																</Badge>
-															}
+													<Badge
+														variant="default"
+														className="h-4 px-1.5 text-[8px] font-bold uppercase tracking-wider bg-primary text-primary-foreground border-0"
+													>
+														<TrophyIcon
+															className="size-2.5 mr-0.5"
+															weight="duotone"
 														/>
-														<PopoverContent className="w-auto p-2.5 text-xs">
-															<p className="font-semibold text-primary fcy gap-1">
-																<TrophyIcon
-																	className="size-3.5"
-																	weight="duotone"
-																/>
-																New Personal
-																Record!
-															</p>
-															<p className="text-muted-foreground mt-1">
-																Best Set:{" "}
-																<strong className="text-foreground">
-																	{
-																		bestSet?.weight
-																	}
-																	{weightUnit}{" "}
-																	×{" "}
-																	{
-																		bestSet?.reps
-																	}
-																</strong>
-																{bestSet?.rpe
-																	? ` @ RPE ${bestSet.rpe}`
-																	: ""}
-															</p>
-														</PopoverContent>
-													</Popover>
+														PR
+													</Badge>
 												)}
 											</div>
 											<span className="text-[10px] text-muted-foreground">
@@ -357,23 +274,10 @@ export function ActiveSessionSummary({
 
 										<div className="fwrap gap-1.5">
 											{sets.map((s, idx) => {
-												const perfEntry =
-													performanceMap[exercise] ??
-													Object.entries(
-														performanceMap,
-													).find(
-														([name]) =>
-															name
-																.trim()
-																.toLowerCase() ===
-															exercise
-																.trim()
-																.toLowerCase(),
-													)?.[1] ??
-													null;
 												const previousBest =
-													perfEntry?.overallBest ??
-													null;
+													findPerfEntry(exercise)
+														?.overallBest ?? null;
+
 												const isSetPR = wouldBePR(
 													s.weight,
 													s.reps,
@@ -395,13 +299,19 @@ export function ActiveSessionSummary({
 															nativeButton={false}
 															render={
 																<span
-																	className={`text-xs  px-2 py-0.5 rounded-none border cursor-pointer fcy gap-1 ${
+																	className={`text-xs px-2 py-0.5 rounded-none border cursor-pointer fcy gap-1 ${
 																		isSetPR
-																			? "bg-primary/20 border-primary/50 text-primary dark:text-primary"
+																			? "bg-primary/20 border-primary/50 text-primary"
 																			: "bg-accent/50 border-border/50 text-foreground"
 																	}`}
 																>
-																	<span className="text-xs ">
+																	{isSetPR && (
+																		<TrophyIcon
+																			className="size-2.5 mb-0.5 mr-1"
+																			weight="duotone"
+																		/>
+																	)}
+																	<span className="text-xs">
 																		Set{" "}
 																		{idx +
 																			1}
@@ -418,12 +328,6 @@ export function ActiveSessionSummary({
 																			? ` @ RPE ${s.rpe}`
 																			: ""}
 																	</span>
-																	{isSetPR && (
-																		<TrophyIcon
-																			className="size-2.5"
-																			weight="duotone"
-																		/>
-																	)}
 																</span>
 															}
 														/>
@@ -438,7 +342,7 @@ export function ActiveSessionSummary({
 																	Record!
 																</p>
 															)}
-															<p className="text-muted-foreground ">
+															<p className="text-muted-foreground">
 																{s.weight}
 																{weightUnit} ×{" "}
 																{s.reps}
@@ -464,29 +368,29 @@ export function ActiveSessionSummary({
 				)}
 
 				<div className="space-y-3 pt-1">
-					{lastSessionNote && (
+					{(lastSessionNote || isLoadingNote) && (
 						<div className="rounded-none border border-primary/20 bg-primary/5 p-2.5">
-							<div className="ft gap-2">
-								<ClipboardTextIcon
-									className="size-3.5 text-primary sh0 mt-0.5"
-									weight="bold"
-								/>
-								<div className="fgrow">
-									<span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-										Last Session Note
-									</span>
-									<p className="text-xs text-foreground italic mt-0.5">
-										{lastSessionNote}
-									</p>
+							{isLoadingNote ? (
+								<div className="space-y-2">
+									<Skeleton className="h-3 w-24 rounded-sm" />
+									<Skeleton className="h-3 w-full rounded-sm" />
 								</div>
-							</div>
-						</div>
-					)}
-
-					{isLoadingNote && (
-						<div className="rounded-none border border-primary/20 bg-primary/5 p-2.5 space-y-2">
-							<Skeleton className="h-3 w-24 rounded-sm" />
-							<Skeleton className="h-3 w-full rounded-sm" />
+							) : (
+								<div className="ft gap-2">
+									<ClipboardTextIcon
+										className="size-3.5 text-primary sh0 mt-0.5"
+										weight="bold"
+									/>
+									<div className="fgrow">
+										<span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+											Last Session Note
+										</span>
+										<p className="text-xs text-foreground italic mt-0.5">
+											{lastSessionNote}
+										</p>
+									</div>
+								</div>
+							)}
 						</div>
 					)}
 

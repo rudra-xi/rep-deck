@@ -8,7 +8,12 @@ interface SetInput {
 	added?: boolean;
 }
 
-type SetInputState = Record<string, Record<number, SetInput>>;
+interface ExerciseState {
+	sets: Record<number, SetInput>;
+	note: string;
+}
+
+type ExerciseInputsState = Record<string, ExerciseState>;
 
 const VALIDATION = {
 	weight: { min: 0, max: 1000 },
@@ -18,15 +23,41 @@ const VALIDATION = {
 
 type FieldType = keyof typeof VALIDATION;
 
+const EMPTY_SET: SetInput = { weight: "", reps: "", rpe: "" };
+
+function migrate(raw: unknown): ExerciseInputsState {
+	if (!raw || typeof raw !== "object") return {};
+	const result: ExerciseInputsState = {};
+	for (const [exerciseId, value] of Object.entries(raw)) {
+		if (!value || typeof value !== "object") continue;
+
+	
+		if ("sets" in value && "note" in value) {
+			result[exerciseId] = value as ExerciseState;
+			continue;
+		}
+
+		const sets: Record<number, SetInput> = {};
+		for (const [k, v] of Object.entries(value)) {
+			const n = Number(k);
+			if (!Number.isNaN(n) && v && typeof v === "object") {
+				sets[n] = v as SetInput;
+			}
+		}
+		result[exerciseId] = { sets, note: "" };
+	}
+	return result;
+}
+
 export function useExerciseInputs() {
-	const [inputs, setInputs] = useState<SetInputState>({});
+	const [inputs, setInputs] = useState<ExerciseInputsState>({});
 	const [isInitialized, setIsInitialized] = useState(false);
 
 	useEffect(() => {
 		try {
 			const saved = localStorage.getItem(STORAGE_KEYS.EXERCISE_INPUTS);
 			if (saved) {
-				setInputs(JSON.parse(saved));
+				setInputs(migrate(JSON.parse(saved)));
 			}
 		} catch (error) {
 			console.error("Failed to restore exercise inputs:", error);
@@ -50,10 +81,8 @@ export function useExerciseInputs() {
 	const validateAndCorrect = useCallback(
 		(field: FieldType, value: string): string => {
 			if (value === "") return value;
-
 			const num = parseFloat(value);
 			if (Number.isNaN(num)) return value;
-
 			const { min, max } = VALIDATION[field];
 			if (num > max) return max.toString();
 			if (num < min) return min.toString();
@@ -71,36 +100,47 @@ export function useExerciseInputs() {
 		) => {
 			const processedValue = validateAndCorrect(field, value);
 
-			setInputs((prev) => ({
-				...prev,
-				[exerciseId]: {
-					...(prev[exerciseId] || {}),
-					[setNumber]: {
-						...(prev[exerciseId]?.[setNumber] || {
-							weight: "",
-							reps: "",
-							rpe: "",
-						}),
-						[field]: processedValue,
+			setInputs((prev) => {
+				const existing = prev[exerciseId] ?? {
+					sets: {},
+					note: "",
+				};
+
+				return {
+					...prev,
+					[exerciseId]: {
+						...existing,
+						sets: {
+							...existing.sets,
+							[setNumber]: {
+								...(existing.sets[setNumber] ?? EMPTY_SET),
+								[field]: processedValue,
+							},
+						},
 					},
-				},
-			}));
+				};
+			});
 		},
 		[validateAndCorrect],
 	);
 
 	const markSetAsAdded = useCallback(
 		(exerciseId: string, setNumber: number) => {
-			setInputs((prev) => ({
-				...prev,
-				[exerciseId]: {
-					...prev[exerciseId],
-					[setNumber]: {
-						...prev[exerciseId]?.[setNumber],
-						added: true,
+			setInputs((prev) => {
+				const existing = prev[exerciseId] ?? { sets: {}, note: "" };
+				const existingSet = existing.sets[setNumber] ?? EMPTY_SET;
+
+				return {
+					...prev,
+					[exerciseId]: {
+						...existing,
+						sets: {
+							...existing.sets,
+							[setNumber]: { ...existingSet, added: true },
+						},
 					},
-				},
-			}));
+				};
+			});
 		},
 		[],
 	);
@@ -112,7 +152,24 @@ export function useExerciseInputs() {
 
 	const getSetInput = useCallback(
 		(exerciseId: string, setNumber: number) => {
-			return inputs[exerciseId]?.[setNumber];
+			return inputs[exerciseId]?.sets?.[setNumber];
+		},
+		[inputs],
+	);
+
+	const setExerciseNote = useCallback((exerciseId: string, value: string) => {
+		setInputs((prev) => {
+			const existing = prev[exerciseId] ?? { sets: {}, note: "" };
+			return {
+				...prev,
+				[exerciseId]: { ...existing, note: value },
+			};
+		});
+	}, []);
+
+	const getExerciseNote = useCallback(
+		(exerciseId: string) => {
+			return inputs[exerciseId]?.note ?? "";
 		},
 		[inputs],
 	);
@@ -127,6 +184,8 @@ export function useExerciseInputs() {
 		markSetAsAdded,
 		clearInputs,
 		getSetInput,
+		getExerciseNote,
+		setExerciseNote,
 		getValidationRules,
 		isInitialized,
 	};

@@ -50,6 +50,7 @@ interface PlannedExercisesProps {
 	exercises: ExerciseTemplate[];
 	performanceMap: Record<string, ExercisePerformanceWithPR | null>;
 	isLoadingPerformance: boolean;
+	loggedSets: LoggedSet[];
 	onAddExerciseSets: (
 		sets: Array<Omit<LoggedSet, "id"> & { templateId?: string }>,
 	) => void;
@@ -60,57 +61,49 @@ export function PlannedExercises({
 	exercises,
 	performanceMap,
 	isLoadingPerformance,
+	loggedSets,
 	onAddExerciseSets,
 	onRemoveExerciseSets,
 }: PlannedExercisesProps) {
-	const [completed, setCompleted] = useState<Record<string, boolean>>({});
 	const [openStates, setOpenStates] = useState<Record<string, boolean>>({});
-	const [exerciseNotes, setExerciseNotes] = useState<Record<string, string>>(
-		{},
-	);
 
-	const { handleInputChange, getSetInput } = useExerciseInputs();
+	const { handleInputChange, getSetInput, getExerciseNote, setExerciseNote } =
+		useExerciseInputs();
 	const { weightUnit, fmtWeightStr } = useUnits();
 
+	const isTemplateLogged = (templateId: string) =>
+		loggedSets.some((s) => s.templateId === templateId);
+
 	const handleToggleDone = (ex: ExerciseTemplate) => {
-		const isCurrentlyCompleted = !!completed[ex.id];
-		const nextCompletedState = !isCurrentlyCompleted;
+		if (isTemplateLogged(ex.id)) {
+			onRemoveExerciseSets?.(ex.id);
+			return;
+		}
 
-		setCompleted((prev) => ({
-			...prev,
-			[ex.id]: nextCompletedState,
-		}));
+		const targetSetsCount = ex.targetSets || 1;
+		const currentNote = getExerciseNote(ex.id).trim();
+		const validSets: Array<
+			Omit<LoggedSet, "id"> & { templateId?: string }
+		> = [];
 
-		if (nextCompletedState) {
-			const targetSetsCount = ex.targetSets || 1;
-			const validSets: Array<
-				Omit<LoggedSet, "id"> & { templateId?: string }
-			> = [];
-			const currentNote = exerciseNotes[ex.id]?.trim() || "";
+		for (let setNum = 1; setNum <= targetSetsCount; setNum++) {
+			const setData = getSetInput(ex.id, setNum);
 
-			for (let setNum = 1; setNum <= targetSetsCount; setNum++) {
-				const setData = getSetInput(ex.id, setNum);
-
-				if (setData?.weight && setData?.reps) {
-					validSets.push({
-						exerciseName: ex.name,
-						templateId: ex.id,
-						setNumber: setNum,
-						weight: Number(setData.weight),
-						reps: Number(setData.reps),
-						rpe: setData.rpe ? String(setData.rpe) : "",
-						notes: currentNote,
-					});
-				}
+			if (setData?.weight && setData?.reps) {
+				validSets.push({
+					exerciseName: ex.name,
+					templateId: ex.id,
+					setNumber: setNum,
+					weight: Number(setData.weight),
+					reps: Number(setData.reps),
+					rpe: setData.rpe ? String(setData.rpe) : "",
+					notes: currentNote,
+				});
 			}
+		}
 
-			if (validSets.length > 0) {
-				onAddExerciseSets(validSets);
-			}
-		} else {
-			if (onRemoveExerciseSets) {
-				onRemoveExerciseSets(ex.id);
-			}
+		if (validSets.length > 0) {
+			onAddExerciseSets(validSets);
 		}
 	};
 
@@ -155,7 +148,7 @@ export function PlannedExercises({
 					(_, i) => i + 1,
 				);
 				const isOpen = openStates[ex.id] ?? true;
-				const isCompleted = !!completed[ex.id];
+				const isCompleted = isTemplateLogged(ex.id);
 
 				const perfData = performanceMap[ex.name];
 
@@ -261,7 +254,7 @@ export function PlannedExercises({
 														className="size-3.5 text-primary sh0"
 														weight="bold"
 													/>
-													<span className="italic  max-w-46">
+													<span className="italic max-w-46">
 														~{" "}
 														{lastNote.length > 40
 															? `${lastNote.slice(0, 40)}...`
@@ -344,7 +337,7 @@ export function PlannedExercises({
 													: "bg-background/50 border-border/40"
 											}`}
 										>
-											<span className="col-span-3 text-[10px]  font-bold text-foreground text-left pl-0.5">
+											<span className="col-span-3 text-[10px] font-bold text-foreground text-left pl-0.5">
 												#{setNum}
 											</span>
 
@@ -353,7 +346,7 @@ export function PlannedExercises({
 												type="number"
 												step="any"
 												disabled={isCompleted}
-												className="col-span-3 rounded-none h-6 px-1 text-center  text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
+												className="col-span-3 rounded-none h-6 px-1 text-center text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
 												value={setData?.weight || ""}
 												onChange={(e) =>
 													handleInputChange(
@@ -368,7 +361,7 @@ export function PlannedExercises({
 												placeholder="reps"
 												type="number"
 												disabled={isCompleted}
-												className="col-span-3 rounded-none h-6 px-1 text-center  text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
+												className="col-span-3 rounded-none h-6 px-1 text-center text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
 												value={setData?.reps || ""}
 												onChange={(e) =>
 													handleInputChange(
@@ -386,7 +379,7 @@ export function PlannedExercises({
 												type="number"
 												step="any"
 												disabled={isCompleted}
-												className="col-span-3 rounded-none h-6 px-1 text-center  text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
+												className="col-span-3 rounded-none h-6 px-1 text-center text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
 												value={setData?.rpe || ""}
 												onChange={(e) =>
 													handleInputChange(
@@ -405,12 +398,9 @@ export function PlannedExercises({
 									placeholder="Exercise note (e.g. seat height 4, felt easy)..."
 									disabled={isCompleted}
 									className="rounded-none h-7 text-[11px] border-border/40 bg-background/40 focus:border-primary/50 disabled:opacity-50"
-									value={exerciseNotes[ex.id] || ""}
+									value={getExerciseNote(ex.id)}
 									onChange={(e) =>
-										setExerciseNotes((prev) => ({
-											...prev,
-											[ex.id]: e.target.value,
-										}))
+										setExerciseNote(ex.id, e.target.value)
 									}
 								/>
 							</CollapsibleContent>
