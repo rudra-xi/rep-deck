@@ -149,7 +149,7 @@ export function StrengthChart({
 
 	return (
 		<Card size="sm" className="fcard-flat w-full card-ease">
-			<CardsHeader icon={TrendUpIcon} title="Estimated ORM" />
+			<CardsHeader icon={TrendUpIcon} title="Estimated 1RM" />
 
 			<CardContent className="p-4 pt-1 fcol3">
 				{liftToggles}
@@ -180,6 +180,12 @@ export function StrengthChart({
 							tickMargin={8}
 							fontSize={10}
 							interval="preserveStartEnd"
+							tickFormatter={(value: string) =>
+								new Date(value).toLocaleDateString("en-US", {
+									month: "short",
+									day: "numeric",
+								})
+							}
 						/>
 						<YAxis
 							fontSize={10}
@@ -192,7 +198,20 @@ export function StrengthChart({
 						/>
 						<ChartTooltip
 							cursor={false}
-							content={<ChartTooltipContent indicator="line" />}
+							content={
+								<ChartTooltipContent
+									indicator="line"
+									labelFormatter={(value) =>
+										new Date(
+											value as string,
+										).toLocaleDateString("en-US", {
+											month: "short",
+											day: "numeric",
+											year: "numeric",
+										})
+									}
+								/>
+							}
 						/>
 
 						{activeLifts.squat && (

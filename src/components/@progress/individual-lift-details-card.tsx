@@ -100,7 +100,7 @@ export function IndividualLiftDetailsCard({
 	}
 
 	const liftToggle = (
-		<div className="flex border border-border/50 p-0.5 bg-background">
+		<div className="flex ml-auto border border-border/50 p-0.5 bg-background w-fit">
 			{liftTypes.map((key) => (
 				<Button
 					key={key}
@@ -121,36 +121,38 @@ export function IndividualLiftDetailsCard({
 				<CardsHeader
 					icon={GaugeIcon}
 					title={`${liftLabels[selectedLift]} Performance`}
-					trailing={liftToggle}
 				/>
-				<Empty className="p-6 text-center w-full">
-					<EmptyHeader>
-						<EmptyMedia className="ficon-box-lg">
-							<BarbellIcon
-								className="size-6 text-primary"
-								weight="bold"
+				<CardContent className="p-4 pt-1 fcol3">
+					{liftToggle}
+					<Empty className="p-6 text-center w-full">
+						<EmptyHeader>
+							<EmptyMedia className="ficon-box-lg">
+								<BarbellIcon
+									className="size-6 text-primary"
+									weight="bold"
+								/>
+							</EmptyMedia>
+							<EmptyTitle className="text-sm font-medium text-foreground">
+								No Lift Data
+							</EmptyTitle>
+							<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
+								Log your first {liftLabels[selectedLift]}{" "}
+								workout to see your performance tracking.
+							</EmptyDescription>
+						</EmptyHeader>
+						<EmptyContent>
+							<Button
+								nativeButton={false}
+								variant="outline"
+								size="sm"
+								className="text-xs mt-1"
+								render={
+									<Link href="/workout-log">Log Workout</Link>
+								}
 							/>
-						</EmptyMedia>
-						<EmptyTitle className="text-sm font-medium text-foreground">
-							No Lift Data
-						</EmptyTitle>
-						<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
-							Log your first {liftLabels[selectedLift]} workout to
-							see your performance tracking.
-						</EmptyDescription>
-					</EmptyHeader>
-					<EmptyContent>
-						<Button
-							nativeButton={false}
-							variant="outline"
-							size="sm"
-							className="text-xs mt-1"
-							render={
-								<Link href="/workout-log">Log Workout</Link>
-							}
-						/>
-					</EmptyContent>
-				</Empty>
+						</EmptyContent>
+					</Empty>
+				</CardContent>
 			</Card>
 		);
 	}
@@ -162,13 +164,16 @@ export function IndividualLiftDetailsCard({
 				title={
 					<span>
 						{liftLabels[selectedLift]} Performance
-						{isFetching}
+						{isFetching && (
+							<span className="inline-block size-3 rounded-full border-2 border-current border-t-transparent animate-spin ml-1 align-middle opacity-60" />
+						)}
 					</span>
 				}
-				trailing={<span>{liftToggle}</span>}
 			/>
 
-			<CardContent className="p-4 pt-1 fcol3">
+			<CardContent className="fcol3">
+				{liftToggle}
+
 				<div className="grid grid-cols-3 gap-2">
 					<div className="p-2 bg-background/50 border border-border/40">
 						<span className="ftext-3xs fupper font-medium fmuted block">

@@ -1,14 +1,19 @@
 // biome-ignore-all lint/a11y/useSemanticElements: interactive row wraps multi-element content; <button> would produce invalid HTML
 "use client";
 
-import { BlueprintIcon, CaretRightIcon } from "@phosphor-icons/react";
+import { BlueprintIcon } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
-import { addPlanDay, deletePlanDay } from "@/actions/plans";
+import { addPlanDay, deletePlanDay, updatePlanDay } from "@/actions/plans";
 import { CardsHeader } from "@/common";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { PlanWithStructure } from "@/db/schema";
-import { CreateDayDialog, DeleteDayDialog } from "@/plan-dialogs";
+import {
+	CreateDayDialog,
+	DeleteDayDialog,
+	DuplicateDayDialog,
+	EditDayDialog,
+} from "@/plan-dialogs";
 import { PlanDetailsCardSkeleton } from "@/skeletons";
 
 interface PlanDetailsCardProps {
@@ -33,6 +38,11 @@ export function PlanDetailsCard({
 
 	const handleDeleteDay = async (dayId: string) => {
 		await deletePlanDay(dayId);
+		router.refresh();
+	};
+
+	const handleEditDay = async (dayId: string, label: string) => {
+		await updatePlanDay(dayId, { label });
 		router.refresh();
 	};
 
@@ -96,18 +106,15 @@ export function PlanDetailsCard({
 										{day.label}
 									</span>
 								</div>
-
 								<div className="fcy gap-1">
+									<EditDayDialog
+										day={day}
+										onEditDay={handleEditDay}
+									/>
+									<DuplicateDayDialog day={day} />
 									<DeleteDayDialog
 										dayLabel={day.label}
 										onDelete={() => handleDeleteDay(day.id)}
-									/>
-									<CaretRightIcon
-										className={`size-3.5 ${
-											isSelected
-												? "text-primary translate-x-0.5"
-												: "text-muted-foreground"
-										}`}
 									/>
 								</div>
 							</div>

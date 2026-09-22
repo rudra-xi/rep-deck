@@ -20,7 +20,7 @@ interface DaySelectorProps {
 }
 
 export function DaySelector({
-	programName = "Base Sets v3",
+	programName = "",
 	days = [],
 	selectedDayIndex,
 	onSelectDay,
