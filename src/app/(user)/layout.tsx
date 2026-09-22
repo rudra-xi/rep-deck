@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { getUserPreferences, getUserProfile } from "@/actions/account";
-import { Navigation, UnitProvider } from "@/common";
+import { Footer, Navigation, UnitProvider } from "@/common";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +18,7 @@ export default async function UserLayout({
 		<UnitProvider preferences={preferences}>
 			<Navigation userName={profile.name} />
 			<main className="main-padding">{children}</main>
+			<Footer />
 		</UnitProvider>
 	);
 }
