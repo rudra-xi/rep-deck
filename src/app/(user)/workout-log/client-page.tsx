@@ -163,6 +163,7 @@ export default function WorkoutLogClientView({
 					exercises={currentDay?.exercises || []}
 					performanceMap={performanceMap}
 					isLoadingPerformance={isLoadingPerformance}
+					loggedSets={loggedSets}
 					onAddExerciseSets={handleAddExerciseSets}
 					onRemoveExerciseSets={handleRemoveExerciseSets}
 				/>
