@@ -132,21 +132,21 @@ export default function PlansClientView({
 
 			<Separator />
 
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">
-				<div className="lg:col-span-1 space-y-3 w-full">
-					<SectionTitleCard title="Plan Structure" />
-					<PlanDetailsCard
-						plan={activePlan}
-						selectedDayId={selectedDayId}
-						onSelectDay={setSelectedDayId}
-					/>
-				</div>
+			<div className="space-y-3 w-full">
+				<SectionTitleCard title="Plan Structure" />
 
-				<Separator className="block lg:hidden" />
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">
+					<div className="lg:col-span-1 space-y-3 w-full">
+						<PlanDetailsCard
+							plan={activePlan}
+							selectedDayId={selectedDayId}
+							onSelectDay={setSelectedDayId}
+						/>
+					</div>
 
-				<div className="lg:col-span-2 space-y-3 w-full">
-					<SectionTitleCard title="Day Exercises" />
-					<DayExercisesList day={selectedDay} />
+					<div className="lg:col-span-2 space-y-3 w-full">
+						<DayExercisesList day={selectedDay} />
+					</div>
 				</div>
 			</div>
 

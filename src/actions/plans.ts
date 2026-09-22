@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/actions/auth";
 import { db } from "@/db";
 import {
 	exerciseTemplates,
+	type ProgramDayTemplate,
 	programDayTemplates,
 	programTemplates,
 } from "@/db/schema";
@@ -152,16 +153,21 @@ export async function addPlanDay(planId: string, label: string) {
 	if (!user) return { success: false, error: "Unauthorized" };
 
 	const existingDays = await db
-		.select()
+		.select({ dayIndex: programDayTemplates.dayIndex })
 		.from(programDayTemplates)
 		.where(eq(programDayTemplates.programId, planId));
+
+	const maxIndex = existingDays.reduce(
+		(max, d) => Math.max(max, d.dayIndex),
+		0,
+	);
 
 	const [newDay] = await db
 		.insert(programDayTemplates)
 		.values({
 			programId: planId,
 			label: toCapitalized(label),
-			dayIndex: existingDays.length + 1,
+			dayIndex: maxIndex + 1,
 		})
 		.returning();
 
@@ -173,9 +179,43 @@ export async function deletePlanDay(dayId: string) {
 	const user = await requireAuth();
 	if (!user) return { success: false, error: "Unauthorized" };
 
-	await db
-		.delete(programDayTemplates)
-		.where(eq(programDayTemplates.id, dayId));
+	await db.transaction(async (tx) => {
+		const [target] = await tx
+			.select({
+				id: programDayTemplates.id,
+				programId: programDayTemplates.programId,
+				userId: programTemplates.userId,
+			})
+			.from(programDayTemplates)
+			.innerJoin(
+				programTemplates,
+				eq(programDayTemplates.programId, programTemplates.id),
+			)
+			.where(eq(programDayTemplates.id, dayId))
+			.limit(1);
+
+		if (!target || target.userId !== user.id) return;
+
+		await tx
+			.delete(programDayTemplates)
+			.where(eq(programDayTemplates.id, dayId));
+
+		const remaining = await tx
+			.select()
+			.from(programDayTemplates)
+			.where(eq(programDayTemplates.programId, target.programId))
+			.orderBy(asc(programDayTemplates.dayIndex));
+
+		for (let i = 0; i < remaining.length; i++) {
+			const desired = i + 1;
+			if (remaining[i].dayIndex !== desired) {
+				await tx
+					.update(programDayTemplates)
+					.set({ dayIndex: desired })
+					.where(eq(programDayTemplates.id, remaining[i].id));
+			}
+		}
+	});
 
 	purgePlansCache();
 	return { success: true };
@@ -340,6 +380,130 @@ export async function duplicatePlan(
 				error instanceof Error
 					? error.message
 					: "Failed to duplicate plan",
+		};
+	}
+}
+
+export async function updatePlanDay(dayId: string, data: { label?: string }) {
+	const user = await requireAuth();
+	if (!user) return { success: false, error: "Unauthorized" };
+
+	const [day] = await db
+		.select({
+			id: programDayTemplates.id,
+			userId: programTemplates.userId,
+		})
+		.from(programDayTemplates)
+		.innerJoin(
+			programTemplates,
+			eq(programDayTemplates.programId, programTemplates.id),
+		)
+		.where(eq(programDayTemplates.id, dayId))
+		.limit(1);
+
+	if (!day || day.userId !== user.id) {
+		return { success: false, error: "Day not found" };
+	}
+
+	await db
+		.update(programDayTemplates)
+		.set({
+			...(data.label && { label: toCapitalized(data.label) }),
+		})
+		.where(eq(programDayTemplates.id, dayId));
+
+	purgePlansCache();
+	return { success: true };
+}
+
+export async function duplicateDay(
+	dayId: string,
+	options?: { label?: string },
+): Promise<
+	| { success: true; day: ProgramDayTemplate }
+	| { success: false; error: string }
+> {
+	try {
+		const user = await requireAuth();
+		if (!user) return { success: false, error: "Unauthorized" };
+
+		if (!dayId) {
+			return { success: false, error: "Day ID is required" };
+		}
+
+		const [original] = await db
+			.select({
+				day: programDayTemplates,
+				planUserId: programTemplates.userId,
+			})
+			.from(programDayTemplates)
+			.innerJoin(
+				programTemplates,
+				eq(programDayTemplates.programId, programTemplates.id),
+			)
+			.where(eq(programDayTemplates.id, dayId))
+			.limit(1);
+
+		if (!original || original.planUserId !== user.id) {
+			return { success: false, error: "Day not found" };
+		}
+
+		const siblings = await db
+			.select({ dayIndex: programDayTemplates.dayIndex })
+			.from(programDayTemplates)
+			.where(eq(programDayTemplates.programId, original.day.programId));
+
+		const maxIndex = siblings.reduce(
+			(max, d) => Math.max(max, d.dayIndex),
+			0,
+		);
+
+		const newLabel = options?.label?.trim()
+			? toCapitalized(options.label.trim())
+			: `${toCapitalized(original.day.label)} (Copy)`;
+
+		const result = await db.transaction(async (tx) => {
+			const [newDay] = await tx
+				.insert(programDayTemplates)
+				.values({
+					programId: original.day.programId,
+					label: newLabel,
+					dayIndex: maxIndex + 1,
+				})
+				.returning();
+
+			const exercises = await tx
+				.select()
+				.from(exerciseTemplates)
+				.where(eq(exerciseTemplates.programDayId, original.day.id))
+				.orderBy(asc(exerciseTemplates.order));
+
+			if (exercises.length > 0) {
+				await tx.insert(exerciseTemplates).values(
+					exercises.map((e) => ({
+						programDayId: newDay.id,
+						name: toCapitalized(e.name),
+						type: e.type,
+						targetSets: e.targetSets,
+						targetRepRange: e.targetRepRange,
+						order: e.order,
+					})),
+				);
+			}
+
+			return newDay;
+		});
+
+		purgePlansCache();
+		return { success: true, day: result };
+	} catch (error) {
+		console.error("Error in duplicateDay:", error);
+		return {
+			success: false,
+			error:
+				error instanceof Error
+					? error.message
+					: "Failed to duplicate day",
 		};
 	}
 }
