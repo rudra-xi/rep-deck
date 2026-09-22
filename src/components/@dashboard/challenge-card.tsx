@@ -5,6 +5,8 @@ import {
 	CheckCircleIcon,
 	ClockIcon,
 	FireIcon,
+	LightningIcon,
+	ShieldCheckIcon,
 	TimerIcon,
 } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
@@ -25,9 +27,36 @@ interface ChallengeItemProps {
 	challenge: Challenge;
 }
 
+const difficultyConfig: Record<
+	Challenge["difficulty"],
+	{ icon: React.ElementType; styles: string; label: string }
+> = {
+	Easy: {
+		icon: ShieldCheckIcon,
+		styles: "border-muted-foreground/30 text-muted-foreground bg-muted/40",
+		label: "Easy",
+	},
+	Medium: {
+		icon: LightningIcon,
+		styles: "border-secondary-foreground/30 text-secondary-foreground bg-secondary/50",
+		label: "Medium",
+	},
+	Hard: {
+		icon: FireIcon,
+		styles: "border-primary/40 text-primary bg-primary/10",
+		label: "Hard",
+	},
+};
+
 function ChallengeCardItem({ variant, title, challenge }: ChallengeItemProps) {
 	const isCurrent = variant === "current";
 	const isPast = variant === "past";
+
+	const {
+		icon: DifficultyIcon,
+		styles: diffStyles,
+		label: diffLabel,
+	} = difficultyConfig[challenge.difficulty];
 
 	return (
 		<Card
@@ -67,14 +96,31 @@ function ChallengeCardItem({ variant, title, challenge }: ChallengeItemProps) {
 						</CardTitle>
 					</div>
 
-					<Badge
-						variant={isCurrent ? "secondary" : "ghost"}
-						className={`ftext-3xs sm:ftext-2xs px-1.5 py-0 font-semibold ${
-							isCurrent ? "text-primary-foreground" : "fmuted"
-						}`}
-					>
-						{challenge.category}
-					</Badge>
+					<div className="fc gap-1">
+						<Badge
+							variant="outline"
+							title={`Difficulty: ${diffLabel}`}
+							className={`p-1 border ${
+								isCurrent
+									? diffStyles
+									: "fmuted border-border/40"
+							}`}
+						>
+							<DifficultyIcon
+								size={12}
+								weight="bold"
+								className="sh0"
+							/>
+						</Badge>
+						<Badge
+							variant={isCurrent ? "secondary" : "ghost"}
+							className={`ftext-3xs sm:ftext-2xs px-1.5 py-0 font-semibold ${
+								isCurrent ? "text-primary-foreground" : "fmuted"
+							}`}
+						>
+							{challenge.category}
+						</Badge>
+					</div>
 				</div>
 
 				{isCurrent && (
