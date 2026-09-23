@@ -4,6 +4,7 @@ import {
 	CalendarDotsIcon,
 	FloppyDiskIcon,
 	GearIcon,
+	RepeatIcon,
 } from "@phosphor-icons/react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -20,9 +21,19 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import type { PlanWithStructure } from "@/db/schema";
 import { cn } from "@/lib/utils";
+import { WEEKDAY_NAMES } from "@/lib/weekday-anchor";
 import { PlanSettingsCardSkeleton } from "@/skeletons";
+
+const NO_ANCHOR = "none";
 
 interface PlanSettingsCardProps {
 	plan: PlanWithStructure;
@@ -39,12 +50,18 @@ export function PlanSettingsCard({
 	const [startDate, setStartDate] = useState<Date | undefined>(
 		plan.startDate ? new Date(plan.startDate) : undefined,
 	);
+	const [anchor, setAnchor] = useState<string>(
+		plan.anchorWeekday != null ? String(plan.anchorWeekday) : NO_ANCHOR,
+	);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		setName(plan.name);
 		setVersion(plan.version);
 		setStartDate(plan.startDate ? new Date(plan.startDate) : undefined);
+		setAnchor(
+			plan.anchorWeekday != null ? String(plan.anchorWeekday) : NO_ANCHOR,
+		);
 	}, [plan]);
 
 	const handleSave = async () => {
@@ -54,6 +71,7 @@ export function PlanSettingsCard({
 				name: name.trim(),
 				version: Number(version),
 				startDate: startDate ? startDate.toISOString() : null,
+				anchorWeekday: anchor === NO_ANCHOR ? null : Number(anchor),
 			});
 			toast.success("Plan updated", {
 				description: `"${name.trim()}" (v${version}) has been updated successfully.`,
@@ -79,7 +97,7 @@ export function PlanSettingsCard({
 			/>
 
 			<CardContent className="p-4 pt-1 fcol4">
-				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
 					<div className="space-y-1">
 						<span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground block">
 							Plan Name
@@ -138,6 +156,47 @@ export function PlanSettingsCard({
 								/>
 							</PopoverContent>
 						</Popover>
+					</div>
+
+					<div className="space-y-1">
+						<span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground block">
+							Weekday Anchor
+						</span>
+						<Select
+							value={anchor}
+							onValueChange={(value) =>
+								setAnchor(value ?? NO_ANCHOR)
+							}
+						>
+							<SelectTrigger className="rounded-none h-8 text-xs border-border/50 bg-background/50">
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent className="rounded-none">
+								<SelectItem
+									value={NO_ANCHOR}
+									label="Rotation"
+									className="text-xs rounded-none"
+								>
+									<span className="fcy gap-1.5">
+										<RepeatIcon
+											className="size-3"
+											weight="bold"
+										/>
+										Rotation
+									</span>
+								</SelectItem>
+								{WEEKDAY_NAMES.map((day, i) => (
+									<SelectItem
+										key={day}
+										value={i.toString()}
+										label={`Starts on ${day}`}
+										className="text-xs rounded-none"
+									>
+										Starts on {day}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
 					</div>
 				</div>
 

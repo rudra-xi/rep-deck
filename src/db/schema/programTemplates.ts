@@ -23,6 +23,8 @@ export const programTemplates = pgTable(
 		startDate: timestamp("start_date", { withTimezone: true }).defaultNow(),
 		endDate: timestamp("end_date", { withTimezone: true }),
 		active: boolean("active").notNull().default(false),
+		anchorWeekday: integer("anchor_weekday"),
+
 		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
 			.defaultNow(),

@@ -8,6 +8,7 @@ import { CardsHeader } from "@/common";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { PlanWithStructure } from "@/db/schema";
+import { deriveWeekdayShort } from "@/lib/weekday-anchor";
 import {
 	CreateDayDialog,
 	DeleteDayDialog,
@@ -98,13 +99,18 @@ export function PlanDetailsCard({
 										: "border-border/40 bg-background/50 text-muted-foreground hover:text-foreground hover:border-primary/40"
 								}`}
 							>
-								<div className="fcy gap-2">
-									<span className="text-[10px] font-bold px-1.5 py-0.5 bg-background border border-border/50 text-primary">
-										Day {day.dayIndex}
-									</span>
+								<div className="fcy gap-2 min-w-0">
 									<span className="line-clamp-1">
 										{day.label}
 									</span>
+									{plan.anchorWeekday != null && (
+										<span className="ftext-2xs fmuted">
+											{deriveWeekdayShort(
+												plan.anchorWeekday,
+												day.dayIndex,
+											)}
+										</span>
+									)}
 								</div>
 								<div className="fcy gap-1">
 									<EditDayDialog

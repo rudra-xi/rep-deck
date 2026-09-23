@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { CardsHeader } from "@/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { deriveWeekdayShort } from "@/lib/weekday-anchor";
 
 interface ProgramDay {
 	id: string;
@@ -16,6 +17,7 @@ interface DaySelectorProps {
 	programName?: string;
 	days?: ProgramDay[];
 	selectedDayIndex: number;
+	anchorWeekday?: number | null;
 	onSelectDay: (dayIndex: number) => void;
 }
 
@@ -23,6 +25,7 @@ export function DaySelector({
 	programName = "",
 	days = [],
 	selectedDayIndex,
+	anchorWeekday,
 	onSelectDay,
 }: DaySelectorProps) {
 	const handleDaySelect = (day: ProgramDay) => {
@@ -62,6 +65,10 @@ export function DaySelector({
 					<div className="fwrap gap-2">
 						{days.map((day) => {
 							const isActive = day.dayIndex === selectedDayIndex;
+							const derived = deriveWeekdayShort(
+								anchorWeekday ?? null,
+								day.dayIndex,
+							);
 							return (
 								<Button
 									key={day.id}
@@ -82,7 +89,12 @@ export function DaySelector({
 										/>
 									)}
 									<span>
-										{day.dayIndex}. {day.label}
+										{day.label}
+										{derived && (
+											<span className="ftext-2xs fmuted ml-1">
+												· {derived}
+											</span>
+										)}
 									</span>
 								</Button>
 							);

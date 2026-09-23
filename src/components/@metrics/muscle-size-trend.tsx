@@ -143,63 +143,59 @@ export function MuscleSizeTrend({
 
 	return (
 		<Card size="sm" className="relative fcard-flat card-ease">
-			<CardsHeader
-				icon={HeartbeatIcon}
-				title="Muscle Size"
-				trailing={
-					growth && (
-						<div className="flex gap-2">
-							{(
-								Object.entries(growth) as Array<
-									[
-										keyof typeof muscleSizeChartConfig,
-										number | null,
-									]
-								>
-							)
-								.filter(([, v]) => v != null)
-								.map(([key, value]) => {
-									const cfg = muscleSizeChartConfig[key];
-									if (!cfg || value == null) return null;
-
-									return (
-										<div
-											key={key}
-											className="fcy gap-1 px-1.5 py-0.5 border bg-background/50 h-5"
-											style={{
-												borderColor: `color-mix(in oklch, ${cfg.color} 40%, transparent)`,
-												backgroundColor: `color-mix(in oklch, ${cfg.color} 10%, transparent)`,
-											}}
-										>
-											<span
-												className="size-1.5 rounded-full sh0"
-												style={{
-													backgroundColor: cfg.color,
-												}}
-											/>
-											<span
-												className="ftext-3xs fupper font-bold"
-												style={{ color: cfg.color }}
-											>
-												{String(key).slice(0, 3)}
-											</span>
-											<span
-												className="ftext-3xs  tabular-nums font-bold"
-												style={{ color: cfg.color }}
-											>
-												{value > 0 ? "+" : ""}
-												{value.toFixed(1)}
-												{measurementUnit}
-											</span>
-										</div>
-									);
-								})}
-						</div>
-					)
-				}
-			/>
+			<CardsHeader icon={HeartbeatIcon} title="Muscle Size" />
 
 			<CardContent className="p-4 pt-1 fcol3">
+				{growth && (
+					<div className="flex gap-2">
+						{(
+							Object.entries(growth) as Array<
+								[
+									keyof typeof muscleSizeChartConfig,
+									number | null,
+								]
+							>
+						)
+							.filter(([, v]) => v != null)
+							.map(([key, value]) => {
+								const cfg = muscleSizeChartConfig[key];
+								if (!cfg || value == null) return null;
+
+								return (
+									<div
+										key={key}
+										className="fcy gap-1 px-1.5 py-0.5 border bg-background/50 h-5"
+										style={{
+											borderColor: `color-mix(in oklch, ${cfg.color} 40%, transparent)`,
+											backgroundColor: `color-mix(in oklch, ${cfg.color} 10%, transparent)`,
+										}}
+									>
+										<span
+											className="size-1.5 rounded-full sh0"
+											style={{
+												backgroundColor: cfg.color,
+											}}
+										/>
+										<span
+											className="ftext-3xs fupper font-bold"
+											style={{ color: cfg.color }}
+										>
+											{String(key).slice(0, 3)}
+										</span>
+										<span
+											className="ftext-3xs tabular-nums font-bold"
+											style={{ color: cfg.color }}
+										>
+											{value > 0 ? "+" : ""}
+											{value.toFixed(1)}
+											{measurementUnit}
+										</span>
+									</div>
+								);
+							})}
+					</div>
+				)}
+
 				<ChartContainer
 					config={muscleSizeChartConfig}
 					className="h-[200px] sm:h-[220px] w-full"

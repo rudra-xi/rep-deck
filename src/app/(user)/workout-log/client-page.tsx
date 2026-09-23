@@ -20,6 +20,7 @@ import {
 	useExercisePerformance,
 	useWorkoutDraft,
 } from "@/hooks";
+import { todayDayIndex } from "@/lib/weekday-anchor";
 import type { LoggedSet } from "@/types";
 import {
 	ActiveSessionSummary,
@@ -56,13 +57,34 @@ export default function WorkoutLogClientView({
 		useExercisePerformance(currentDay?.exercises ?? []);
 
 	useEffect(() => {
-		const dayExists = initialPlan?.days?.some(
+		if (!initialPlan) return;
+
+		// If the plan is anchored, auto-select today's day (if any).
+		if (initialPlan.anchorWeekday != null) {
+			const todaysIndex = todayDayIndex(
+				initialPlan.anchorWeekday,
+				initialPlan.days.length,
+			);
+
+			if (todaysIndex != null) {
+				const todaysDay = initialPlan.days.find(
+					(d) => d.dayIndex === todaysIndex,
+				);
+				if (todaysDay) {
+					setSelectedDayIndex(todaysDay.dayIndex);
+					return;
+				}
+			}
+		}
+
+		const dayExists = initialPlan.days.some(
 			(d) => d.dayIndex === selectedDayIndex,
 		);
-		if (!dayExists && initialPlan?.days?.length) {
+		if (!dayExists && initialPlan.days.length) {
 			setSelectedDayIndex(initialPlan.days[0].dayIndex);
 		}
-	}, [initialPlan, selectedDayIndex, setSelectedDayIndex]);
+		
+	}, [initialPlan?.id, initialPlan?.anchorWeekday]);
 
 	const handleAddExerciseSets = (
 		newSets: Array<Omit<LoggedSet, "id"> & { templateId?: string }>,
@@ -151,6 +173,7 @@ export default function WorkoutLogClientView({
 					programName={initialPlan.name}
 					days={initialPlan.days || []}
 					selectedDayIndex={selectedDayIndex}
+					anchorWeekday={initialPlan.anchorWeekday}
 					onSelectDay={setSelectedDayIndex}
 				/>
 			</div>

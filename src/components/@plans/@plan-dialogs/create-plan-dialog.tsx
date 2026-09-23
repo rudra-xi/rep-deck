@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarIcon, PlusIcon } from "@phosphor-icons/react";
+import { CalendarIcon, PlusIcon, RepeatIcon } from "@phosphor-icons/react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,7 +24,17 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { useDialogForm } from "@/hooks";
+import { WEEKDAY_NAMES } from "@/lib/weekday-anchor";
+
+const NO_ANCHOR = "none";
 
 export function CreatePlanDialog() {
 	const router = useRouter();
@@ -37,7 +47,9 @@ export function CreatePlanDialog() {
 				router.refresh();
 			},
 		});
+
 	const [startDate, setStartDate] = useState<Date | undefined>(new Date());
+	const [anchor, setAnchor] = useState<string>(NO_ANCHOR);
 
 	const handleFormSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -48,9 +60,10 @@ export function CreatePlanDialog() {
 				await createPlan({
 					name: name.trim(),
 					startDate: startDate ? startDate.toISOString() : undefined,
+					anchorWeekday: anchor === NO_ANCHOR ? null : Number(anchor),
 				});
 			});
-		} catch (_error) {
+		} catch {
 			toast.error("Failed to create plan", {
 				description: "There was an error creating the plan.",
 			});
@@ -59,6 +72,7 @@ export function CreatePlanDialog() {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
+		
 			<DialogTrigger
 				nativeButton={false}
 				render={
@@ -117,7 +131,6 @@ export function CreatePlanDialog() {
 							<span className="ftext-xs2 font-medium fupper fmuted">
 								Plan Name
 							</span>
-
 							<Input
 								placeholder="e.g., Push Pull Legs, Hypertrophy Split"
 								value={name}
@@ -160,6 +173,57 @@ export function CreatePlanDialog() {
 									/>
 								</PopoverContent>
 							</Popover>
+						</div>
+
+						<div className="space-y-1">
+							<div className="fcb">
+								<span className="ftext-xs2 font-medium fupper fmuted">
+									Anchor to Weekday
+								</span>
+								<span className="ftext-2xs fmuted">
+									Optional
+								</span>
+							</div>
+							<Select
+								value={anchor}
+								onValueChange={(value) =>
+									setAnchor(value ?? NO_ANCHOR)
+								}
+							>
+								<SelectTrigger className="rounded-none h-8 text-xs border-border/50 bg-background/50">
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent className="rounded-none">
+									<SelectItem
+										value={NO_ANCHOR}
+										label="No anchor (rotation)"
+										className="text-xs rounded-none"
+									>
+										<span className="fcy gap-1.5">
+											<RepeatIcon
+												className="size-3"
+												weight="bold"
+											/>
+											No anchor (rotation)
+										</span>
+									</SelectItem>
+									{WEEKDAY_NAMES.map((day, i) => (
+										<SelectItem
+											key={day}
+											value={i.toString()}
+											label={`Starts on ${day}`}
+											className="text-xs rounded-none"
+										>
+											Starts on {day}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<p className="ftext-2xs fmuted pt-1">
+								{anchor === NO_ANCHOR
+									? "Your plan cycles through the days in order, with no fixed weekday."
+									: `Day 1 is ${WEEKDAY_NAMES[Number(anchor)]}, day 2 is the next weekday, and so on.`}
+							</p>
 						</div>
 					</div>
 

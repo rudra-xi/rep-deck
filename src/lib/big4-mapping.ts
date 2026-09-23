@@ -1,7 +1,6 @@
 export type Big4Key = "squat" | "bench" | "deadlift" | "ohp";
 
 export const BIG4_EXERCISE_MAP: Record<string, Big4Key> = {
-
 	"barbell back squat": "squat",
 	"back squat": "squat",
 	"barbell squat": "squat",

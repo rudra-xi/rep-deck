@@ -145,7 +145,10 @@ export default function PlansClientView({
 					</div>
 
 					<div className="lg:col-span-2 space-y-3 w-full">
-						<DayExercisesList day={selectedDay} />
+						<DayExercisesList
+							day={selectedDay}
+							anchorWeekday={activePlan.anchorWeekday}
+						/>
 					</div>
 				</div>
 			</div>

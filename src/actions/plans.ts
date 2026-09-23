@@ -11,6 +11,7 @@ import {
 	programTemplates,
 } from "@/db/schema";
 import { toCapitalized } from "@/lib/to-capitalized";
+import { isValidWeekday } from "@/lib/weekday-anchor";
 
 async function requireAuth() {
 	const { supabaseUser } = await getCurrentUser();
@@ -62,6 +63,7 @@ export async function createPlan(data: {
 	name: string;
 	version?: number;
 	startDate?: string | null;
+	anchorWeekday?: number | null;
 }) {
 	const user = await requireAuth();
 	if (!user) return { success: false, error: "Unauthorized" };
@@ -73,6 +75,10 @@ export async function createPlan(data: {
 			name: toCapitalized(data.name),
 			version: data.version ?? 1,
 			startDate: data.startDate ? new Date(data.startDate) : null,
+			anchorWeekday:
+				data.anchorWeekday != null && isValidWeekday(data.anchorWeekday)
+					? data.anchorWeekday
+					: null,
 			active: false,
 		})
 		.returning();
@@ -83,7 +89,12 @@ export async function createPlan(data: {
 
 export async function updatePlan(
 	planId: string,
-	data: { name?: string; version?: number; startDate?: string | null },
+	data: {
+		name?: string;
+		version?: number;
+		startDate?: string | null;
+		anchorWeekday?: number | null;
+	},
 ) {
 	const user = await requireAuth();
 	if (!user) return { success: false, error: "Unauthorized" };
@@ -95,6 +106,13 @@ export async function updatePlan(
 			...(data.version !== undefined && { version: data.version }),
 			...(data.startDate !== undefined && {
 				startDate: data.startDate ? new Date(data.startDate) : null,
+			}),
+			...(data.anchorWeekday !== undefined && {
+				anchorWeekday:
+					data.anchorWeekday != null &&
+					isValidWeekday(data.anchorWeekday)
+						? data.anchorWeekday
+						: null,
 			}),
 		})
 		.where(

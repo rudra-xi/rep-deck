@@ -17,6 +17,7 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import type { DayWithExercises } from "@/db/schema";
+import { deriveWeekdayShort } from "@/lib/weekday-anchor";
 import {
 	CreateExerciseDialog,
 	DeleteExerciseDialog,
@@ -26,14 +27,20 @@ import { DayExercisesListSkeleton } from "@/skeletons";
 
 interface DayExercisesListProps {
 	day?: DayWithExercises;
+	anchorWeekday?: number | null;
 	loading?: boolean;
 }
 
 export function DayExercisesList({
 	day,
+	anchorWeekday,
 	loading = false,
 }: DayExercisesListProps) {
 	const router = useRouter();
+
+	const derived = day
+		? deriveWeekdayShort(anchorWeekday ?? null, day.dayIndex)
+		: null;
 
 	const handleAddExercise = async (data: {
 		programDayId: string;
@@ -96,11 +103,13 @@ export function DayExercisesList({
 		);
 	}
 
+	if (!day) return null;
+
 	return (
 		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeader
 				icon={SunDimIcon}
-				title={`Day ${day.dayIndex} – ${day.label}`}
+				title={derived ? `${day.label} · ${derived}` : day.label}
 				trailing={
 					<CreateExerciseDialog
 						programDayId={day.id}

@@ -31,7 +31,6 @@ function migrate(raw: unknown): ExerciseInputsState {
 	for (const [exerciseId, value] of Object.entries(raw)) {
 		if (!value || typeof value !== "object") continue;
 
-	
 		if ("sets" in value && "note" in value) {
 			result[exerciseId] = value as ExerciseState;
 			continue;
