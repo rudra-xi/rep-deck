@@ -18,12 +18,12 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-	getItemsByVersion,
 	type RoadmapItem,
 	type RoadmapStatus,
 	STATUS_META,
 	VERSION_META,
-} from "@/lib/roadmap";
+} from "@/constants";
+import { getItemsByVersion } from "@/lib/roadmap";
 import { cn } from "@/lib/utils";
 
 const STATUS_ICONS: Record<RoadmapStatus, React.ElementType> = {
@@ -143,7 +143,7 @@ export function RoadmapDialog() {
 				}
 			/>
 
-			<DialogContent className="w-[calc(100vw-2rem)] max-w-lg max-h-[90vh] p-0 rounded-none border-border/50 bg-card/95 backdrop-blur-sm fcol gap-0">
+			<DialogContent className="w-[calc(100vw-2rem)] max-w-lg max-h-[90vh] p-0 rounded-none border-border/50 bg-card/95 backdrop-blur-sm flex flex-col gap-0 overflow-hidden">
 				<DialogHeader className="p-5 pb-3 border-b border-border/40 sh0">
 					<DialogTitle className="text-xs font-bold uppercase tracking-wider text-foreground fcy gap-2.5">
 						<div className="fc border border-primary/30 bg-primary/10 p-1.5 text-primary rounded-md sh0">
