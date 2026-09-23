@@ -1,3 +1,5 @@
+import { CURRENT_VERSION } from "@/constants";
+
 export const SUPPORT_EMAIL = "xi.rudra.code@gmail.com";
 export const GITHUB_REPO = "https://github.com/rudra-xi/rep-deck";
 export const GITHUB_ISSUES = `${GITHUB_REPO}/issues`;
@@ -8,13 +10,24 @@ interface MailtoOptions {
 }
 
 export function buildMailtoUrl({ subject, body }: MailtoOptions) {
-	const params = new URLSearchParams({ subject });
-	if (body) params.set("body", body);
-	return `mailto:${SUPPORT_EMAIL}?${params.toString()}`;
+	const parts: string[] = [];
+
+	if (subject) {
+		parts.push(`subject=${encodeURIComponent(subject)}`);
+	}
+
+	if (body) {
+		parts.push(`body=${encodeURIComponent(body)}`);
+	}
+
+	const query = parts.join("&");
+	return query
+		? `mailto:${SUPPORT_EMAIL}?${query}`
+		: `mailto:${SUPPORT_EMAIL}`;
 }
 
 export function buildFeedbackMailtoUrl({
-	appVersion = "v0.1.0",
+	appVersion = CURRENT_VERSION,
 	userAgent,
 }: {
 	appVersion?: string;
@@ -44,7 +57,7 @@ export function buildFeedbackMailtoUrl({
 }
 
 export function buildPrivacyMailtoUrl({
-	appVersion = "v0.1.0",
+	appVersion = CURRENT_VERSION,
 }: {
 	appVersion?: string;
 } = {}) {
@@ -67,7 +80,7 @@ export function buildPrivacyMailtoUrl({
 }
 
 export function buildTermsMailtoUrl({
-	appVersion = "v0.1.0",
+	appVersion = CURRENT_VERSION,
 }: {
 	appVersion?: string;
 } = {}) {

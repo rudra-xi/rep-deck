@@ -7,27 +7,21 @@ import {
 	EnvelopeSimpleIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { CardsHeader } from "@/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { buildMailtoUrl, GITHUB_ISSUES } from "@/lib/contact";
-
-const FEEDBACK_MAILTO = buildMailtoUrl({
-	subject: "Rep Deck Feedback",
-	body: [
-		"Hi Rudra,",
-		"",
-		"Here's my feedback on Rep Deck:",
-		"",
-		"— ",
-		"",
-		"---",
-		"App version: v0.1.0",
-		"Browser/OS: ",
-	].join("\n"),
-});
+import { buildFeedbackMailtoUrl, GITHUB_ISSUES } from "@/lib/contact";
 
 export function FeedbackSection() {
+	const [feedbackMailto, setFeedbackMailto] = useState(
+		buildFeedbackMailtoUrl({ userAgent: "" }),
+	);
+
+	useEffect(() => {
+		setFeedbackMailto(buildFeedbackMailtoUrl());
+	}, []);
+
 	return (
 		<Card
 			size="sm"
@@ -53,7 +47,7 @@ export function FeedbackSection() {
 						size="sm"
 						className="h-9 px-3 text-xs font-semibold rounded-none border-border/60 gap-2 justify-start hover:border-primary/50 hover:bg-primary/5 hover:text-primary base-ease group"
 						render={
-							<Link href={FEEDBACK_MAILTO}>
+							<Link href={feedbackMailto}>
 								<div className="fc border border-primary/20 bg-primary/5 p-1 text-primary rounded-md sh0 group-hover:bg-primary/10 transition-colors">
 									<EnvelopeSimpleIcon
 										className="size-3.5"

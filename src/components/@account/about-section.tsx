@@ -8,8 +8,8 @@ import {
 import Link from "next/link";
 import { CardsHeader, Logo } from "@/common";
 import { Card, CardContent } from "@/components/ui/card";
+import { CURRENT_VERSION } from "@/constants";
 import { GITHUB_REPO } from "@/lib/contact";
-import { CURRENT_VERSION } from "@/lib/roadmap";
 import { RoadmapDialog } from "./roadmap-dialog";
 
 export function AboutSection() {
