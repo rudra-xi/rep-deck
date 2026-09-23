@@ -38,9 +38,9 @@ async function seedUser() {
 
 	await db.insert(users).values({
 		id: SEED_USER_ID,
-		email: "rudra@repdeck.app",
-		name: "rudra",
-		avatarSeed: "thumb-2e2a4a9t",
+		email: "",
+		name: "Dummy Data",
+		avatarSeed: "",
 	});
 	console.log("✓ User seeded");
 }
