@@ -56,7 +56,7 @@ Rep Deck is a strength-training tracker built for lifters who care about raw pro
 
 ## Architecture & Design Patterns 🏗️
 
-```plaintext
+```markdown
 rep-deck/
 ├── src/
 │   ├── app/                      # Next.js App Router
@@ -77,7 +77,7 @@ rep-deck/
 │   │   ├── @progress/
 │   │   ├── @workout-log/
 │   │   └── ui/                   # Design-system primitives
-│   ├── constants/                # Preset exercises, rep ranges, copy, navigation, roadmap           # Versions, roadmap items, status meta
+│   ├── constants/                # Preset exercises, rep ranges, copy, navigation, roadmap, Versions, roadmap items, status meta
 │   ├── db/
 │   │   ├── index.ts              # Singleton Drizzle client
 │   │   ├── schema/               # Table definitions, one file per table
@@ -99,7 +99,7 @@ rep-deck/
 1. **Calendar Anchoring as a Plan Property**
    A plan has an optional `anchorWeekday` (0=Sun…6=Sat). When set, every day derives its calendar weekday by offset:
 
-    ```
+    ```math
     derivedWeekday = (anchorWeekday + (dayIndex - 1)) % 7
     ```
 
@@ -114,7 +114,7 @@ rep-deck/
 4. **Estimated 1RM Engine**
    Per-set estimated 1RM is computed using the Epley formula:
 
-    ```
+    ```math
     1RM = weight × (1 + reps / 30)
     ```
 
