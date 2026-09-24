@@ -6,6 +6,7 @@ import { HowItWorks } from "./how-it-works";
 import { ShowcaseSection } from "./showcase-section";
 import { Social } from "./social";
 import { StatsBar } from "./stats-bar";
+import { Testimonials } from "./testimonials";
 import { TrustBadges } from "./trust-badges";
 
 export {
@@ -17,5 +18,6 @@ export {
 	Social,
 	ShowcaseSection,
 	StatsBar,
+	Testimonials,
 	TrustBadges,
 };

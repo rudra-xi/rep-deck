@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 
 const STATS = [
-	{ value: 99, suffix: "%", label: "Uptime" },
 	{ value: 4, suffix: " Big Lifts", label: "Auto-Tracked" },
-	{ value: 8, suffix: "", label: "Measurement Points" },
-	{ value: 8, suffix: " Dark", label: "Custom Themes" },
+	{ value: 6, suffix: "", label: "Body Measurements" },
+	{ value: 8, suffix: " Themes", label: "Pick Your Look" },
+	{ value: 100, suffix: "%", label: "Data Ownership" },
 ];
 
 function useCountUp(target: number, duration = 1500) {

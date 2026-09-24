@@ -1,28 +1,7 @@
-// biome-ignore-all lint/suspicious/noArrayIndexKey: fixed-length decorative star rating
 "use client";
 
 import { QuotesIcon, StarIcon } from "@phosphor-icons/react";
-
-const TESTIMONIALS = [
-	{
-		quote: "Finally stopped guessing what I lifted last week. The inline previous-session numbers changed how I train.",
-		author: "Arjun M.",
-		role: "Powerlifter",
-		initials: "AM",
-	},
-	{
-		quote: "Switched from v3 to v4 mid-block and all my history came with me. No other app does this cleanly.",
-		author: "Priya K.",
-		role: "Hypertrophy Enthusiast",
-		initials: "PK",
-	},
-	{
-		quote: "The Big 4 trend chart is the only reason I stopped keeping a paper log. It just works.",
-		author: "Rohan S.",
-		role: "Intermediate Lifter",
-		initials: "RS",
-	},
-];
+import { testimonialsData } from "@/constants";
 
 export const Testimonials = () => {
 	return (
@@ -30,15 +9,15 @@ export const Testimonials = () => {
 			<div className="container max-w-6xl mx-auto space-y-12">
 				<div className="text-center space-y-4 max-w-2xl mx-auto">
 					<h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-wider">
-						Built for lifters.
+						Trusted by lifters.
 					</h2>
 					<p className="text-muted-foreground text-base sm:text-lg">
-						Real feedback from the people using Rep Deck daily.
+						Real feedback from people using Rep Deck daily.
 					</p>
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-					{TESTIMONIALS.map((t) => (
+					{testimonialsData.map((t) => (
 						<div
 							key={t.author}
 							className="relative border border-border/60 bg-card/50 p-6 space-y-4 hover:border-primary/50 transition-colors"
@@ -49,9 +28,9 @@ export const Testimonials = () => {
 							/>
 
 							<div className="flex gap-0.5">
-								{Array.from({ length: 5 }).map((_, i) => (
+								{["s1", "s2", "s3", "s4", "s5"].map((id) => (
 									<StarIcon
-										key={i}
+										key={id}
 										className="size-3.5 text-primary"
 										weight="fill"
 									/>
@@ -59,7 +38,7 @@ export const Testimonials = () => {
 							</div>
 
 							<p className="text-sm text-foreground leading-relaxed italic">
-								"{t.quote}"
+								&ldquo;{t.quote}&rdquo;
 							</p>
 
 							<div className="fcy gap-3 pt-2 border-t border-border/40">
@@ -67,10 +46,10 @@ export const Testimonials = () => {
 									{t.initials}
 								</div>
 								<div className="min-w-0">
-									<p className="text-xs font-bold text-foreground ">
+									<p className="text-xs font-bold text-foreground">
 										{t.author}
 									</p>
-									<p className="ftext-2xs text-muted-foreground uppercase tracking-wider ">
+									<p className="ftext-2xs text-muted-foreground uppercase tracking-wider">
 										{t.role}
 									</p>
 								</div>

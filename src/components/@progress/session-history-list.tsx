@@ -92,7 +92,7 @@ export function SessionHistoryList({
 			<CardContent className="p-4 pt-1 fcol4">
 				<ChartContainer
 					config={sessionChartConfig}
-					className="h-[140px] w-full border-b border-border/30 pb-2"
+					className="h-35 w-full border-b border-border/30 pb-2"
 				>
 					<BarChart
 						accessibilityLayer

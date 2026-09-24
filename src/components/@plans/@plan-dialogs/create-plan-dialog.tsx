@@ -72,7 +72,6 @@ export function CreatePlanDialog() {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-		
 			<DialogTrigger
 				nativeButton={false}
 				render={

@@ -38,23 +38,23 @@ export const Hero = () => {
 						className="px-3.5 pt-2.5 pb-2 text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-primary border-primary/30 bg-primary/5 gap-1.5"
 					>
 						<SparkleIcon className="size-3" weight="fill" />
-						Built for lifters who demand progress
+						For lifters who don't leave progress to chance
 					</Badge>
 
 					<h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black uppercase tracking-[-0.02em] leading-[0.95] mt-5 sm:mt-6">
 						<span className="block text-foreground">
-							Stop guessing.
+							Less guessing.
 						</span>
 						<span className="block bg-linear-to-r from-primary via-primary to-primary/60 bg-clip-text text-transparent">
-							Start overloading.
+							More lifting.
 						</span>
 					</h1>
 
 					<p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-md sm:max-w-xl mx-auto lg:mx-0 leading-relaxed mt-5 sm:mt-7">
-						Log every set in seconds. Track real strength gains,
-						analyze body composition trends, and optimize
-						progressive overload — all in one place, zero
-						spreadsheets required.
+						Log every set in seconds. Anchor your plan to a weekday
+						and the app shows you the right day. Track real strength
+						gains, analyze body composition, and never guess what
+						you lifted last week.
 					</p>
 
 					<div className="fcol sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-7 sm:pt-9">
@@ -85,7 +85,7 @@ export const Hero = () => {
 						</div>
 						<div className="fcy gap-1.5">
 							<span className="size-1.5 rounded-full bg-primary" />
-							Free forever plan
+							Weekday-anchored plans
 						</div>
 					</div>
 				</div>
@@ -102,7 +102,7 @@ export const Hero = () => {
 							placeholder="blur"
 							quality={95}
 							sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 700px"
-							className="object-cover object-left-top"
+							className="object-cover object-top-left"
 						/>
 
 						<div className="absolute inset-0 bg-linear-to-t from-background/60 via-transparent to-transparent pointer-events-none" />

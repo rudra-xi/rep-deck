@@ -6,14 +6,14 @@ import { ctaData } from "@/constants";
 
 const BULLETS = [
 	"No credit card required",
-	"Free forever tier",
-	"Import from any tracker",
+	"Free core tier",
+	"Works on any device",
 ];
 
 export const CTA = () => {
 	return (
 		<section className="w-full py-24 px-6 border-t border-border/40 relative overflow-hidden">
-			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[500px] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-125 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
 			<div className="container max-w-4xl mx-auto text-center space-y-6 relative">
 				<h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-wider">

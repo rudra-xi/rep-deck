@@ -1,32 +1,32 @@
 "use client";
 
 import {
-	CloudArrowUpIcon,
-	DeviceMobileIcon,
-	LightningIcon,
+	CalendarCheckIcon,
+	ChartLineUpIcon,
+	FloppyDiskIcon,
 	LockKeyIcon,
 } from "@phosphor-icons/react";
 
 const BADGES = [
-	{
-		icon: LightningIcon,
-		label: "Fast Logging",
-		description: "Sub-second set entry",
-	},
 	{
 		icon: LockKeyIcon,
 		label: "Private by Default",
 		description: "Your data, your control",
 	},
 	{
-		icon: DeviceMobileIcon,
-		label: "Mobile First",
-		description: "Built for the gym floor",
+		icon: CalendarCheckIcon,
+		label: "Weekday Anchoring",
+		description: "Auto-selects today's plan",
 	},
 	{
-		icon: CloudArrowUpIcon,
-		label: "Cloud Synced",
-		description: "Progress across devices",
+		icon: FloppyDiskIcon,
+		label: "Backdate Sessions",
+		description: "Log a missed workout",
+	},
+	{
+		icon: ChartLineUpIcon,
+		label: "Big 4 Trends",
+		description: "Estimated 1RM charts",
 	},
 ];
 
@@ -49,10 +49,10 @@ export const TrustBadges = () => {
 								/>
 							</div>
 							<div className="min-w-0 text-left">
-								<p className="text-xs font-bold uppercase tracking-wider text-foreground group-hover:text-primary transition-colors">
+								<p className="text-xs font-bold uppercase tracking-wider text-foreground">
 									{label}
 								</p>
-								<p className="text-[11px] text-muted-foreground  leading-snug">
+								<p className="text-[11px] text-muted-foreground leading-snug">
 									{description}
 								</p>
 							</div>

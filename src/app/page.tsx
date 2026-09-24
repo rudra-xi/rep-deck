@@ -10,6 +10,7 @@ import {
 	ShowcaseSection,
 	Social,
 	StatsBar,
+	// Testimonials,
 	TrustBadges,
 } from "@/landing";
 
@@ -30,6 +31,7 @@ export default async function Landing() {
 			<HowItWorks />
 			<Features />
 			<ShowcaseSection />
+			{/*<Testimonials />*/}
 			<FAQ />
 			<CTA />
 			<Social />
