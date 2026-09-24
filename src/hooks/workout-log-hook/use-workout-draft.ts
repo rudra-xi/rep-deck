@@ -6,6 +6,7 @@ export function useWorkoutDraft(initialDayIndex: number) {
 	const [loggedSets, setLoggedSets] = useState<LoggedSet[]>([]);
 	const [notes, setNotes] = useState("");
 	const [selectedDayIndex, setSelectedDayIndex] = useState(initialDayIndex);
+	const [sessionDate, setSessionDate] = useState<Date>(new Date());
 	const [isInitialized, setIsInitialized] = useState(false);
 	const [draftExists, setDraftExists] = useState(false);
 
@@ -53,6 +54,7 @@ export function useWorkoutDraft(initialDayIndex: number) {
 				loggedSets,
 				notes,
 				selectedDayIndex,
+				sessionDate: sessionDate.toISOString(),
 				timestamp: Date.now(),
 			};
 			localStorage.setItem(
@@ -63,7 +65,7 @@ export function useWorkoutDraft(initialDayIndex: number) {
 		} catch (error) {
 			console.error("Failed to save draft:", error);
 		}
-	}, [loggedSets, notes, selectedDayIndex, isInitialized]);
+	}, [loggedSets, notes, selectedDayIndex, isInitialized, sessionDate]);
 
 	useEffect(() => {
 		if (!isInitialized) return;
@@ -81,6 +83,7 @@ export function useWorkoutDraft(initialDayIndex: number) {
 		clearAllWorkoutData();
 		setLoggedSets([]);
 		setNotes("");
+		setSessionDate(new Date());
 		setDraftExists(false);
 	};
 
@@ -104,6 +107,8 @@ export function useWorkoutDraft(initialDayIndex: number) {
 		setNotes,
 		selectedDayIndex,
 		setSelectedDayIndex,
+		sessionDate,
+		setSessionDate,
 		isInitialized,
 		draftExists,
 		addSet,

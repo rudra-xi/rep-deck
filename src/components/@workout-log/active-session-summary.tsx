@@ -7,6 +7,7 @@ import {
 	PulseIcon,
 	TrophyIcon,
 } from "@phosphor-icons/react";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getLastSessionNote } from "@/actions/workout";
@@ -34,6 +35,7 @@ interface ActiveSessionSummaryProps {
 	performanceMap: Record<string, ExercisePerformanceWithPR | null>;
 	programId?: string;
 	dayIndex?: number;
+	sessionDate?: Date;
 	onSuccess?: () => void;
 }
 
@@ -52,6 +54,7 @@ export function ActiveSessionSummary({
 	performanceMap,
 	programId,
 	dayIndex,
+	sessionDate,
 	onSuccess,
 }: ActiveSessionSummaryProps) {
 	const [lastSessionNote, setLastSessionNote] = useState<string | null>(null);
@@ -152,7 +155,7 @@ export function ActiveSessionSummary({
 		});
 
 		try {
-			const result = await submitWorkout(loggedSets, notes);
+			const result = await submitWorkout(loggedSets, notes, sessionDate);
 			toast.dismiss(loadingToast);
 
 			if (result.success) {
@@ -191,7 +194,17 @@ export function ActiveSessionSummary({
 
 	return (
 		<Card size="sm" className="relative fcard-flat card-ease">
-			<CardsHeader icon={PulseIcon} title="Session Summary" />
+			<CardsHeader
+				icon={PulseIcon}
+				title="Session Summary"
+				trailing={
+					sessionDate && (
+						<span className="ftext-2xs fmuted">
+							{format(sessionDate, "PPP")}
+						</span>
+					)
+				}
+			/>
 
 			<CardContent className="p-4 pt-1 fcol4">
 				{loggedSets.length === 0 ? (

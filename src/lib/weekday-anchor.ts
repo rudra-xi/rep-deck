@@ -29,10 +29,6 @@ export function isValidWeekday(value: unknown): value is Weekday {
 	);
 }
 
-/**
- * Returns the derived calendar weekday for a given dayIndex,
- * or null if the plan has no anchor.
- */
 export function deriveWeekday(
 	anchorWeekday: number | null,
 	dayIndex: number,
@@ -42,9 +38,6 @@ export function deriveWeekday(
 	return offset as Weekday;
 }
 
-/**
- * Human-readable weekday name for a given day, or null if unanchored.
- */
 export function deriveWeekdayName(
 	anchorWeekday: number | null,
 	dayIndex: number,
@@ -53,14 +46,6 @@ export function deriveWeekdayName(
 	return wd == null ? null : WEEKDAY_NAMES[wd];
 }
 
-/**
- * Returns the dayIndex in a plan that falls on `weekday`, or null if
- * the plan doesn't cover that day (e.g. a 3-day plan on a 5th weekday).
- *
- * @param anchorWeekday  plan's anchor (0–6), or null
- * @param weekday        target weekday (0–6)
- * @param dayCount       number of days in the plan
- */
 export function dayIndexForWeekday(
 	anchorWeekday: number | null,
 	weekday: number,
@@ -75,10 +60,6 @@ export function dayIndexForWeekday(
 	return dayIndex <= dayCount ? dayIndex : null;
 }
 
-/**
- * Returns the dayIndex that corresponds to today's weekday,
- * or null if today isn't covered by the plan.
- */
 export function todayDayIndex(
 	anchorWeekday: number | null,
 	dayCount: number,
@@ -87,13 +68,19 @@ export function todayDayIndex(
 	return dayIndexForWeekday(anchorWeekday, new Date().getDay(), dayCount);
 }
 
-/**
- * Compact label like "Mon" / "Tue" for a day, or null if unanchored.
- */
 export function deriveWeekdayShort(
 	anchorWeekday: number | null,
 	dayIndex: number,
 ): string | null {
 	const wd = deriveWeekday(anchorWeekday, dayIndex);
 	return wd == null ? null : WEEKDAY_SHORT[wd];
+}
+
+export function dayIndexForDate(
+	anchorWeekday: number | null,
+	date: Date,
+	dayCount: number,
+): number | null {
+	if (anchorWeekday == null) return null;
+	return dayIndexForWeekday(anchorWeekday, date.getDay(), dayCount);
 }

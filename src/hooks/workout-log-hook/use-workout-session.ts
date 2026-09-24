@@ -16,7 +16,11 @@ export function useWorkoutSession({
 }: UseWorkoutSessionProps) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const submitWorkout = async (loggedSets: LoggedSet[], notes: string) => {
+	const submitWorkout = async (
+		loggedSets: LoggedSet[],
+		notes: string,
+		date?: Date,
+	) => {
 		if (loggedSets.length === 0) {
 			toast.error(
 				"Please add at least one set before completing the session.",
@@ -47,6 +51,7 @@ export function useWorkoutSession({
 				programId,
 				dayIndex,
 				notes,
+				date: date?.toISOString(),
 				sets: formattedSets,
 			});
 

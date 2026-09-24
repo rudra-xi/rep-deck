@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: workout-log session state is intentionally keyed on a subset of plan fields */
 "use client";
 
 import { FilePlusIcon } from "@phosphor-icons/react";
@@ -20,7 +21,7 @@ import {
 	useExercisePerformance,
 	useWorkoutDraft,
 } from "@/hooks";
-import { todayDayIndex } from "@/lib/weekday-anchor";
+import { dayIndexForDate } from "@/lib/weekday-anchor";
 import type { LoggedSet } from "@/types";
 import {
 	ActiveSessionSummary,
@@ -43,11 +44,26 @@ export default function WorkoutLogClientView({
 		setNotes,
 		selectedDayIndex,
 		setSelectedDayIndex,
+		sessionDate,
+		setSessionDate,
 		addSet,
 		clearDraft,
 	} = useWorkoutDraft(initialPlan?.days?.[0]?.dayIndex || 1);
 
 	const { clearInputs } = useExerciseInputs();
+
+	const scheduledDayIndex = initialPlan
+		? dayIndexForDate(
+				initialPlan.anchorWeekday,
+				sessionDate,
+				initialPlan.days.length,
+			)
+		: null;
+
+	const scheduledDay =
+		scheduledDayIndex != null
+			? initialPlan?.days.find((d) => d.dayIndex === scheduledDayIndex)
+			: null;
 
 	const currentDay = initialPlan?.days?.find(
 		(d) => d.dayIndex === selectedDayIndex,
@@ -59,22 +75,9 @@ export default function WorkoutLogClientView({
 	useEffect(() => {
 		if (!initialPlan) return;
 
-		// If the plan is anchored, auto-select today's day (if any).
-		if (initialPlan.anchorWeekday != null) {
-			const todaysIndex = todayDayIndex(
-				initialPlan.anchorWeekday,
-				initialPlan.days.length,
-			);
-
-			if (todaysIndex != null) {
-				const todaysDay = initialPlan.days.find(
-					(d) => d.dayIndex === todaysIndex,
-				);
-				if (todaysDay) {
-					setSelectedDayIndex(todaysDay.dayIndex);
-					return;
-				}
-			}
+		if (initialPlan.anchorWeekday != null && scheduledDayIndex != null) {
+			setSelectedDayIndex(scheduledDayIndex);
+			return;
 		}
 
 		const dayExists = initialPlan.days.some(
@@ -83,8 +86,7 @@ export default function WorkoutLogClientView({
 		if (!dayExists && initialPlan.days.length) {
 			setSelectedDayIndex(initialPlan.days[0].dayIndex);
 		}
-		
-	}, [initialPlan?.id, initialPlan?.anchorWeekday]);
+	}, [sessionDate, initialPlan?.id, initialPlan?.anchorWeekday]);
 
 	const handleAddExerciseSets = (
 		newSets: Array<Omit<LoggedSet, "id"> & { templateId?: string }>,
@@ -168,13 +170,21 @@ export default function WorkoutLogClientView({
 			/>
 
 			<div className="space-y-3 w-full">
-				<SectionTitleCard title="Current Plan" />
+				<SectionTitleCard title="Session" />
 				<DaySelector
 					programName={initialPlan.name}
 					days={initialPlan.days || []}
 					selectedDayIndex={selectedDayIndex}
 					anchorWeekday={initialPlan.anchorWeekday}
+					date={sessionDate}
+					onDateChange={setSessionDate}
 					onSelectDay={setSelectedDayIndex}
+					scheduledDayIndex={scheduledDayIndex}
+					scheduledDayLabel={
+						scheduledDay
+							? `Day ${scheduledDay.dayIndex} — ${scheduledDay.label}`
+							: null
+					}
 				/>
 			</div>
 
@@ -204,6 +214,7 @@ export default function WorkoutLogClientView({
 						performanceMap={performanceMap}
 						programId={initialPlan.id}
 						dayIndex={selectedDayIndex}
+						sessionDate={sessionDate}
 						onSuccess={handleClearDraft}
 					/>
 				</div>

@@ -309,6 +309,7 @@ export async function finishWorkoutSession(data: {
 	programId?: string;
 	dayIndex?: number;
 	notes?: string;
+	date?: string;
 	sets: Array<{
 		exerciseName: string;
 		templateId?: string;
@@ -362,6 +363,8 @@ export async function finishWorkoutSession(data: {
 			}
 		});
 
+		const sessionDate = data.date ? new Date(data.date) : new Date();
+
 		let prCount = 0;
 
 		const result = await db.transaction(async (tx) => {
@@ -372,7 +375,7 @@ export async function finishWorkoutSession(data: {
 					programId: data.programId || null,
 					dayIndex: data.dayIndex || null,
 					notes: data.notes?.trim() || null,
-					date: new Date(),
+					date: sessionDate,
 				})
 				.returning();
 
