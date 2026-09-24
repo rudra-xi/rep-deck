@@ -18,7 +18,6 @@ if (!USER_ID) {
 	process.exit(1);
 }
 
-// Narrowed from here on
 const SEED_USER_ID: string = USER_ID;
 
 const daysAgo = (n: number, hour = 18, minute = 0) => {
