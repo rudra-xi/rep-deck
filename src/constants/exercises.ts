@@ -53,7 +53,7 @@ export const PRESET_EXERCISES = [
 	// Lower Back
 	{ name: "Deadlift", type: "Lower Back" },
 	{ name: "Good Mornings", type: "Lower Back" },
-	{ name: "Hyperextensions (Back Extension)", type: "Lower Back" },
+	{ name: "Hyperextensions", type: "Lower Back" },
 
 	// Quadriceps
 	{ name: "Barbell Back Squat", type: "Quads" },
@@ -69,7 +69,7 @@ export const PRESET_EXERCISES = [
 	{ name: "Step-Ups", type: "Quads" },
 
 	// Hamstrings
-	{ name: "Romanian Deadlift (RDL)", type: "Hamstrings" },
+	{ name: "Romanian Deadlift", type: "Hamstrings" },
 	{ name: "Lying Leg Curl", type: "Hamstrings" },
 	{ name: "Seated Leg Curl", type: "Hamstrings" },
 	{ name: "Stiff-Legged Deadlift", type: "Hamstrings" },
@@ -99,7 +99,7 @@ export const PRESET_EXERCISES = [
 	{ name: "Wrist Curls", type: "Forearms" },
 
 	// Triceps
-	{ name: "Tricep Pushdown (Rope/Bar)", type: "Triceps" },
+	{ name: "Tricep Pushdown", type: "Triceps" },
 	{ name: "Skull Crushers", type: "Triceps" },
 	{ name: "Close Grip Bench Press", type: "Triceps" },
 	{ name: "Overhead Dumbbell Tricep Extension", type: "Triceps" },
@@ -135,22 +135,22 @@ export const PRESET_REP_RANGES = [
 	// Pure strength
 	"1-2",
 	"2-3",
-	"3-5",
+	"3-6",
 	"4-6",
 
 	// Strength–hypertrophy overlap
-	"5-8",
+	"4-8",
 	"6-8",
 
 	// Hypertrophy
 	"8-10",
 	"8-12",
 	"10-12",
-	"12-15",
+	"12-16",
 
 	// Endurance & pump
-	"15-20",
-	"20-25",
+	"16-20",
+	"20-26",
 	"25+",
 
 	// Intensity markers
@@ -166,7 +166,7 @@ export const TWELVE_WEEK_BENCHMARK: Record<string, number> = {
 	Thu: 12,
 	Fri: 12,
 	Sat: 12,
-	Sun: 0,
+	Sun: 12,
 };
 
 export const GUIDE_ITEMS = [
@@ -180,7 +180,7 @@ export const GUIDE_ITEMS = [
 	},
 	{
 		label: "Arms",
-		instruction: "Midpoint between shoulder and elbow, arm relaxed.",
+		instruction: "Midpoint between shoulder and elbow.",
 	},
 	{
 		label: "Forearms",
@@ -188,7 +188,7 @@ export const GUIDE_ITEMS = [
 	},
 	{
 		label: "Thighs",
-		instruction: "Midpoint between hip and knee, legs relaxed.",
+		instruction: "Midpoint between hip and knee.",
 	},
 	{
 		label: "Waist",
