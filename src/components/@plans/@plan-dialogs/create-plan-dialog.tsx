@@ -190,7 +190,11 @@ export function CreatePlanDialog() {
 								}
 							>
 								<SelectTrigger className="rounded-none h-8 text-xs border-border/50 bg-background/50">
-									<SelectValue />
+									<SelectValue>
+										{anchor === NO_ANCHOR
+											? "No anchor (rotation)"
+											: `Starts on ${WEEKDAY_NAMES[Number(anchor)]}`}
+									</SelectValue>
 								</SelectTrigger>
 								<SelectContent className="rounded-none">
 									<SelectItem
