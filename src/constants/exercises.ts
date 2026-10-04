@@ -5,6 +5,7 @@ export const PRESET_EXERCISES = [
 	{ name: "Low-to-High Cable Flyes", type: "Upper Chest" },
 	{ name: "Incline Dumbbell Flyes", type: "Upper Chest" },
 	{ name: "Reverse Grip Bench Press", type: "Upper Chest" },
+	{ name: "Landmine Press", type: "Upper Chest" },
 
 	// Mid / Lower Chest
 	{ name: "Flat Barbell Bench Press", type: "Chest" },
@@ -12,6 +13,7 @@ export const PRESET_EXERCISES = [
 	{ name: "Push-Ups", type: "Chest" },
 	{ name: "Pec Deck Flyes", type: "Chest" },
 	{ name: "Cable Flyes", type: "Chest" },
+	{ name: "Single-Arm Cable Flyes", type: "Chest" },
 	{ name: "Decline Barbell Bench Press", type: "Lower Chest" },
 	{ name: "Decline Dumbbell Press", type: "Lower Chest" },
 	{ name: "High-to-Low Cable Flyes", type: "Lower Chest" },
@@ -25,13 +27,15 @@ export const PRESET_EXERCISES = [
 	{ name: "Dumbbell Lateral Raise", type: "Side Delts" },
 	{ name: "Cable Lateral Raise", type: "Side Delts" },
 	{ name: "Machine Lateral Raise", type: "Side Delts" },
+	{ name: "Lu Raises", type: "Side Delts" },
 	{ name: "Upright Row", type: "Side Delts" },
 
-	// Rear Delts & Traps
+	// Rear Delts, Traps & Rotator Cuff
 	{ name: "Rear Delt Flyes", type: "Rear Delts" },
 	{ name: "Face Pull", type: "Rear Delts" },
 	{ name: "Reverse Cable Flyes", type: "Rear Delts" },
 	{ name: "Band Pull-Aparts", type: "Rear Delts" },
+	{ name: "Cable External Rotation", type: "Rear Delts" },
 	{ name: "Barbell Shrugs", type: "Traps" },
 	{ name: "Dumbbell Shrugs", type: "Traps" },
 
@@ -50,10 +54,13 @@ export const PRESET_EXERCISES = [
 	{ name: "Meadows Row", type: "Upper Back" },
 	{ name: "Rack Pulls", type: "Upper Back" },
 
-	// Lower Back
+	// Lower Back & Neck
 	{ name: "Deadlift", type: "Lower Back" },
+	{ name: "Deficit Deadlift", type: "Lower Back" },
 	{ name: "Good Mornings", type: "Lower Back" },
 	{ name: "Hyperextensions", type: "Lower Back" },
+	{ name: "Jefferson Curl", type: "Lower Back" },
+	{ name: "Neck Harness Extensions", type: "Neck" },
 
 	// Quadriceps
 	{ name: "Barbell Back Squat", type: "Quads" },
@@ -61,6 +68,7 @@ export const PRESET_EXERCISES = [
 	{ name: "Leg Press", type: "Quads" },
 	{ name: "Leg Extension", type: "Quads" },
 	{ name: "Hack Squat", type: "Quads" },
+	{ name: "Belt Squat", type: "Quads" },
 	{ name: "Goblet Squat", type: "Quads" },
 	{ name: "Bulgarian Split Squat", type: "Quads" },
 	{ name: "Walking Lunges", type: "Quads" },
@@ -81,13 +89,14 @@ export const PRESET_EXERCISES = [
 	{ name: "Cable Kickbacks", type: "Glutes" },
 	{ name: "Abductor Machine", type: "Glutes" },
 
-	// Calves & Adductors
+	// Calves, Shin & Adductors
 	{ name: "Standing Calf Raise", type: "Calves" },
 	{ name: "Seated Calf Raise", type: "Calves" },
 	{ name: "Donkey Calf Raise", type: "Calves" },
+	{ name: "Tibialis Raise", type: "Calves" },
 	{ name: "Adductor Machine", type: "Adductors" },
 
-	// Biceps & Forearms
+	// Biceps & Forearms / Grip
 	{ name: "Barbell Curl", type: "Biceps" },
 	{ name: "Dumbbell Curl", type: "Biceps" },
 	{ name: "Hammer Curl", type: "Biceps" },
@@ -97,6 +106,11 @@ export const PRESET_EXERCISES = [
 	{ name: "Cable Curl", type: "Biceps" },
 	{ name: "Reverse Grip Curl", type: "Forearms" },
 	{ name: "Wrist Curls", type: "Forearms" },
+	{ name: "Reverse Wrist Curls", type: "Forearms" },
+	{ name: "Dead Hangs", type: "Grip" },
+	{ name: "Plate Pinch Hold", type: "Grip" },
+	{ name: "Towel Pull-Ups", type: "Grip" },
+	{ name: "Hand Gripper Squeezes", type: "Grip" },
 
 	// Triceps
 	{ name: "Tricep Pushdown", type: "Triceps" },
@@ -109,12 +123,14 @@ export const PRESET_EXERCISES = [
 	// Core / Abs
 	{ name: "Plank", type: "Core" },
 	{ name: "Side Plank", type: "Core" },
+	{ name: "Pallof Press", type: "Core" },
 	{ name: "Hanging Leg Raises", type: "Core" },
 	{ name: "Cable Crunches", type: "Core" },
 	{ name: "Ab Rollout", type: "Core" },
 	{ name: "Russian Twists", type: "Core" },
 	{ name: "Captain's Chair Leg Raise", type: "Core" },
 	{ name: "Dragon Flags", type: "Core" },
+	{ name: "Suitcase Carry", type: "Core" },
 
 	// Full Body / Olympic / Conditioning
 	{ name: "Clean and Jerk", type: "Full Body" },
