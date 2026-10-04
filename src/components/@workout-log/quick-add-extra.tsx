@@ -93,8 +93,8 @@ export function QuickAddExtra({
 			<CardsHeader icon={AsteriskIcon} title="Add Extra Work" />
 
 			<CardContent className="p-4 pt-1">
-				<form onSubmit={handleSubmit} className="space-y-3">
-					<div className="space-y-1">
+				<form onSubmit={handleSubmit} className="fcol3">
+					<div className="fcol1">
 						<Combobox
 							items={PRESET_EXERCISES}
 							itemToStringValue={(
@@ -116,8 +116,8 @@ export function QuickAddExtra({
 								}
 								className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50 w-full"
 							/>
-							<ComboboxContent className="rounded-none border-secondary/50 bg-card max-h-48 overflow-y-auto">
-								<ComboboxEmpty className="text-xs text-muted-foreground p-2">
+							<ComboboxContent className="rounded-none border-secondary/50 bg-card overflow-y-auto">
+								<ComboboxEmpty className="text-xs fmuted p-2">
 									No matching exercise found.
 								</ComboboxEmpty>
 								<ComboboxList>
@@ -125,10 +125,10 @@ export function QuickAddExtra({
 										<ComboboxItem
 											key={item.name}
 											value={item}
-											className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer flex justify-between items-center"
+											className="text-xs rounded-none py-1.5 px-2 hover:bg-muted cursor-pointer fcb"
 										>
 											<span>{item.name}</span>
-											<span className="text-[10px] text-muted-foreground uppercase">
+											<span className="ftext-2xs fmuted fupper">
 												{item.type}
 											</span>
 										</ComboboxItem>
@@ -138,7 +138,7 @@ export function QuickAddExtra({
 						</Combobox>
 
 						{exerciseName.trim() && !isPreset && (
-							<p className="text-[10px] text-muted-foreground mt-0.5">
+							<p className="ftext-2xs fmuted mt-0.5">
 								Custom exercise: "{exerciseName.trim()}"
 							</p>
 						)}

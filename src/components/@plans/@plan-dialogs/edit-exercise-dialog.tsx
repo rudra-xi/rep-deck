@@ -145,9 +145,7 @@ export function EditExerciseDialog({
 							</span>
 							<Combobox
 								items={PRESET_EXERCISES}
-								itemToStringValue={(
-									item: PresetExercise | string | null,
-								) =>
+								itemToStringValue={(item: PresetExercise | string | null) =>
 									item == null
 										? ""
 										: typeof item === "string"
@@ -159,13 +157,11 @@ export function EditExerciseDialog({
 								<ComboboxInput
 									placeholder="Search or type exercise name..."
 									value={exerciseName}
-									onChange={(e) =>
-										setExerciseName(e.target.value)
-									}
+									onChange={(e) => setExerciseName(e.target.value)}
 									className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50 w-full"
 									autoFocus
 								/>
-								<ComboboxContent className="rounded-none border-secondary/50 bg-card max-h-48 overflow-y-auto">
+								<ComboboxContent className="rounded-none border-secondary/50 bg-card overflow-y-auto">
 									<ComboboxEmpty className="text-xs fmuted p-2">
 										No matching exercise found.
 									</ComboboxEmpty>
@@ -226,9 +222,10 @@ export function EditExerciseDialog({
 								<Combobox
 									items={PRESET_REP_RANGES}
 									value={targetRepRange.value.toString()}
-									onValueChange={(val) =>
-										targetRepRange.setValue(val || "")
+									onValueChange={(val: string | null) =>
+										targetRepRange.setValue(val ?? "")
 									}
+									itemToStringValue={(item: string | null) => item ?? ""}
 								>
 									<ComboboxInput
 										placeholder="8-12"
@@ -236,9 +233,9 @@ export function EditExerciseDialog({
 										onChange={targetRepRange.onChange}
 										className="rounded-none h-8 text-xs border-border/50 bg-background/50"
 									/>
-									<ComboboxContent className="rounded-none border-secondary/50 bg-card max-h-36 overflow-y-auto">
+									<ComboboxContent className="rounded-none border-secondary/50 bg-card overflow-y-auto">
 										<ComboboxList>
-											{(repRange) => (
+											{(repRange: string) => (
 												<ComboboxItem
 													key={repRange}
 													value={repRange}
