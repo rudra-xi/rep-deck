@@ -31,7 +31,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Arm Circles",
 		description:
 			"Extend arms sideways and make small, controlled circular motions forward, then backward.",
-		target: "60 sec total",
+		target: "60 sec",
 		category: "Shoulders",
 		difficulty: "Easy",
 	},
@@ -40,7 +40,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Single-Leg Pistol Squat",
 		description:
 			"Perform a deep single-leg squat with the non-working leg extended out front.",
-		target: "5 Reps / leg",
+		target: "5 reps / leg",
 		category: "Legs",
 		difficulty: "Hard",
 	},
@@ -49,7 +49,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Wall Slides",
 		description:
 			"Stand with head, upper back, and glutes against the wall; slide arms up and down overhead.",
-		target: "15 Reps",
+		target: "15 reps",
 		category: "Mobility",
 		difficulty: "Easy",
 	},
@@ -58,7 +58,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Dead Hang Max",
 		description:
 			"Hang from a pull-up bar for as long as possible. Aim to beat your last time.",
-		target: "Max Time",
+		target: "Max time",
 		category: "Grip",
 		difficulty: "Medium",
 	},
@@ -85,7 +85,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Air Squat Ladder",
 		description:
 			"Complete 10, 15, then 20 air squats with 30 seconds rest between sets.",
-		target: "3 Sets",
+		target: "3 sets",
 		category: "Legs",
 		difficulty: "Medium",
 	},
@@ -94,7 +94,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Bird-Dog Hold",
 		description:
 			"On hands and knees, extend opposite arm and leg straight out while maintaining a neutral spine.",
-		target: "10 Reps / side",
+		target: "10 reps / side",
 		category: "Core",
 		difficulty: "Easy",
 	},
@@ -103,8 +103,8 @@ export const CHALLENGES: Challenge[] = [
 		title: "One-Arm Push-Up",
 		description:
 			"Lower and press back up on a single arm with feet spread wide for balance.",
-		target: "3 Reps / arm",
-		category: "Endurance",
+		target: "3 reps / arm",
+		category: "Shoulders",
 		difficulty: "Hard",
 	},
 	{
@@ -120,7 +120,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Seated Thoracic Rotation",
 		description:
 			"Sit upright with hands behind head and rotate mid-back side to side without moving hips.",
-		target: "10 Reps / side",
+		target: "10 reps / side",
 		category: "Mobility",
 		difficulty: "Easy",
 	},
@@ -138,8 +138,8 @@ export const CHALLENGES: Challenge[] = [
 		title: "Explosive Clap Push-Ups",
 		description:
 			"Push up with enough explosive power to lift hands off the floor and clap mid-air.",
-		target: "8–12 Reps",
-		category: "Endurance",
+		target: "8–12 reps",
+		category: "Shoulders",
 		difficulty: "Hard",
 	},
 	{
@@ -148,7 +148,7 @@ export const CHALLENGES: Challenge[] = [
 		description:
 			"Lie flat on your back, bend knees, and lift hips up toward the ceiling.",
 		target: "45–60 sec",
-		category: "Core",
+		category: "Legs",
 		difficulty: "Easy",
 	},
 	{
@@ -165,7 +165,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Single-Leg Wall Sit",
 		description:
 			"Hold a standard wall sit position while extending one leg out parallel to the floor.",
-		target: "20–30s / leg",
+		target: "20–30 sec / leg",
 		category: "Legs",
 		difficulty: "Hard",
 	},
@@ -175,7 +175,7 @@ export const CHALLENGES: Challenge[] = [
 		description:
 			"Walk heel-to-toe in a straight line with arms at sides and core tight.",
 		target: "30–45 sec",
-		category: "Balance",
+		category: "Grip",
 		difficulty: "Medium",
 	},
 	{
@@ -192,7 +192,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Towel Dead Hang",
 		description:
 			"Loop towels over a pull-up bar, grip the towels, and hang as long as possible.",
-		target: "Max Time",
+		target: "Max time",
 		category: "Grip",
 		difficulty: "Hard",
 	},
@@ -201,7 +201,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Standing Calf Raise Hold",
 		description:
 			"Raise up onto the balls of your feet, pause at the top, and maintain balance.",
-		target: "20 Reps",
+		target: "20 reps",
 		category: "Legs",
 		difficulty: "Easy",
 	},
@@ -210,7 +210,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Side Plank Hip Dips",
 		description:
 			"Hold a side plank while slowly dipping and driving your bottom hip toward the ceiling.",
-		target: "12 Reps / side",
+		target: "12 reps / side",
 		category: "Core",
 		difficulty: "Medium",
 	},
@@ -219,7 +219,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Single-Leg Balance",
 		description:
 			"Stand on one leg with eyes closed. Maintain strict posture.",
-		target: "20–30s / leg",
+		target: "20–30 sec / leg",
 		category: "Balance",
 		difficulty: "Easy",
 	},
@@ -264,7 +264,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Dragon Flag Negatives",
 		description:
 			"Lower your body from a shoulder stand position in a straight line as slowly as possible.",
-		target: "5 Reps",
+		target: "5 reps",
 		category: "Core",
 		difficulty: "Hard",
 	},
@@ -282,7 +282,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Push-Up Sprint",
 		description:
 			"Perform as many clean, full range-of-motion push-ups as possible.",
-		target: "60 seconds",
+		target: "60 sec max",
 		category: "Endurance",
 		difficulty: "Medium",
 	},
@@ -291,7 +291,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Max Strict Pull-Ups",
 		description:
 			"Perform dead-stop pull-ups without kipping until form breaks.",
-		target: "Max Reps",
+		target: "Max reps",
 		category: "Back",
 		difficulty: "Hard",
 	},
@@ -300,7 +300,7 @@ export const CHALLENGES: Challenge[] = [
 		title: "Burpee Burst",
 		description:
 			"Perform clean burpees as fast as possible with good form.",
-		target: "10 Reps",
+		target: "10 reps",
 		category: "Endurance",
 		difficulty: "Medium",
 	},

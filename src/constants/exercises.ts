@@ -172,7 +172,16 @@ export const PRESET_REP_RANGES = [
 	// Intensity markers
 	"RIR 0",
 	"RIR 1-2",
+	"RIR 2-3",
 	"AMRAP",
+
+	// Timed Sets & Isometric Holds
+		"15s",
+		"30s",
+		"45s",
+		"60s",
+		"90s",
+		"2m",
 ] as const;
 
 export const TWELVE_WEEK_BENCHMARK: Record<string, number> = {
