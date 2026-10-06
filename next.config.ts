@@ -3,12 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
 	/* config options here */
 	reactCompiler: true,
-	allowedDevOrigins: [
-		"localhost:3000",
-		"192.168.1.8:3000",
-		"192.168.1.8",
-		"reword-frigidly-action.ngrok-free.dev",
-	],
+	allowedDevOrigins: ["localhost:3000", "192.168.1.8:3000", "192.168.1.8"],
 	images: {
 		qualities: [75, 95],
 		remotePatterns: [

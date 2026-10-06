@@ -525,3 +525,70 @@ export async function duplicateDay(
 		};
 	}
 }
+
+export async function reorderExercises(
+	programDayId: string,
+	orderedIds: string[],
+): Promise<{ success: true } | { success: false; error: string }> {
+	try {
+		const user = await requireAuth();
+		if (!user) return { success: false, error: "Unauthorized" };
+
+		// Verify the caller owns the day.
+		const [day] = await db
+			.select({
+				id: programDayTemplates.id,
+				userId: programTemplates.userId,
+			})
+			.from(programDayTemplates)
+			.innerJoin(
+				programTemplates,
+				eq(programDayTemplates.programId, programTemplates.id),
+			)
+			.where(eq(programDayTemplates.id, programDayId))
+			.limit(1);
+
+		if (!day || day.userId !== user.id) {
+			return { success: false, error: "Day not found" };
+		}
+
+		// Verify the submitted id list exactly matches the day's exercises.
+		// This prevents a stale client from clobbering newer state.
+		const existing = await db
+			.select({ id: exerciseTemplates.id })
+			.from(exerciseTemplates)
+			.where(eq(exerciseTemplates.programDayId, programDayId));
+
+		const existingIds = new Set(existing.map((e) => e.id));
+
+		if (
+			orderedIds.length !== existing.length ||
+			!orderedIds.every((id) => existingIds.has(id))
+		) {
+			return { success: false, error: "Invalid exercise order" };
+		}
+
+		// Write new contiguous order in a transaction so a partial failure
+		// can't leave duplicate or skipped positions.
+		await db.transaction(async (tx) => {
+			for (let i = 0; i < orderedIds.length; i++) {
+				await tx
+					.update(exerciseTemplates)
+					.set({ order: i + 1 })
+					.where(eq(exerciseTemplates.id, orderedIds[i]));
+			}
+		});
+
+		purgePlansCache();
+		return { success: true };
+	} catch (error) {
+		console.error("Error reordering exercises:", error);
+		return {
+			success: false,
+			error:
+				error instanceof Error
+					? error.message
+					: "Failed to reorder exercises",
+		};
+	}
+}

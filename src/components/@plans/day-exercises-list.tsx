@@ -1,10 +1,28 @@
 "use client";
 
+import {
+	closestCenter,
+	DndContext,
+	type DragEndEvent,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { SunDimIcon } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
 	addExerciseToDay,
 	deleteExercise,
+	reorderExercises,
 	updateExercise,
 } from "@/actions/plans";
 import { CardsHeader } from "@/common";
@@ -18,12 +36,9 @@ import {
 } from "@/components/ui/empty";
 import type { DayWithExercises } from "@/db/schema";
 import { deriveWeekdayShort } from "@/lib/weekday-anchor";
-import {
-	CreateExerciseDialog,
-	DeleteExerciseDialog,
-	EditExerciseDialog,
-} from "@/plan-dialogs";
+import { CreateExerciseDialog } from "@/plan-dialogs";
 import { DayExercisesListSkeleton } from "@/skeletons";
+import { SortableExerciseRow } from "./sortable-exercise-row";
 
 interface DayExercisesListProps {
 	day?: DayWithExercises;
@@ -37,10 +52,32 @@ export function DayExercisesList({
 	loading = false,
 }: DayExercisesListProps) {
 	const router = useRouter();
+	const [optimisticOrder, setOptimisticOrder] = useState<string[] | null>(
+		null,
+	);
+
+	// Sensors: pointer for mouse/touch, keyboard for accessibility.
+	const sensors = useSensors(
+		useSensor(PointerSensor, {
+			// Prevent dragging when the user clicks the handle to focus it.
+			activationConstraint: { distance: 4 },
+		}),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		}),
+	);
 
 	const derived = day
 		? deriveWeekdayShort(anchorWeekday ?? null, day.dayIndex)
 		: null;
+
+	const exercises = day
+		? optimisticOrder
+			? optimisticOrder
+					.map((id) => day.exercises.find((e) => e.id === id))
+					.filter((e): e is NonNullable<typeof e> => e != null)
+			: day.exercises
+		: [];
 
 	const handleAddExercise = async (data: {
 		programDayId: string;
@@ -62,15 +99,42 @@ export function DayExercisesList({
 			targetRepRange: string;
 		},
 	) => {
-		if (typeof updateExercise === "function") {
-			await updateExercise(exerciseId, data);
-			router.refresh();
-		}
+		await updateExercise(exerciseId, data);
+		router.refresh();
 	};
 
 	const handleDeleteExercise = async (exerciseId: string) => {
 		await deleteExercise(exerciseId);
 		router.refresh();
+	};
+
+	const handleDragEnd = async (event: DragEndEvent) => {
+		if (!day) return;
+		const { active, over } = event;
+		if (!over || active.id === over.id) return;
+
+		const oldIndex = exercises.findIndex((e) => e.id === active.id);
+		const newIndex = exercises.findIndex((e) => e.id === over.id);
+		if (oldIndex < 0 || newIndex < 0) return;
+
+		const reordered = arrayMove(exercises, oldIndex, newIndex);
+		const orderedIds = reordered.map((e) => e.id);
+
+		// Optimistic update so the row doesn't snap back during the round-trip.
+		setOptimisticOrder(orderedIds);
+
+		const res = await reorderExercises(day.id, orderedIds);
+
+		if (!res.success) {
+			toast.error("Failed to save new order", {
+				description: res.error,
+			});
+			setOptimisticOrder(null);
+			return;
+		}
+
+		router.refresh();
+		setOptimisticOrder(null);
 	};
 
 	if (loading)
@@ -103,8 +167,6 @@ export function DayExercisesList({
 		);
 	}
 
-	if (!day) return null;
-
 	return (
 		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeader
@@ -119,65 +181,50 @@ export function DayExercisesList({
 			/>
 
 			<CardContent className="p-4 pt-1">
-				{day.exercises.length === 0 ? (
+				{exercises.length === 0 ? (
 					<p className="text-xs text-muted-foreground py-4 text-center">
 						No exercises configured for this day.
 					</p>
 				) : (
-					<table className="w-full text-left text-xs border-collapse">
-						<thead>
-							<tr className="border-b border-border/50 text-[11px] text-muted-foreground uppercase font-medium">
-								<th className="py-2 px-2">Exercise</th>
-								<th className="py-2 px-2">Type</th>
-								<th className="py-2 px-2 text-center">Sets</th>
-								<th className="py-2 px-2 text-center">
-									Target Reps
-								</th>
-								<th className="py-2 px-2 text-right">
-									Actions
-								</th>
-							</tr>
-						</thead>
-						<tbody className="divide-y divide-border/30">
-							{day.exercises.map((ex) => (
-								<tr
-									key={ex.id}
-									className="hover:bg-background/40 transition-colors"
-								>
-									<td className="py-2.5 px-2 font-semibold text-foreground capitalize">
-										{ex.name}
-									</td>
-									<td className="py-2.5 px-2">
-										<span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20">
-											{ex.type || "General"}
-										</span>
-									</td>
-									<td className="py-2.5 px-2 text-center font-medium">
-										{ex.targetSets}
-									</td>
-									<td className="py-2.5 px-2 text-center font-medium">
-										{ex.targetRepRange || "-"}
-									</td>
-									<td className="py-2.5 px-2 text-right">
-										<div className="fcy justify-end gap-1">
-											<EditExerciseDialog
-												exercise={ex}
-												onEditExercise={
-													handleEditExercise
-												}
-											/>
-											<DeleteExerciseDialog
-												exerciseName={ex.name}
-												onDelete={() =>
-													handleDeleteExercise(ex.id)
-												}
-											/>
-										</div>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+					<DndContext
+						sensors={sensors}
+						collisionDetection={closestCenter}
+						onDragEnd={handleDragEnd}
+					>
+						<SortableContext
+							items={exercises.map((e) => e.id)}
+							strategy={verticalListSortingStrategy}
+						>
+							<table className="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr className="border-b border-border/50 text-[11px] text-muted-foreground uppercase font-medium">
+										<th className="w-6 py-2 pl-1" />
+										<th className="py-2 px-2">Exercise</th>
+										<th className="py-2 px-2">Type</th>
+										<th className="py-2 px-2 text-center">
+											Sets
+										</th>
+										<th className="py-2 px-2 text-center">
+											Target Reps
+										</th>
+										<th className="py-2 px-2 text-right">
+											Actions
+										</th>
+									</tr>
+								</thead>
+								<tbody className="divide-y divide-border/30">
+									{exercises.map((ex) => (
+										<SortableExerciseRow
+											key={ex.id}
+											exercise={ex}
+											onEdit={handleEditExercise}
+											onDelete={handleDeleteExercise}
+										/>
+									))}
+								</tbody>
+							</table>
+						</SortableContext>
+					</DndContext>
 				)}
 			</CardContent>
 		</Card>
