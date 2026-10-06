@@ -12,7 +12,6 @@ export interface LastWorkoutSession {
 	id: string;
 	date: string;
 	programName: string;
-	dayName: string;
 	topLifts: TopLift[];
 }
 

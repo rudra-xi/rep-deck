@@ -38,7 +38,6 @@ interface WorkoutDetailProps {
 		rawDate: string;
 		date: string;
 		programName: string;
-		dayName: string;
 		sets: Array<{
 			id: string;
 			exercise: string;
@@ -224,12 +223,6 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 				<CardHeader className="fcol md:flex-row md:items-center justify-between gap-4 pb-4">
 					<div className="fcol1_5">
 						<div className="fg2">
-							<Badge
-								variant="secondary"
-								className="ftext-2xs fupper font-medium"
-							>
-								{session.dayName}
-							</Badge>
 							{prCount > 0 && (
 								<Badge
 									variant="outline"

@@ -45,6 +45,7 @@ export async function getDashboardData() {
 				id: programTemplates.id,
 				name: programTemplates.name,
 				active: programTemplates.active,
+				anchorWeekday: programTemplates.anchorWeekday,
 			})
 			.from(programTemplates)
 			.where(
@@ -151,21 +152,29 @@ export async function getDashboardData() {
 
 			const sessionDate = new Date(lastSession.date);
 			const formattedDate = sessionDate.toLocaleDateString("en-US", {
+				weekday:"long",
 				day: "numeric",
 				month: "short",
 				year: "numeric",
 			});
 
+			let sessionProgramName = "Workout Session";
+			if (lastSession.programId) {
+				const [program] = await db
+					.select({ name: programTemplates.name })
+					.from(programTemplates)
+					.where(eq(programTemplates.id, lastSession.programId))
+					.limit(1);
+
+				if (program) {
+					sessionProgramName = toCapitalized(program.name);
+				}
+			}
+
 			lastWorkoutData = {
 				id: lastSession.id,
 				date: formattedDate,
-				programName: activeProgram?.name
-					? toCapitalized(activeProgram.name)
-					: "Workout Session",
-				dayName:
-					lastSession.dayIndex !== null
-						? `Day ${lastSession.dayIndex + 1}`
-						: "Custom Session",
+				programName: sessionProgramName,
 				topLifts: topLifts.map((lift) => ({
 					...lift,
 					exercise: toCapitalized(lift.exercise),

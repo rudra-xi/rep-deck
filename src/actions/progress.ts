@@ -211,10 +211,10 @@ export async function getRecentSessions(limit = 5) {
 
 			return {
 				id: s.id,
-				date: format(new Date(s.date), "MMM d, yyyy"),
+				date: format(new Date(s.date), "EEE, MMM d, yyyy"),
 				programName: "Workout Session",
 				dayLabel:
-					s.dayIndex !== null ? `Day ${s.dayIndex + 1}` : "Custom",
+					s.dayIndex !== null ? `Day ${s.dayIndex}` : "Custom",
 				keyLiftsSummary:
 					uniqueExercises.join(", ") || "No exercises logged",
 				totalVolumeKg: Number(totalVol),

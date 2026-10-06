@@ -566,15 +566,12 @@ export async function getWorkoutSessionDetails(sessionId: string) {
 			id: session.id,
 			rawDate: session.date.toISOString(),
 			date: new Date(session.date).toLocaleDateString("en-US", {
+			weekday: "short",
 				day: "numeric",
 				month: "short",
 				year: "numeric",
 			}),
 			programName,
-			dayName:
-				session.dayIndex !== null
-					? `Day ${session.dayIndex + 1}`
-					: "Custom Session",
 			sets: sets.map((set) => ({
 				id: set.id,
 				exercise: toCapitalized(set.exerciseName),

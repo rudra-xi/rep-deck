@@ -49,7 +49,6 @@ export interface LastWorkoutSession {
 	id: string;
 	date: string;
 	programName: string;
-	dayName: string;
 	topLifts: TopLift[];
 }
 
@@ -180,17 +179,12 @@ export function LastWorkoutCard({
 							{data.date}
 						</span>
 					</div>
-					<div className="fwrap gap-2 fcy">
-						<Badge
-							variant="secondary"
-							className="ftext-2xs fupper font-semibold rounded-none"
-						>
-							{data.programName}
-						</Badge>
-						<p className="text-xs font-medium text-foreground ">
-							{data.dayName}
-						</p>
-					</div>
+					<Badge
+						variant="secondary"
+						className="ftext-2xs fupper font-semibold rounded-none"
+					>
+						{data.programName}
+					</Badge>
 				</div>
 
 				<div className="border border-border/40 overflow-hidden">
