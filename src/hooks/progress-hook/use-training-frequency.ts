@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { getTrainingFrequency } from "@/actions/progress";
-import { TWELVE_WEEK_BENCHMARK } from "@/constants";
+import type { WeekDay } from "@/constants";
+import { TWELVE_WEEK_BENCHMARK, WEEK_DAYS } from "@/constants";
 import type { TrainingFrequencyDay } from "@/types/progress";
+
+function asWeekDay(day: string): WeekDay | null {
+	return (WEEK_DAYS as readonly string[]).includes(day)
+		? (day as WeekDay)
+		: null;
+}
 
 export function useTrainingFrequency(
 	initialData: TrainingFrequencyDay[] = [],
@@ -49,7 +56,9 @@ export function useTrainingFrequency(
 			let total = 0;
 
 			const combined = baseData.map((item) => {
-				const targetVal = TWELVE_WEEK_BENCHMARK[item.day] ?? 0;
+				const dayKey = asWeekDay(item.day);
+				const targetVal = dayKey ? TWELVE_WEEK_BENCHMARK[dayKey] : 0;
+
 				if (item.sessions > maxVal) maxVal = item.sessions;
 				total += item.sessions;
 
