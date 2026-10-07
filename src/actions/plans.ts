@@ -534,7 +534,6 @@ export async function reorderExercises(
 		const user = await requireAuth();
 		if (!user) return { success: false, error: "Unauthorized" };
 
-		// Verify the caller owns the day.
 		const [day] = await db
 			.select({
 				id: programDayTemplates.id,
@@ -552,8 +551,6 @@ export async function reorderExercises(
 			return { success: false, error: "Day not found" };
 		}
 
-		// Verify the submitted id list exactly matches the day's exercises.
-		// This prevents a stale client from clobbering newer state.
 		const existing = await db
 			.select({ id: exerciseTemplates.id })
 			.from(exerciseTemplates)
@@ -568,8 +565,6 @@ export async function reorderExercises(
 			return { success: false, error: "Invalid exercise order" };
 		}
 
-		// Write new contiguous order in a transaction so a partial failure
-		// can't leave duplicate or skipped positions.
 		await db.transaction(async (tx) => {
 			for (let i = 0; i < orderedIds.length; i++) {
 				await tx
