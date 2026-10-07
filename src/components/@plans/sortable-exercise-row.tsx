@@ -1,12 +1,17 @@
 "use client";
 
-import { DotsSixVerticalIcon } from "@phosphor-icons/react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { DotsSixVerticalIcon } from "@phosphor-icons/react";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
-import { EditExerciseDialog, DeleteExerciseDialog } from "@/plan-dialogs";
 import type { ExerciseTemplate } from "@/db/schema";
+import { cn } from "@/lib/utils";
+import { DeleteExerciseDialog, EditExerciseDialog } from "@/plan-dialogs";
 
 interface SortableExerciseRowProps {
 	exercise: ExerciseTemplate;
@@ -39,7 +44,6 @@ export function SortableExerciseRow({
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
-		// Keep the row visible but visually behind while dragging.
 		zIndex: isDragging ? 10 : undefined,
 		opacity: isDragging ? 0.9 : 1,
 	};
@@ -49,24 +53,48 @@ export function SortableExerciseRow({
 			ref={setNodeRef}
 			style={style}
 			className={cn(
-				"hover:bg-background/40 transition-colors",
+				"transition-colors hover:bg-background/40",
 				isDragging && "bg-background shadow-lg",
 			)}
 		>
-			<TableCell className="w-6 py-2.5 pl-1 pr-0">
+			<TableCell className="w-8 py-2.5 pl-2 pr-0">
 				<button
 					type="button"
 					{...attributes}
 					{...listeners}
-					className="fc size-5 cursor-grab text-muted-foreground transition-colors hover:text-foreground active:cursor-grabbing"
+					className="fc size-6 cursor-grab touch-none rounded-none text-muted-foreground/50 transition-colors hover:text-foreground active:cursor-grabbing"
 					aria-label={`Reorder ${exercise.name}`}
 				>
 					<DotsSixVerticalIcon className="size-4" weight="bold" />
 				</button>
 			</TableCell>
 
-			<TableCell className="py-2.5 px-2 font-semibold text-foreground capitalize">
-				{exercise.name}
+			<TableCell className="py-2.5 px-2">
+				<div className="min-w-0">
+					<Popover>
+						<PopoverTrigger
+							nativeButton={false}
+							render={
+								<span className="block truncate font-semibold text-foreground capitalize cursor-help">
+									{exercise.name}
+								</span>
+							}
+						/>
+						<PopoverContent
+							align="start"
+							className="w-auto max-w-xs rounded-none border-secondary/50 p-2 text-xs"
+						>
+							<p className="font-semibold text-foreground">
+								{exercise.name}
+							</p>
+							{exercise.type && (
+								<p className="fmuted ftext-2xs fupper mt-1">
+									{exercise.type}
+								</p>
+							)}
+						</PopoverContent>
+					</Popover>
+				</div>
 			</TableCell>
 
 			<TableCell className="py-2.5 px-2">
@@ -83,7 +111,7 @@ export function SortableExerciseRow({
 				{exercise.targetRepRange || "-"}
 			</TableCell>
 
-			<TableCell className="py-2.5 px-2 text-right">
+			<TableCell className="py-2.5 pl-1 pr-2 text-right">
 				<div className="fcy justify-end gap-1">
 					<EditExerciseDialog
 						exercise={exercise}
