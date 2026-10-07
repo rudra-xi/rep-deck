@@ -18,10 +18,10 @@
 				"name": "next"
 			}
 		],
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
-			"@/plan-dialogs": ["src/components/@plans/@plan-dialogs"],
+			"@/screenshots/*": ["./public/screenshots/*"],
+			"@/plan-dialogs": ["./src/components/@plans/@plan-dialogs"],
 			"@/auth": ["./src/components/@auth"],
 			"@/metrics": ["./src/components/@metrics"],
 			"@/common": ["./src/components/@common"],
