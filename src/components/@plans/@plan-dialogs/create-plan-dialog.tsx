@@ -148,7 +148,7 @@ export function CreatePlanDialog() {
 									render={
 										<Button
 											variant="outline"
-											className={`w-full justify-start text-left font-normal h-8 text-xs rounded-none border-border/50 bg-background/50 ${
+											className={`w-full justify-start text-left font-normal cursor-help  h-8 text-xs rounded-none border-border/50 bg-background/50 ${
 												!startDate && "fmuted"
 											}`}
 										>

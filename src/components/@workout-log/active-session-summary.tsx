@@ -312,7 +312,7 @@ export function ActiveSessionSummary({
 															nativeButton={false}
 															render={
 																<span
-																	className={`text-xs px-2 py-0.5 rounded-none border cursor-pointer fcy gap-1 ${
+																	className={`text-xs px-2 py-0.5 rounded-none border cursor-help fcy gap-1 ${
 																		isSetPR
 																			? "bg-primary/20 border-primary/50 text-primary"
 																			: "bg-accent/50 border-border/50 text-foreground"

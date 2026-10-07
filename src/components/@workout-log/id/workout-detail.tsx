@@ -141,7 +141,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 									<Button
 										variant="ghost"
 										size="sm"
-										className="h-7 px-2 text-xs font-medium gap-1.5 rounded-none hover:bg-accent hover:text-accent-foreground"
+										className="h-7 px-2 text-xs font-medium gap-1.5 rounded-none hover:bg-accent hover:text-accent-foreground cursor-help"
 									>
 										<CalendarDotsIcon
 											size={14}

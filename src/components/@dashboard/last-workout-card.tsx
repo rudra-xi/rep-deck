@@ -117,7 +117,7 @@ export function LastWorkoutCard({
 									render={
 										<Badge
 											variant="outline"
-											className="h-5 px-1.5 ftext-3xs font-bold fupper cursor-pointer rounded-none border-primary/40 text-primary"
+											className="h-5 px-1.5 ftext-3xs font-bold fupper cursor-help rounded-none border-primary/40 text-primary"
 										>
 											<TrophyIcon
 												className="size-3 mr-0.5"

@@ -131,7 +131,7 @@ export function PlanSettingsCard({
 									<Button
 										variant="outline"
 										className={cn(
-											"w-full h-8 justify-start text-left text-xs font-normal rounded-none border-border/50 bg-background/50",
+											"w-full h-8 justify-start text-left text-xs font-normal rounded-none border-border/50 bg-background/50 cursor-help",
 											!startDate &&
 												"text-muted-foreground",
 										)}

@@ -120,7 +120,7 @@ export function DaySelector({
 									render={
 										<Button
 											variant="outline"
-											className="h-8 flex-1 justify-start text-xs rounded-none border-border/50 bg-background/50"
+											className="h-8 flex-1 justify-start text-xs rounded-none border-border/50 bg-background/50 cursor-help"
 										>
 											<CalendarDotsIcon className="mr-2 size-3.5 text-primary" />
 											{format(date, "PPP")}

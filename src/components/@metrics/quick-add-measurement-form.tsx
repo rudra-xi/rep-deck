@@ -45,7 +45,7 @@ export function QuickAddMeasurementForm() {
 									<Button
 										variant="outline"
 										className={cn(
-											"h-9 text-xs rounded-none justify-start text-left font-normal px-3 border-border/50 card-ease",
+											"h-9 text-xs rounded-none justify-start text-left font-normal px-3 border-border/50 card-ease cursor-help",
 											!selectedDate && "fmuted",
 										)}
 									>

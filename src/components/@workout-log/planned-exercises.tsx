@@ -248,7 +248,7 @@ export function PlannedExercises({
 											render={
 												<Badge
 													variant="outline"
-													className="fcy gap-1.5 text-xs cursor-pointer hover:bg-accent/50"
+													className="fcy gap-1.5 text-xs hover:bg-accent/50 cursor-help"
 												>
 													<ChatTextIcon
 														className="size-3.5 text-primary sh0"
