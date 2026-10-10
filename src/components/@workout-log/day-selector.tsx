@@ -60,17 +60,23 @@ export function DaySelector({
 		: false;
 	const showDateRow = date != null && onDateChange != null;
 
+	const activeDay = days.find((d) => d.dayIndex === selectedDayIndex);
+
 	const handleDaySelect = (day: ProgramDay) => {
 		if (day.dayIndex === selectedDayIndex) {
 			toast.info(`Already on ${day.label}`, {
-				description: `Day ${day.dayIndex} is currently selected.`,
+				description: "That's the current day.",
 				duration: 2000,
 			});
 			return;
 		}
 
+		const derived = deriveWeekdayShort(anchorWeekday ?? null, day.dayIndex);
+
 		toast.info(`Switched to ${day.label}`, {
-			description: `Day ${day.dayIndex} - ${day.label}`,
+			description: derived
+				? `Scheduled for ${derived}`
+				: "Tap a set to log it.",
 			duration: 2500,
 			icon: <CalendarDotsIcon className="size-4" weight="bold" />,
 		});
@@ -250,12 +256,14 @@ export function DaySelector({
 							{days.length}
 						</strong>
 					</span>
-					<span>
-						Active:{" "}
-						<strong className="text-primary">
-							Day {selectedDayIndex}
-						</strong>
-					</span>
+					{activeDay && (
+						<span>
+							Active:{" "}
+							<strong className="text-primary">
+								{activeDay.label}
+							</strong>
+						</span>
+					)}
 				</div>
 			</CardContent>
 		</Card>

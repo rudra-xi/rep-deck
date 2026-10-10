@@ -4,7 +4,13 @@ import { format, subDays } from "date-fns";
 import { and, asc, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import { getCurrentUser } from "@/actions/auth";
 import { db } from "@/db";
-import { bodyMeasurements, workoutSessions, workoutSets } from "@/db/schema";
+import {
+	bodyMeasurements,
+	programDayTemplates,
+	programTemplates,
+	workoutSessions,
+	workoutSets,
+} from "@/db/schema";
 import { type Big4Key, resolveBig4Key } from "@/lib/big4-mapping";
 import { toCapitalized } from "@/lib/to-capitalized";
 import type { StrengthOverviewPoint } from "@/types";
@@ -180,6 +186,7 @@ export async function getRecentSessions(limit = 5) {
 			.select({
 				id: workoutSessions.id,
 				date: workoutSessions.date,
+				programId: workoutSessions.programId,
 				dayIndex: workoutSessions.dayIndex,
 			})
 			.from(workoutSessions)
@@ -196,6 +203,51 @@ export async function getRecentSessions(limit = 5) {
 			.from(workoutSets)
 			.where(inArray(workoutSets.sessionId, sessionIds));
 
+		const programIds = Array.from(
+			new Set(
+				sessions
+					.map((s) => s.programId)
+					.filter((id): id is string => id != null),
+			),
+		);
+
+		// ── Program day labels (once) ──
+		const dayRows = programIds.length
+			? await db
+					.select({
+						programId: programDayTemplates.programId,
+						dayIndex: programDayTemplates.dayIndex,
+						label: programDayTemplates.label,
+					})
+					.from(programDayTemplates)
+					.where(inArray(programDayTemplates.programId, programIds))
+			: [];
+
+		const dayLabelMap = new Map<string, string>();
+		for (const row of dayRows) {
+			dayLabelMap.set(
+				`${row.programId}:${row.dayIndex}`,
+				toCapitalized(row.label),
+			);
+		}
+
+		// ── Program names (once) — MOVED OUT OF THE MAP ──
+		const programRows = programIds.length
+			? await db
+					.select({
+						id: programTemplates.id,
+						name: programTemplates.name,
+					})
+					.from(programTemplates)
+					.where(inArray(programTemplates.id, programIds))
+			: [];
+
+		const programNameMap = new Map<string, string>();
+		for (const row of programRows) {
+			programNameMap.set(row.id, toCapitalized(row.name));
+		}
+
+		// ── Now the map is fully synchronous ──
 		return sessions.map((s) => {
 			const sets = allSets.filter((set) => set.sessionId === s.id);
 
@@ -209,12 +261,22 @@ export async function getRecentSessions(limit = 5) {
 				new Set(sets.map((set) => toCapitalized(set.exerciseName))),
 			).slice(0, 3);
 
+			let dayLabel = "Custom";
+			if (s.programId != null && s.dayIndex != null) {
+				const found = dayLabelMap.get(`${s.programId}:${s.dayIndex}`);
+				dayLabel = found ?? `Day ${s.dayIndex}`;
+			}
+
+			const programName =
+				s.programId != null
+					? (programNameMap.get(s.programId) ?? "Workout Session")
+					: "Workout Session";
+
 			return {
 				id: s.id,
 				date: format(new Date(s.date), "EEE, MMM d, yyyy"),
-				programName: "Workout Session",
-				dayLabel:
-					s.dayIndex !== null ? `Day ${s.dayIndex}` : "Custom",
+				programName,
+				dayLabel,
 				keyLiftsSummary:
 					uniqueExercises.join(", ") || "No exercises logged",
 				totalVolumeKg: Number(totalVol),
