@@ -67,11 +67,22 @@ export function wouldBePR(
 	const w = Number(weight);
 	const r = Number(reps);
 
-	if (!Number.isFinite(w) || !Number.isFinite(r) || r <= 0 || w <= 0) {
+	if (!Number.isFinite(w) || !Number.isFinite(r) || r <= 0) {
 		return false;
 	}
 
+	const isBodyweight = w <= 0;
+
 	if (!previousBest) return true;
+
+	const previousIsBodyweight = previousBest.weight <= 0;
+
+	if (isBodyweight) {
+		if (!previousIsBodyweight) return true;
+		return r > previousBest.reps;
+	}
+
+	if (previousIsBodyweight) return true;
 
 	const current1RM = w * (1 + r / 30);
 	const prev1RM = previousBest.weight * (1 + previousBest.reps / 30);

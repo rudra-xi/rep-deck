@@ -133,16 +133,21 @@ export function LastWorkoutCard({
 											Personal Records
 										</p>
 										<ul className="list-disc list-inside fmuted">
-											{prs.map((lift) => (
-												<li key={lift.id}>
-													<strong className="text-foreground">
-														{lift.exercise}:
-													</strong>{" "}
-													{fmtWeight(lift.weightKg)}
-													{weightUnit} × {lift.reps}{" "}
-													reps
-												</li>
-											))}
+											{prs.map((lift) => {
+												const isBodyweight =
+													lift.weightKg <= 0;
+												return (
+													<li key={lift.id}>
+														<strong className="text-foreground">
+															{lift.exercise}:
+														</strong>{" "}
+														{isBodyweight
+															? "BW"
+															: `${fmtWeight(lift.weightKg)}${weightUnit}`}{" "}
+														× {lift.reps} reps
+													</li>
+												);
+											})}
 										</ul>
 									</div>
 								</PopoverContent>
@@ -204,6 +209,7 @@ export function LastWorkoutCard({
 						</TableHeader>
 						<TableBody>
 							{data.topLifts.map((lift) => {
+								const isBodyweight = lift.weightKg <= 0;
 								const isPR = lift.isPR ?? false;
 								return (
 									<TableRow
@@ -236,6 +242,7 @@ export function LastWorkoutCard({
 												)}
 											</div>
 										</TableCell>
+
 										<TableCell
 											className={cn(
 												"px-3 py-2.5 text-right text-xs sm:text-sm font-semibold tabular-nums whitespace-nowrap",
@@ -244,10 +251,16 @@ export function LastWorkoutCard({
 													: "text-foreground",
 											)}
 										>
-											{fmtWeight(lift.weightKg)}
-											<span className="ftext-3xs fmuted font-normal ml-0.5">
-												{weightUnit}
-											</span>
+											{isBodyweight ? (
+												"BW"
+											) : (
+												<>
+													{fmtWeight(lift.weightKg)}
+													<span className="ftext-3xs fmuted font-normal ml-0.5">
+														{weightUnit}
+													</span>
+												</>
+											)}
 										</TableCell>
 										<TableCell
 											className={cn(

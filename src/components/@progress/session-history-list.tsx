@@ -1,4 +1,3 @@
-// biome-ignore-all lint/a11y/useSemanticElements: interactive row wraps multi-element content; <button> would produce invalid HTML
 "use client";
 
 import {
@@ -7,6 +6,7 @@ import {
 	ClockCounterClockwiseIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
+import { useMemo } from "react";
 import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 import { CardsHeader, useUnits } from "@/common";
 import { Button } from "@/components/ui/button";
@@ -35,13 +35,34 @@ export function SessionHistoryList({
 }: SessionHistoryListProps) {
 	const { weightUnit, fmtWeight } = useUnits();
 
-	const { sessions, chartData, loading, hasData, navigateToSession } =
-		useSessionHistory(initialData, propLoading);
+	// ✅ Remove `chartData` from destructure — we build our own
+	const { sessions, loading, hasData, navigateToSession } = useSessionHistory(
+		initialData,
+		propLoading,
+	);
 
 	const sessionChartConfig = {
 		volume: { label: "Volume", color: "var(--chart-1)" },
 		label: { color: "var(--primary-foreground)" },
 	} satisfies ChartConfig;
+
+	const chartData = useMemo(() => {
+		return sessions.map((s) => {
+			const rawKg =
+				typeof s.totalVolumeKg === "number" ? s.totalVolumeKg : 0;
+			const reps = typeof s.totalReps === "number" ? s.totalReps : 0;
+			const isBodyweightOnly = rawKg === 0 && reps > 0;
+
+			const displayValue = isBodyweightOnly ? reps : fmtWeight(rawKg);
+			const displayUnit = isBodyweightOnly ? "reps" : weightUnit;
+
+			return {
+				...s,
+				volume: displayValue,
+				volumeLabel: `${displayValue.toLocaleString()} ${displayUnit}`,
+			};
+		});
+	}, [sessions, fmtWeight, weightUnit]);
 
 	if (loading) return <SessionHistoryListSkeleton rows={4} />;
 
@@ -80,6 +101,7 @@ export function SessionHistoryList({
 		);
 	}
 
+	// ✅ Now declared AFTER chartData
 	const recentBars = chartData.slice(0, 6).reverse();
 
 	return (
@@ -126,14 +148,11 @@ export function SessionHistoryList({
 							/>
 
 							<LabelList
-								dataKey="volume"
+								dataKey="volumeLabel"
 								position="right"
 								offset={8}
 								className="fill-foreground"
 								fontSize={10}
-								formatter={(value) =>
-									`${Number(value).toLocaleString()} ${weightUnit}`
-								}
 							/>
 						</Bar>
 					</BarChart>
@@ -141,24 +160,29 @@ export function SessionHistoryList({
 
 				<div className="divide-y divide-border/30">
 					{sessions.map((session) => {
-						const hasVolume =
-							typeof session.totalVolumeKg === "number" &&
-							!Number.isNaN(session.totalVolumeKg);
+						const hasVolume = session.totalVolumeKg > 0;
+						const hasReps = session.totalReps > 0;
+
+						const volumeLabel = (() => {
+							if (hasVolume && hasReps) {
+								return `${fmtWeight(session.totalVolumeKg).toLocaleString()} ${weightUnit} · ${session.totalReps} reps`;
+							}
+							if (hasVolume) {
+								return `${fmtWeight(session.totalVolumeKg).toLocaleString()} ${weightUnit}`;
+							}
+							if (hasReps) {
+								return `${session.totalReps} reps`;
+							}
+							return "—";
+						})();
 
 						return (
-							<div
-								key={session.id}
-								tabIndex={0}
-								role="button"
-								onClick={() => navigateToSession(session.id)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" || e.key === " ") {
-										e.preventDefault();
-										navigateToSession(session.id);
-									}
-								}}
-								className="py-2.5 fcb hover:bg-background/40 transition-colors cursor-pointer px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-							>
+						<button
+							key={session.id}
+							type="button"
+							onClick={() => navigateToSession(session.id)}
+							className="w-full text-left py-2.5 fcb hover:bg-background/40 transition-colors cursor-pointer px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+						>
 								<div className="space-y-0.5 min-w-0">
 									<div className="fcy gap-2">
 										<span className="text-xs font-bold text-foreground sh0">
@@ -169,20 +193,18 @@ export function SessionHistoryList({
 											{session.dayLabel}
 										</span>
 									</div>
-									<p className="text-[11px] text-muted-foreground ">
+									<p className="text-[11px] text-muted-foreground">
 										{session.keyLiftsSummary}
 									</p>
 								</div>
 
 								<div className="fcy gap-3 sh0">
 									<span className="text-xs font-semibold text-foreground hidden sm:inline tabular-nums">
-										{hasVolume
-											? `${fmtWeight(session.totalVolumeKg).toLocaleString()} ${weightUnit}`
-											: "—"}
+										{volumeLabel}
 									</span>
 									<CaretRightIcon className="size-4 text-muted-foreground" />
 								</div>
-							</div>
+							</button>
 						);
 					})}
 				</div>

@@ -248,9 +248,20 @@ export async function getRecentSessions(limit = 5) {
 		return sessions.map((s) => {
 			const sets = allSets.filter((set) => set.sessionId === s.id);
 
-			const totalVol: number = sets.reduce<number>(
-				(acc, curr) =>
-					acc + Number(curr.weight ?? 0) * (curr.reps ?? 0),
+			const weightedSets = sets.filter(
+				(set) => Number(set.weight ?? 0) > 0,
+			);
+			const bodyweightSets = sets.filter(
+				(set) => Number(set.weight ?? 0) <= 0,
+			);
+
+			const totalVolumeKg = weightedSets.reduce(
+				(acc, curr) => acc + Number(curr.weight) * (curr.reps ?? 0),
+				0,
+			);
+
+			const totalReps = bodyweightSets.reduce(
+				(acc, curr) => acc + (curr.reps ?? 0),
 				0,
 			);
 
@@ -276,7 +287,8 @@ export async function getRecentSessions(limit = 5) {
 				dayLabel,
 				keyLiftsSummary:
 					uniqueExercises.join(", ") || "No exercises logged",
-				totalVolumeKg: Number(totalVol),
+				totalVolumeKg: Number(totalVolumeKg),
+				totalReps,
 			};
 		});
 	} catch (error) {

@@ -237,14 +237,18 @@ export async function getDashboardData() {
 				const weightKg = Number(bestSet.weight);
 				const reps = bestSet.reps;
 				const rpe = bestSet.rpe ? Number(bestSet.rpe) : null;
+				const isBodyweight = weightKg <= 0;
 
-				const subtext = rpe
-					? `${reps} ${reps === 1 ? "rep" : "reps"} @ RPE ${rpe}`
-					: `${reps} ${reps === 1 ? "rep" : "reps"}`;
-
+				const subtext = isBodyweight
+					? rpe
+						? `${reps} ${reps === 1 ? "rep" : "reps"} @ RPE ${rpe}`
+						: `${reps} ${reps === 1 ? "rep" : "reps"}`
+					: rpe
+						? `${reps} ${reps === 1 ? "rep" : "reps"} @ RPE ${rpe}`
+						: `${reps} ${reps === 1 ? "rep" : "reps"}`;
 				let trend: KpiTrendShape | undefined;
 
-				if (previousSet) {
+				if (!isBodyweight && previousSet) {
 					const prevWeight = Number(previousSet.weight);
 					const diff = weightKg - prevWeight;
 					const absDiff = Math.abs(diff);
@@ -273,8 +277,10 @@ export async function getDashboardData() {
 				return {
 					label: lift.label,
 					value: lift.value,
-					targetValue: `${weightKg} kg`,
-					rawWeightKg: weightKg,
+					targetValue: isBodyweight
+						? `BW × ${reps}`
+						: `${weightKg} kg`,
+					rawWeightKg: isBodyweight ? undefined : weightKg,
 					subtext,
 					trend,
 				};

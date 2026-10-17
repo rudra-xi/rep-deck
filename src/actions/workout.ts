@@ -22,7 +22,7 @@ async function checkIfPR(
 	weight: number,
 	reps: number,
 ): Promise<boolean> {
-	const current1RM = weight * (1 + reps / 30);
+	const isBodyweight = weight <= 0;
 
 	const previousSets = await db
 		.select({
@@ -43,9 +43,25 @@ async function checkIfPR(
 
 	if (previousSets.length === 0) return true;
 
-	const maxPrevious1RM = Math.max(
-		...previousSets.map((s) => Number(s.weight) * (1 + s.reps / 30)),
-	);
+	if (isBodyweight) {
+		const previousBodyweightReps = previousSets
+			.filter((s) => Number(s.weight) <= 0)
+			.map((s) => s.reps);
+
+		if (previousBodyweightReps.length === 0) return true;
+
+		const maxReps = Math.max(...previousBodyweightReps);
+		return reps > maxReps;
+	}
+
+	const previousWeightedE1RM = previousSets
+		.filter((s) => Number(s.weight) > 0)
+		.map((s) => Number(s.weight) * (1 + s.reps / 30));
+
+	if (previousWeightedE1RM.length === 0) return true;
+
+	const current1RM = weight * (1 + reps / 30);
+	const maxPrevious1RM = Math.max(...previousWeightedE1RM);
 
 	return current1RM > maxPrevious1RM;
 }
@@ -142,8 +158,10 @@ export async function getExercisePerformanceHistory(
 			weight: number;
 			reps: number;
 			rpe?: number | null;
-		}) =>
-			`${set.weight} × ${set.reps}${set.rpe ? ` @ rpe ${set.rpe}` : ""}`;
+		}) => {
+			const load = Number(set.weight) <= 0 ? "BW" : set.weight;
+			return `${load} × ${set.reps}${set.rpe ? ` @ rpe ${set.rpe}` : ""}`;
+		};
 
 		const latestSessionId = allSets[0].sessionId;
 		const lastSessionSets = allSets.filter(
@@ -240,8 +258,10 @@ export async function getExercisePerformanceBatch(
 			weight: number;
 			reps: number;
 			rpe?: number | null;
-		}) =>
-			`${set.weight} × ${set.reps}${set.rpe ? ` @ rpe ${set.rpe}` : ""}`;
+		}) => {
+			const load = Number(set.weight) <= 0 ? "BW" : set.weight;
+			return `${load} × ${set.reps}${set.rpe ? ` @ rpe ${set.rpe}` : ""}`;
+		};
 
 		const result: Record<string, ExercisePerformanceSummary | null> = {};
 
@@ -399,7 +419,7 @@ export async function finishWorkoutSession(data: {
 						const isPR = await checkIfPR(
 							dbUser.id,
 							capitalizedName,
-							set.weight,
+							weightKg,
 							set.reps,
 						);
 
@@ -503,11 +523,16 @@ export async function getPersonalRecords(exerciseName: string) {
 			)
 			.orderBy(desc(workoutSets.weight), desc(workoutSets.reps));
 
-		return prs.map((pr) => ({
-			...pr,
-			formatted: `${pr.weight}kg × ${pr.reps}${pr.rpe ? ` @ rpe ${pr.rpe}` : ""}`,
-			date: pr.date.toLocaleDateString(),
-		}));
+		return prs.map((pr) => {
+			const isBodyweight = Number(pr.weight) <= 0;
+			return {
+				...pr,
+				formatted: isBodyweight
+					? `BW × ${pr.reps}${pr.rpe ? ` @ rpe ${pr.rpe}` : ""}`
+					: `${pr.weight}kg × ${pr.reps}${pr.rpe ? ` @ rpe ${pr.rpe}` : ""}`,
+				date: pr.date.toLocaleDateString(),
+			};
+		});
 	} catch (error) {
 		console.error("Error fetching personal records:", error);
 		return null;

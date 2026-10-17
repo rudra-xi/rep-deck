@@ -305,6 +305,8 @@ export function ActiveSessionSummary({
 													s.notes &&
 														s.notes.trim() !== "",
 												);
+												const isBodyweight =
+													Number(s.weight) <= 0;
 
 												return (
 													<Popover key={s.id ?? idx}>
@@ -324,17 +326,15 @@ export function ActiveSessionSummary({
 																			weight="duotone"
 																		/>
 																	)}
+
 																	<span className="text-xs">
 																		Set{" "}
 																		{idx +
 																			1}
 																		:{" "}
-																		{
-																			s.weight
-																		}
-																		{
-																			weightUnit
-																		}{" "}
+																		{isBodyweight
+																			? "BW"
+																			: `${s.weight}${weightUnit}`}{" "}
 																		×{" "}
 																		{s.reps}
 																		{s.rpe
@@ -355,10 +355,12 @@ export function ActiveSessionSummary({
 																	Record!
 																</p>
 															)}
-															<p className="text-muted-foreground">
-																{s.weight}
-																{weightUnit} ×{" "}
-																{s.reps}
+
+															<p className="fmuted">
+																{isBodyweight
+																	? "BW"
+																	: `${s.weight}${weightUnit}`}{" "}
+																× {s.reps}
 																{s.rpe
 																	? ` @ RPE ${s.rpe}`
 																	: ""}

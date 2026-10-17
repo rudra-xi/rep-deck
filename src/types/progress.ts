@@ -18,6 +18,7 @@ export interface SessionHistoryItem {
 	dayLabel: string;
 	keyLiftsSummary: string;
 	totalVolumeKg: number;
+	totalReps: number;
 }
 
 export interface TrainingFrequencyDay {

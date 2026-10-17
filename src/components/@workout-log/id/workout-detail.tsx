@@ -304,118 +304,139 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
 					{Object.entries(exerciseGroups).map(
-						([exerciseName, sets], groupIdx) => (
-							<Card
-								key={exerciseName}
-								size="sm"
-								className="fcard-flat card-ease h-full"
-							>
-								<CardHeader className="flex fcb space-y-0 pb-3">
-									<div className="fg2 min-w-0 pr-2">
-										<div className="ficon-box-sm">
-											<BarbellIcon
-												className="size-3.5"
-												weight="bold"
-											/>
+						([exerciseName, sets], groupIdx) => {
+							const maxWeight = Math.max(
+								...sets.map((s) => s.weightKg),
+							);
+							const bestIsBodyweight = maxWeight <= 0;
+
+							return (
+								<Card
+									key={exerciseName}
+									size="sm"
+									className="fcard-flat card-ease h-full"
+								>
+									<CardHeader className="flex fcb space-y-0 pb-3">
+										<div className="fg2 min-w-0 pr-2">
+											<div className="ficon-box-sm">
+												<BarbellIcon
+													className="size-3.5"
+													weight="bold"
+												/>
+											</div>
+											<CardTitle className="text-xs font-medium fupper fmuted">
+												{groupIdx + 1}. {exerciseName}
+											</CardTitle>
 										</div>
-										<CardTitle className="text-xs font-medium fupper fmuted ">
-											{groupIdx + 1}. {exerciseName}
-										</CardTitle>
-									</div>
 
-									<Badge
-										variant="outline"
-										className="ftext-2xs sh0 pt-1"
-									>
-										Best:{" "}
-										{fmtWeight(
-											Math.max(
-												...sets.map((s) => s.weightKg),
-											),
-										)}
-										{weightUnit}
-									</Badge>
-								</CardHeader>
+										<Badge
+											variant="outline"
+											className="ftext-2xs sh0 pt-1"
+										>
+											Best:{" "}
+											{bestIsBodyweight
+												? "BW"
+												: `${fmtWeight(maxWeight)}${weightUnit}`}
+										</Badge>
+									</CardHeader>
 
-								<Separator />
+									<Separator />
 
-								<CardContent className="p-0">
-									<Table>
-										<TableHeader>
-											<TableRow className="border-border hover:bg-transparent">
-												<TableHead className="w-8 ftext-xs2 font-medium fmuted pl-3">
-													#
-												</TableHead>
-												<TableHead className="ftext-xs2 font-medium fmuted text-right px-1">
-													Weight
-												</TableHead>
-												<TableHead className="ftext-xs2 font-medium fmuted text-right px-1">
-													Reps
-												</TableHead>
-												<TableHead className="ftext-xs2 font-medium fmuted text-right px-1">
-													RPE
-												</TableHead>
-												<TableHead className="ftext-xs2 font-medium fmuted text-right pr-3">
-													Vol
-												</TableHead>
-											</TableRow>
-										</TableHeader>
-										<TableBody>
-											{sets.map((set, idx) => (
-												<TableRow
-													key={set.id}
-													className={`border-border transition-colors ${
-														set.isPR
-															? "bg-primary/10"
-															: "hover:bg-muted/50"
-													}`}
-												>
-													<TableCell className="pl-3  text-xs fmuted">
-														{idx + 1}
-													</TableCell>
-													<TableCell className="text-right text-xs font-medium text-foreground px-1">
-														{fmtWeight(
-															set.weightKg,
-														)}{" "}
-														<span className="ftext-2xs fmuted font-normal">
-															{weightUnit}
-														</span>
-													</TableCell>
-													<TableCell className="text-right text-xs font-medium text-foreground px-1">
-														{set.reps}
-													</TableCell>
-													<TableCell className="text-right text-xs fmuted px-1">
-														{set.rpe ?? "—"}
-													</TableCell>
-													<TableCell className="text-right pr-3 text-xs font-semibold text-foreground">
-														<div className="fc justify-end">
-															{set.isPR && (
-																<Badge
-																	variant="ghost"
-																	className="h-5 px-1.5 ftext-3xs font-bold fupper"
-																>
-																	<TrophyIcon
-																		className="size-2"
-																		weight="duotone"
-																	/>
-																</Badge>
-															)}
-															<span>
-																{(
-																	fmtWeight(
-																		set.weightKg,
-																	) * set.reps
-																).toLocaleString()}
-															</span>
-														</div>
-													</TableCell>
+									<CardContent className="p-0">
+										<Table>
+											<TableHeader>
+												<TableRow className="border-border hover:bg-transparent">
+													<TableHead className="w-8 ftext-xs2 font-medium fmuted pl-3">
+														#
+													</TableHead>
+													<TableHead className="ftext-xs2 font-medium fmuted text-right px-1">
+														Weight
+													</TableHead>
+													<TableHead className="ftext-xs2 font-medium fmuted text-right px-1">
+														Reps
+													</TableHead>
+													<TableHead className="ftext-xs2 font-medium fmuted text-right px-1">
+														RPE
+													</TableHead>
+													<TableHead className="ftext-xs2 font-medium fmuted text-right pr-3">
+														Vol
+													</TableHead>
 												</TableRow>
-											))}
-										</TableBody>
-									</Table>
-								</CardContent>
-							</Card>
-						),
+											</TableHeader>
+											<TableBody>
+												{sets.map((set, idx) => {
+													const isBodyweight =
+														set.weightKg <= 0;
+													return (
+														<TableRow
+															key={set.id}
+															className={`border-border transition-colors ${
+																set.isPR
+																	? "bg-primary/10"
+																	: "hover:bg-muted/50"
+															}`}
+														>
+															<TableCell className="pl-3 text-xs fmuted">
+																{idx + 1}
+															</TableCell>
+															<TableCell className="text-right text-xs font-medium text-foreground px-1">
+																{isBodyweight ? (
+																	<span className="ftext-2xs fmuted font-normal">
+																		BW
+																	</span>
+																) : (
+																	<>
+																		{fmtWeight(
+																			set.weightKg,
+																		)}{" "}
+																		<span className="ftext-2xs fmuted font-normal">
+																			{
+																				weightUnit
+																			}
+																		</span>
+																	</>
+																)}
+															</TableCell>
+															<TableCell className="text-right text-xs font-medium text-foreground px-1">
+																{set.reps}
+															</TableCell>
+															<TableCell className="text-right text-xs fmuted px-1">
+																{set.rpe ?? "—"}
+															</TableCell>
+															<TableCell className="text-right pr-3 text-xs font-semibold text-foreground">
+																<div className="fc justify-end">
+																	{set.isPR && (
+																		<Badge
+																			variant="ghost"
+																			className="h-5 px-1.5 ftext-3xs font-bold fupper"
+																		>
+																			<TrophyIcon
+																				className="size-2"
+																				weight="duotone"
+																			/>
+																		</Badge>
+																	)}
+																	<span>
+																		{isBodyweight
+																			? `${set.reps}`
+																			: (
+																					fmtWeight(
+																						set.weightKg,
+																					) *
+																					set.reps
+																				).toLocaleString()}
+																	</span>
+																</div>
+															</TableCell>
+														</TableRow>
+													);
+												})}
+											</TableBody>
+										</Table>
+									</CardContent>
+								</Card>
+							);
+						},
 					)}
 				</div>
 			</div>
