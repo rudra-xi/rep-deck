@@ -8,6 +8,8 @@ const zalandoSans = Zalando_Sans({
 	subsets: ["latin"],
 	variable: "--font-sans",
 	display: "swap",
+	adjustFontFallback: false,
+	fallback: ["system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {
