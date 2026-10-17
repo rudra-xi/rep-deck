@@ -5,6 +5,7 @@ export const PRESET_EXERCISES = [
 	{ name: "Incline Smith Machine Press", type: "Upper Chest" },
 	{ name: "Low-to-High Cable Flyes", type: "Upper Chest" },
 	{ name: "Incline Dumbbell Flyes", type: "Upper Chest" },
+	{ name: "Incline Dumbbell Fly-Press", type: "Upper Chest" },
 	{ name: "Incline Cable Flyes", type: "Upper Chest" },
 	{ name: "Reverse Grip Bench Press", type: "Upper Chest" },
 
@@ -14,12 +15,14 @@ export const PRESET_EXERCISES = [
 	{ name: "Smith Machine Bench Press", type: "Chest" },
 	{ name: "Machine Chest Press", type: "Chest" },
 	{ name: "Push-Ups", type: "Chest" },
+	{ name: "Deficit Push-Ups", type: "Chest" },
 	{ name: "Pec Deck Flyes", type: "Chest" },
 	{ name: "Cable Flyes", type: "Chest" },
 	{ name: "Single-Arm Cable Flyes", type: "Chest" },
 	{ name: "Decline Barbell Bench Press", type: "Lower Chest" },
 	{ name: "Decline Dumbbell Press", type: "Lower Chest" },
 	{ name: "High-to-Low Cable Flyes", type: "Lower Chest" },
+	{ name: "Decline Cable Flyes", type: "Lower Chest" },
 	{ name: "Chest Dips", type: "Lower Chest" },
 
 	// ── Front Delts ──
@@ -30,42 +33,52 @@ export const PRESET_EXERCISES = [
 	{ name: "Landmine Press", type: "Front Delts" },
 	{ name: "Dumbbell Front Raise", type: "Front Delts" },
 	{ name: "Plate Front Raise", type: "Front Delts" },
+	{ name: "Cable Front Raise", type: "Front Delts" },
 
 	// ── Side Delts ──
 	{ name: "Dumbbell Lateral Raise", type: "Side Delts" },
 	{ name: "Cable Lateral Raise", type: "Side Delts" },
 	{ name: "Machine Lateral Raise", type: "Side Delts" },
 	{ name: "Lu Raises", type: "Side Delts" },
+	{ name: "Egyptian Lateral Raise", type: "Side Delts" },
 
 	// ── Rear Delts ──
 	{ name: "Rear Delt Flyes", type: "Rear Delts" },
 	{ name: "Face Pull", type: "Rear Delts" },
+	{ name: "Face Pull with Overhead Extension", type: "Rear Delts" },
 	{ name: "Reverse Cable Flyes", type: "Rear Delts" },
 	{ name: "Reverse Pec Deck", type: "Rear Delts" },
 	{ name: "Band Pull-Aparts", type: "Rear Delts" },
+	{ name: "Powell Raise", type: "Rear Delts" },
 
 	// ── Rotator Cuff ──
 	{ name: "Cable External Rotation", type: "Rotator Cuff" },
 	{ name: "Dumbbell External Rotation", type: "Rotator Cuff" },
 	{ name: "Cuban Press", type: "Rotator Cuff" },
+	{ name: "Y-T-W Drill", type: "Rotator Cuff" },
 
 	// ── Traps ──
 	{ name: "Barbell Shrugs", type: "Traps" },
 	{ name: "Dumbbell Shrugs", type: "Traps" },
 	{ name: "Upright Row", type: "Traps" },
 	{ name: "Cable Shrugs", type: "Traps" },
+	{ name: "Kelso Shrugs", type: "Traps" },
 
 	// ── Neck ──
 	{ name: "Neck Harness Extensions", type: "Neck" },
 	{ name: "Lying Neck Flexion", type: "Neck" },
+	{ name: "Lying Neck Lateral Flexion", type: "Neck" },
 
 	// ── Lats ──
 	{ name: "Lat Pulldown", type: "Lats" },
+	{ name: "Single-Arm Lat Pulldown", type: "Lats" },
 	{ name: "Pull-Ups", type: "Lats" },
 	{ name: "Chin-Ups", type: "Lats" },
 	{ name: "Single-Arm Dumbbell Row", type: "Lats" },
 	{ name: "Single-Arm Cable Row", type: "Lats" },
 	{ name: "Straight-Arm Cable Pushdown", type: "Lats" },
+	{ name: "Dumbbell Lat Pullover", type: "Lats" },
+	{ name: "Cable Lat Pullover", type: "Lats" },
 	{ name: "Chest-Supported Row", type: "Lats" },
 
 	// ── Upper Back ──
@@ -75,6 +88,15 @@ export const PRESET_EXERCISES = [
 	{ name: "T-Bar Row", type: "Upper Back" },
 	{ name: "Meadows Row", type: "Upper Back" },
 	{ name: "Kroc Row", type: "Upper Back" },
+	{ name: "Helms Row", type: "Upper Back" },
+
+	// ── Mid Back ──
+	{ name: "Neutral Grip Pulldown", type: "Mid Back" },
+	{ name: "Seated Mid-Row", type: "Mid Back" },
+	{ name: "Incline Dumbbell Row", type: "Mid Back" },
+	{ name: "Seal Row", type: "Mid Back" },
+	{ name: "Prone Y-Raise", type: "Mid Back" },
+	{ name: "Prone T-Raise", type: "Mid Back" },
 
 	// ── Posterior Chain ──
 	{ name: "Deadlift", type: "Posterior Chain" },
@@ -99,22 +121,30 @@ export const PRESET_EXERCISES = [
 	{ name: "Walking Lunges", type: "Quads" },
 	{ name: "Reverse Lunges", type: "Quads" },
 	{ name: "Sissy Squat", type: "Quads" },
+	{ name: "Reverse Nordic", type: "Quads" },
+	{ name: "Spanish Squat", type: "Quads" },
+	{ name: "Poliquin Step-Up", type: "Quads" },
 	{ name: "Step-Ups", type: "Quads" },
 	{ name: "Pendulum Squat", type: "Quads" },
 	{ name: "Smith Machine Squat", type: "Quads" },
 
 	// ── Hamstrings ──
 	{ name: "Romanian Deadlift", type: "Hamstrings" },
+	{ name: "Single-Leg Romanian Deadlift", type: "Hamstrings" },
 	{ name: "Lying Leg Curl", type: "Hamstrings" },
 	{ name: "Seated Leg Curl", type: "Hamstrings" },
 	{ name: "Standing Leg Curl", type: "Hamstrings" },
 	{ name: "Nordic Hamstring Curl", type: "Hamstrings" },
+	{ name: "Glute-Ham Raise", type: "Hamstrings" },
 
 	// ── Glutes ──
 	{ name: "Barbell Hip Thrust", type: "Glutes" },
 	{ name: "Glute Bridges", type: "Glutes" },
 	{ name: "Cable Kickbacks", type: "Glutes" },
 	{ name: "Abductor Machine", type: "Glutes" },
+	{ name: "Cable Hip Abduction", type: "Glutes" },
+	{ name: "Frog Pumps", type: "Glutes" },
+	{ name: "Curtsy Lunge", type: "Glutes" },
 
 	// ── Calves ──
 	{ name: "Standing Calf Raise", type: "Calves" },
@@ -126,6 +156,7 @@ export const PRESET_EXERCISES = [
 	// ── Adductors ──
 	{ name: "Adductor Machine", type: "Adductors" },
 	{ name: "Copenhagen Plank", type: "Adductors" },
+	{ name: "Cable Adduction", type: "Adductors" },
 
 	// ── Biceps ──
 	{ name: "Barbell Curl", type: "Biceps" },
@@ -133,16 +164,20 @@ export const PRESET_EXERCISES = [
 	{ name: "Spider Curl", type: "Biceps" },
 	{ name: "Dumbbell Curl", type: "Biceps" },
 	{ name: "Hammer Curl", type: "Biceps" },
+	{ name: "Cross-Body Hammer Curl", type: "Biceps" },
 	{ name: "Preacher Curl", type: "Biceps" },
 	{ name: "Concentration Curl", type: "Biceps" },
 	{ name: "Incline Dumbbell Curl", type: "Biceps" },
+	{ name: "Incline Cable Curl", type: "Biceps" },
 	{ name: "Cable Curl", type: "Biceps" },
 	{ name: "Drag Cable Curl", type: "Biceps" },
 	{ name: "Bayesian Cable Curl", type: "Biceps" },
 
 	// ── Grip ──
 	{ name: "Dead Hangs", type: "Grip" },
+	{ name: "Fat Grip Dead Hangs", type: "Grip" },
 	{ name: "Plate Pinch Hold", type: "Grip" },
+	{ name: "Pinch Block Lift", type: "Grip" },
 	{ name: "Towel Pull-Ups", type: "Grip" },
 	{ name: "Hand Gripper Squeeze", type: "Grip" },
 	{ name: "Farmer's Hold", type: "Grip" },
@@ -169,10 +204,12 @@ export const PRESET_EXERCISES = [
 
 	// ── Triceps ──
 	{ name: "Tricep Pushdown", type: "Triceps" },
+	{ name: "Single-Arm Cable Tricep Extension", type: "Triceps" },
 	{ name: "Skull Crushers", type: "Triceps" },
 	{ name: "Close Grip Bench Press", type: "Triceps" },
 	{ name: "Overhead Dumbbell Tricep Extension", type: "Triceps" },
 	{ name: "Overhead Cable Tricep Extension", type: "Triceps" },
+	{ name: "French Press", type: "Triceps" },
 	{ name: "Tricep Dips", type: "Triceps" },
 	{ name: "JM Press", type: "Triceps" },
 	{ name: "Tate Press", type: "Triceps" },
@@ -184,7 +221,10 @@ export const PRESET_EXERCISES = [
 	{ name: "L-Sit", type: "Core" },
 	{ name: "Side Plank", type: "Core" },
 	{ name: "Pallof Press", type: "Core" },
+	{ name: "Cable Woodchoppers", type: "Core" },
+	{ name: "Landmine Rotations", type: "Core" },
 	{ name: "Hanging Leg Raises", type: "Core" },
+	{ name: "Hanging Windshield Wipers", type: "Core" },
 	{ name: "Cable Crunches", type: "Core" },
 	{ name: "Ab Wheel Rollout", type: "Core" },
 	{ name: "Russian Twists", type: "Core" },
