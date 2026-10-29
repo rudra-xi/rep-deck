@@ -207,7 +207,7 @@ export function DayExercisesListInner({
 												Sets
 											</th>
 											<th className="w-[20%] py-2 px-2 text-center">
-												Reps
+												Targets
 											</th>
 											<th className="w-[15%] py-2 pl-1 pr-2 text-right">
 												Actions

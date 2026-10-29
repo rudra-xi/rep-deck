@@ -153,7 +153,7 @@ export function QuickAddExtra({
 							className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
 						/>
 						<Input
-							placeholder="reps"
+							placeholder="reps/sec"
 							max={100}
 							min={1}
 							type="number"
@@ -165,6 +165,7 @@ export function QuickAddExtra({
 							placeholder="rpe"
 							max={10}
 							min={1}
+							step="0.1"
 							type="number"
 							value={rpe.value}
 							onChange={rpe.onChange}

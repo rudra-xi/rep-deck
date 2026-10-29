@@ -321,7 +321,7 @@ export function PlannedExercises({
 									<span className="col-span-3">
 										{weightUnit}
 									</span>
-									<span className="col-span-3">Reps</span>
+									<span className="col-span-3">Targets</span>
 									<span className="col-span-3">RPE</span>
 								</div>
 
@@ -358,7 +358,7 @@ export function PlannedExercises({
 												}
 											/>
 											<Input
-												placeholder="reps"
+												placeholder="reps/sec"
 												type="number"
 												disabled={isCompleted}
 												className="col-span-3 rounded-none h-6 px-1 text-center text-xs border-border/50 bg-background/50 focus:border-primary/50 disabled:opacity-50"
