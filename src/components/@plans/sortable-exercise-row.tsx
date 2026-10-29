@@ -6,6 +6,7 @@ import { DotsSixVerticalIcon } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { ExerciseTemplate } from "@/db/schema";
+import { formatTargetReps } from "@/lib/format-target-reps";
 import { cn } from "@/lib/utils";
 import { DeleteExerciseDialog, EditExerciseDialog } from "@/plan-dialogs";
 
@@ -45,6 +46,8 @@ export function SortableExerciseRow({
 		zIndex: isDragging ? 50 : undefined,
 		opacity: isDragging ? 0.9 : 1,
 	};
+
+	const target = formatTargetReps(exercise.targetRepRange);
 
 	const handle = (
 		<button
@@ -112,9 +115,9 @@ export function SortableExerciseRow({
 						·
 						<span className="fmuted">
 							<span className="font-bold text-foreground">
-								{exercise.targetRepRange || "—"}
-							</span>{" "}
-							reps
+								{target.value}
+							</span>
+							{target.label ? ` ${target.label}` : ""}
 						</span>
 					</div>
 				</div>
