@@ -61,8 +61,15 @@ export async function getDashboardData() {
 			const daysCount = await db
 				.select({ count: sql<number>`count(*)` })
 				.from(programDayTemplates)
-				.where(eq(programDayTemplates.programId, activeProgram.id));
-			sessionsPerWeek = Number(daysCount[0]?.count || 4);
+				.where(
+					and(
+						eq(programDayTemplates.programId, activeProgram.id),
+						eq(programDayTemplates.isRestDay, false),
+					),
+				);
+
+			const counted = Number(daysCount[0]?.count ?? 0);
+			if (counted > 0) sessionsPerWeek = counted;
 		}
 
 		const now = new Date();
@@ -186,106 +193,138 @@ export async function getDashboardData() {
 		const thirtyDaysAgo = new Date();
 		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-		const trackedLifts = [
-			{ label: toCapitalized("Bench Press"), value: "Bench Press" },
-			{ label: toCapitalized("Barbell Squat"), value: "Barbell Squat" },
-			{ label: toCapitalized("Deadlift"), value: "Deadlift" },
-			{ label: toCapitalized("Overhead Press"), value: "Overhead Press" },
+		const recentBig4Sets = await db
+			.select({
+				exercise: workoutSets.exerciseName,
+				weight: workoutSets.weight,
+				reps: workoutSets.reps,
+				rpe: workoutSets.rpe,
+				date: workoutSessions.date,
+			})
+			.from(workoutSets)
+			.innerJoin(
+				workoutSessions,
+				eq(workoutSets.sessionId, workoutSessions.id),
+			)
+			.where(
+				and(
+					eq(workoutSessions.userId, userId),
+					gte(workoutSessions.date, thirtyDaysAgo),
+				),
+			)
+			.orderBy(desc(workoutSessions.date));
+
+		const setsByKey: Record<Big4Key, typeof recentBig4Sets> = {
+			squat: [],
+			bench: [],
+			deadlift: [],
+			ohp: [],
+		};
+
+		for (const s of recentBig4Sets) {
+			const key = resolveBig4Key(s.exercise);
+			if (key) setsByKey[key].push(s);
+		}
+
+		// Sort each bucket by weight desc, then date desc.
+		for (const key of Object.keys(setsByKey) as Big4Key[]) {
+			setsByKey[key].sort((a, b) => {
+				const diff = Number(b.weight) - Number(a.weight);
+				if (diff !== 0) return diff;
+				return new Date(b.date).getTime() - new Date(a.date).getTime();
+			});
+		}
+
+		const trackedLifts: Array<{
+			label: string;
+			value: string;
+			key: Big4Key;
+		}> = [
+			{
+				label: toCapitalized("Bench Press"),
+				value: "Bench Press",
+				key: "bench",
+			},
+			{
+				label: toCapitalized("Barbell Squat"),
+				value: "Barbell Squat",
+				key: "squat",
+			},
+			{
+				label: toCapitalized("Deadlift"),
+				value: "Deadlift",
+				key: "deadlift",
+			},
+			{
+				label: toCapitalized("Overhead Press"),
+				value: "Overhead Press",
+				key: "ohp",
+			},
 		];
 
-		const dropdownOptions = await Promise.all(
-			trackedLifts.map(async (lift) => {
-				const sets = await db
-					.select({
-						weight: workoutSets.weight,
-						reps: workoutSets.reps,
-						rpe: workoutSets.rpe,
-						date: workoutSessions.date,
-					})
-					.from(workoutSets)
-					.innerJoin(
-						workoutSessions,
-						eq(workoutSets.sessionId, workoutSessions.id),
-					)
-					.where(
-						and(
-							eq(workoutSessions.userId, userId),
-							eq(workoutSets.exerciseName, lift.value),
-							gte(workoutSessions.date, thirtyDaysAgo),
-						),
-					)
-					.orderBy(
-						desc(workoutSets.weight),
-						desc(workoutSessions.date),
-					)
-					.limit(2);
+		const dropdownOptions = trackedLifts.map((lift) => {
+			const sets = setsByKey[lift.key];
 
-				if (sets.length === 0) {
-					return {
-						label: lift.label,
-						value: lift.value,
-						targetValue: "—",
-						subtext: "No records",
-						rawWeightKg: undefined,
-						trend: undefined,
-					};
-				}
-
-				const bestSet = sets[0];
-				const previousSet = sets[1];
-
-				const weightKg = Number(bestSet.weight);
-				const reps = bestSet.reps;
-				const rpe = bestSet.rpe ? Number(bestSet.rpe) : null;
-				const isBodyweight = weightKg <= 0;
-
-				const subtext = isBodyweight
-					? rpe
-						? `${reps} ${reps === 1 ? "rep" : "reps"} @ RPE ${rpe}`
-						: `${reps} ${reps === 1 ? "rep" : "reps"}`
-					: rpe
-						? `${reps} ${reps === 1 ? "rep" : "reps"} @ RPE ${rpe}`
-						: `${reps} ${reps === 1 ? "rep" : "reps"}`;
-				let trend: KpiTrendShape | undefined;
-
-				if (!isBodyweight && previousSet) {
-					const prevWeight = Number(previousSet.weight);
-					const diff = weightKg - prevWeight;
-					const absDiff = Math.abs(diff);
-
-					if (diff > 0) {
-						trend = {
-							direction: "up",
-							value: `+${absDiff} kg`,
-							rawDiffKg: absDiff,
-						};
-					} else if (diff < 0) {
-						trend = {
-							direction: "down",
-							value: `-${absDiff} kg`,
-							rawDiffKg: absDiff,
-						};
-					} else {
-						trend = {
-							direction: "neutral",
-							value: "0 kg",
-							rawDiffKg: 0,
-						};
-					}
-				}
-
+			if (sets.length === 0) {
 				return {
 					label: lift.label,
 					value: lift.value,
-					targetValue: isBodyweight
-						? `BW × ${reps}`
-						: `${weightKg} kg`,
-					rawWeightKg: isBodyweight ? undefined : weightKg,
-					subtext,
-					trend,
+					targetValue: "—",
+					subtext: "No records",
+					rawWeightKg: undefined,
+					trend: undefined,
 				};
-			}),
-		);
+			}
+
+			const bestSet = sets[0];
+			const previousSet = sets[1];
+
+			const weightKg = Number(bestSet.weight);
+			const reps = bestSet.reps;
+			const rpe = bestSet.rpe ? Number(bestSet.rpe) : null;
+			const isBodyweight = weightKg <= 0;
+
+			const subtext = rpe
+				? `${reps} ${reps === 1 ? "rep" : "reps"} @ RPE ${rpe}`
+				: `${reps} ${reps === 1 ? "rep" : "reps"}`;
+
+			let trend: KpiTrendShape | undefined;
+
+			if (!isBodyweight && previousSet) {
+				const prevWeight = Number(previousSet.weight);
+				const diff = weightKg - prevWeight;
+				const absDiff = Math.abs(diff);
+
+				if (diff > 0) {
+					trend = {
+						direction: "up",
+						value: `+${absDiff} kg`,
+						rawDiffKg: absDiff,
+					};
+				} else if (diff < 0) {
+					trend = {
+						direction: "down",
+						value: `-${absDiff} kg`,
+						rawDiffKg: absDiff,
+					};
+				} else {
+					trend = {
+						direction: "neutral",
+						value: "0 kg",
+						rawDiffKg: 0,
+					};
+				}
+			}
+
+			return {
+				label: lift.label,
+				value: lift.value,
+				targetValue: isBodyweight ? `BW × ${reps}` : `${weightKg} kg`,
+				rawWeightKg: isBodyweight ? undefined : weightKg,
+				subtext,
+				trend,
+			};
+		});
 
 		const sixtyDaysAgo = new Date();
 		sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
