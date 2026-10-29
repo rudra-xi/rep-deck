@@ -226,7 +226,6 @@ export async function getDashboardData() {
 			if (key) setsByKey[key].push(s);
 		}
 
-		// Sort each bucket by weight desc, then date desc.
 		for (const key of Object.keys(setsByKey) as Big4Key[]) {
 			setsByKey[key].sort((a, b) => {
 				const diff = Number(b.weight) - Number(a.weight);
