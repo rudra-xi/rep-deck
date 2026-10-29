@@ -25,6 +25,7 @@ interface ProgramDay {
 	id: string;
 	dayIndex: number;
 	label: string;
+	isRestDay?: boolean;
 }
 
 interface DaySelectorProps {
@@ -60,7 +61,8 @@ export function DaySelector({
 		: false;
 	const showDateRow = date != null && onDateChange != null;
 
-	const activeDay = days.find((d) => d.dayIndex === selectedDayIndex);
+	const trainingDays = days.filter((d) => !d.isRestDay);
+	const activeDay = trainingDays.find((d) => d.dayIndex === selectedDayIndex);
 
 	const handleDaySelect = (day: ProgramDay) => {
 		if (day.dayIndex === selectedDayIndex) {
@@ -204,13 +206,13 @@ export function DaySelector({
 					</span>
 				</div>
 
-				{days.length === 0 ? (
+				{trainingDays.length === 0 ? (
 					<p className="text-xs fmuted italic py-1">
-						No days configured for this program.
+						No training days configured for this program.
 					</p>
 				) : (
 					<div className="fwrap gap-2">
-						{days.map((day) => {
+						{trainingDays.map((day) => {
 							const isActive = day.dayIndex === selectedDayIndex;
 							const derived = deriveWeekdayShort(
 								anchorWeekday ?? null,
@@ -253,7 +255,7 @@ export function DaySelector({
 					<span>
 						Total Days:{" "}
 						<strong className="text-foreground">
-							{days.length}
+							{trainingDays.length}
 						</strong>
 					</span>
 					|

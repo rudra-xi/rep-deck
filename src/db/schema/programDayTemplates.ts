@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm/_relations";
 import {
+	boolean,
 	index,
 	integer,
 	pgTable,
@@ -18,6 +19,7 @@ export const programDayTemplates = pgTable(
 			.notNull()
 			.references(() => programTemplates.id, { onDelete: "cascade" }),
 		dayIndex: integer("day_index").notNull(),
+		isRestDay: boolean("is_rest_day").notNull().default(false),
 		label: text("label").notNull(),
 		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
