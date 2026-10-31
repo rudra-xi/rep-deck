@@ -32,18 +32,21 @@ export function PlanDetailsCard({
 }: PlanDetailsCardProps) {
 	const router = useRouter();
 
-	const handleAddDay = async (label: string) => {
-		await addPlanDay(plan.id, label);
+	const handleAddDay = async (label: string, isRestDay: boolean) => {
+		await addPlanDay(plan.id, label, isRestDay);
+		router.refresh();
+	};
+
+	const handleEditDay = async (
+		dayId: string,
+		data: { label: string; isRestDay: boolean },
+	) => {
+		await updatePlanDay(dayId, data);
 		router.refresh();
 	};
 
 	const handleDeleteDay = async (dayId: string) => {
 		await deletePlanDay(dayId);
-		router.refresh();
-	};
-
-	const handleEditDay = async (dayId: string, label: string) => {
-		await updatePlanDay(dayId, { label });
 		router.refresh();
 	};
 
@@ -104,15 +107,25 @@ export function PlanDetailsCard({
 										{day.label}
 									</span>
 									·
-									{plan.anchorWeekday != null && (
-										<span className="ftext-2xs fmuted">
-											{deriveWeekdayShort(
-												plan.anchorWeekday,
-												day.dayIndex,
-											)}
-										</span>
+									{day.isRestDay && (
+										<Badge
+											variant={"outline"}
+											className="opacity-60"
+										>
+											Rest
+										</Badge>
 									)}
+									{plan.anchorWeekday != null &&
+										!day.isRestDay && (
+											<span className="ftext-2xs fmuted">
+												{deriveWeekdayShort(
+													plan.anchorWeekday,
+													day.dayIndex,
+												)}
+											</span>
+										)}
 								</div>
+
 								<div className="fcy gap-1">
 									<EditDayDialog
 										day={day}

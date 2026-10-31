@@ -1,6 +1,7 @@
 "use client";
 
 import { PlusIcon } from "@phosphor-icons/react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,15 +13,18 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useDialog, useFormField } from "@/hooks";
 
 interface CreateDayDialogProps {
-	onAddDay: (label: string) => void | Promise<void>;
+	onAddDay: (label: string, isRestDay: boolean) => void | Promise<void>;
 }
 
 export function CreateDayDialog({ onAddDay }: CreateDayDialogProps) {
 	const { open, setOpen, loading, setLoading } = useDialog();
 	const label = useFormField("");
+	const [isRestDay, setIsRestDay] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -28,16 +32,15 @@ export function CreateDayDialog({ onAddDay }: CreateDayDialogProps) {
 
 		setLoading(true);
 		try {
-			await onAddDay(label.value.trim());
+			await onAddDay(label.value.trim(), isRestDay);
 			toast.success("Day added", {
-				description: `${label.value.trim()} has been added successfully.`,
+				description: `${label.value.trim()} has been added.`,
 			});
 			label.reset();
+			setIsRestDay(false);
 			setOpen(false);
 		} catch {
-			toast.error("Failed to add day", {
-				description: "There was an error adding the day.",
-			});
+			toast.error("Failed to add day");
 		} finally {
 			setLoading(false);
 		}
@@ -65,17 +68,35 @@ export function CreateDayDialog({ onAddDay }: CreateDayDialogProps) {
 						</DialogTitle>
 					</DialogHeader>
 
-					<div className="py-4 space-y-1">
-						<span className="ftext-xs2 font-medium fupper fmuted">
-							Day Label
-						</span>
-						<Input
-							placeholder="e.g., Upper Body, Leg Day, Push A"
-							value={label.value}
-							onChange={label.onChange}
-							className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
-							autoFocus
-						/>
+					<div className="py-4 space-y-3">
+						<div className="space-y-1">
+							<span className="ftext-xs2 font-medium fupper fmuted">
+								Day Label
+							</span>
+							<Input
+								placeholder="e.g., Upper Body, Leg Day, Rest"
+								value={label.value}
+								onChange={label.onChange}
+								className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
+								autoFocus
+							/>
+						</div>
+
+						<div className="fcy justify-between gap-3 p-2.5 border border-border/40 bg-background/50 rounded-none">
+							<div className="fcol1 min-w-0">
+								<Label className="text-xs font-medium text-foreground">
+									Rest Day
+								</Label>
+								<p className="ftext-2xs fmuted leading-snug">
+									Not counted as a training day.
+								</p>
+							</div>
+							<Switch
+								checked={isRestDay}
+								onCheckedChange={setIsRestDay}
+								className="shrink-0"
+							/>
+						</div>
 					</div>
 
 					<DialogFooter>

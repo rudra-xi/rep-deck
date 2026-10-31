@@ -166,7 +166,11 @@ export async function deletePlan(planId: string) {
 	return { success: true };
 }
 
-export async function addPlanDay(planId: string, label: string) {
+export async function addPlanDay(
+	planId: string,
+	label: string,
+	isRestDay = false,
+) {
 	const user = await requireAuth();
 	if (!user) return { success: false, error: "Unauthorized" };
 
@@ -186,6 +190,7 @@ export async function addPlanDay(planId: string, label: string) {
 			programId: planId,
 			label: toCapitalized(label),
 			dayIndex: maxIndex + 1,
+			isRestDay,
 		})
 		.returning();
 
@@ -365,6 +370,7 @@ export async function duplicatePlan(
 					programId: newPlan.id,
 					label: toCapitalized(day.label),
 					dayIndex: day.dayIndex,
+					isRestDay: day.isRestDay,
 				})
 				.returning();
 
@@ -402,7 +408,10 @@ export async function duplicatePlan(
 	}
 }
 
-export async function updatePlanDay(dayId: string, data: { label?: string }) {
+export async function updatePlanDay(
+	dayId: string,
+	data: { label?: string; isRestDay?: boolean },
+) {
 	const user = await requireAuth();
 	if (!user) return { success: false, error: "Unauthorized" };
 
@@ -427,6 +436,9 @@ export async function updatePlanDay(dayId: string, data: { label?: string }) {
 		.update(programDayTemplates)
 		.set({
 			...(data.label && { label: toCapitalized(data.label) }),
+			...(data.isRestDay !== undefined && {
+				isRestDay: data.isRestDay,
+			}),
 		})
 		.where(eq(programDayTemplates.id, dayId));
 
@@ -487,6 +499,7 @@ export async function duplicateDay(
 					programId: original.day.programId,
 					label: newLabel,
 					dayIndex: maxIndex + 1,
+					isRestDay: original.day.isRestDay,
 				})
 				.returning();
 

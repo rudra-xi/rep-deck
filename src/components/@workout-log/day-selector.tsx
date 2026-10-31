@@ -18,6 +18,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { deriveWeekdayShort } from "@/lib/weekday-anchor";
 import { Badge } from "../ui/badge";
 
@@ -63,8 +64,12 @@ export function DaySelector({
 
 	const trainingDays = days.filter((d) => !d.isRestDay);
 	const activeDay = trainingDays.find((d) => d.dayIndex === selectedDayIndex);
+	const selectedDay = days.find((d) => d.dayIndex === selectedDayIndex);
+	const isSelectedRestDay = selectedDay?.isRestDay === true;
 
 	const handleDaySelect = (day: ProgramDay) => {
+		if (day.isRestDay) return;
+
 		if (day.dayIndex === selectedDayIndex) {
 			toast.info(`Already on ${day.label}`, {
 				description: "That's the current day.",
@@ -176,10 +181,10 @@ export function DaySelector({
 						<div className="text-xs">
 							{isAnchored ? (
 								scheduledDayIndex != null ? (
-									<p className="fcy gap-2">
+									<p className="gap-2">
 										<span className="text-muted-foreground">
 											Scheduled:
-										</span>
+										</span>{" "}
 										<span className="font-semibold text-foreground">
 											{scheduledDayLabel}
 										</span>
@@ -206,18 +211,48 @@ export function DaySelector({
 					</span>
 				</div>
 
-				{trainingDays.length === 0 ? (
+				{days.length === 0 ? (
 					<p className="text-xs fmuted italic py-1">
-						No training days configured for this program.
+						No days configured for this program.
 					</p>
 				) : (
 					<div className="fwrap gap-2">
-						{trainingDays.map((day) => {
+						{days.map((day) => {
+							const isRest = day.isRestDay === true;
 							const isActive = day.dayIndex === selectedDayIndex;
 							const derived = deriveWeekdayShort(
 								anchorWeekday ?? null,
 								day.dayIndex,
 							);
+
+							if (isRest) {
+								return (
+									<Button
+										key={day.id}
+										type="button"
+										size="sm"
+										variant="ghost"
+										disabled
+										className={cn(
+											"h-8 text-xs font-semibold gap-1.5 rounded-none border border-dashed cursor-not-allowed",
+											isSelectedRestDay
+												? "border-primary/40 bg-primary/5 text-primary opacity-100"
+												: "border-border/30 bg-transparent fmuted opacity-60",
+										)}
+										title="Rest day — not loggable"
+									>
+										<span>
+											{day.label}
+											{derived && (
+												<span className="ftext-2xs fmuted ml-1">
+													· {derived}
+												</span>
+											)}
+										</span>
+									</Button>
+								);
+							}
+
 							return (
 								<Button
 									key={day.id}
@@ -253,19 +288,28 @@ export function DaySelector({
 
 				<div className="fc justify-end gap-1.5 text-xs fmuted">
 					<span>
-						Total Days:{" "}
+						Training Days:{" "}
 						<strong className="text-foreground">
 							{trainingDays.length}
 						</strong>
 					</span>
 					|
+					<span>
+						Rest Days:{" "}
+						<strong className="text-foreground">
+							{days.length - trainingDays.length}
+						</strong>
+					</span>
 					{activeDay && (
-						<span>
-							Active:{" "}
-							<strong className="text-primary">
-								{activeDay.label}
-							</strong>
-						</span>
+						<>
+							|
+							<span>
+								Active:{" "}
+								<strong className="text-primary">
+									{activeDay.label}
+								</strong>
+							</span>
+						</>
 					)}
 				</div>
 			</CardContent>

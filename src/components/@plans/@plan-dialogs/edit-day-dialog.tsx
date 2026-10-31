@@ -1,7 +1,7 @@
 "use client";
 
 import { PencilSimpleIcon } from "@phosphor-icons/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,22 +13,29 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useDialog, useFormField } from "@/hooks";
 
 interface EditDayDialogProps {
-	day: { id: string; label: string };
-	onEditDay: (dayId: string, label: string) => void | Promise<void>;
+	day: { id: string; label: string; isRestDay: boolean };
+	onEditDay: (
+		dayId: string,
+		data: { label: string; isRestDay: boolean },
+	) => void | Promise<void>;
 }
 
 export function EditDayDialog({ day, onEditDay }: EditDayDialogProps) {
 	const { open, setOpen, loading, setLoading } = useDialog();
 	const label = useFormField(day.label);
+	const [isRestDay, setIsRestDay] = useState(day.isRestDay);
 
 	useEffect(() => {
 		if (open) {
 			label.setValue(day.label);
+			setIsRestDay(day.isRestDay);
 		}
-	}, [open, day.label, label.setValue]);
+	}, [open, day.label, day.isRestDay, label.setValue]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -37,9 +44,12 @@ export function EditDayDialog({ day, onEditDay }: EditDayDialogProps) {
 
 		setLoading(true);
 		try {
-			await onEditDay(day.id, finalLabel);
+			await onEditDay(day.id, {
+				label: finalLabel,
+				isRestDay,
+			});
 			toast.success("Day updated", {
-				description: `"${finalLabel}" has been updated successfully.`,
+				description: `"${finalLabel}" has been updated.`,
 			});
 			setOpen(false);
 		} catch {
@@ -79,17 +89,36 @@ export function EditDayDialog({ day, onEditDay }: EditDayDialogProps) {
 						</DialogTitle>
 					</DialogHeader>
 
-					<div className="py-4 space-y-1">
-						<span className="ftext-xs2 font-medium fupper fmuted">
-							Day Label
-						</span>
-						<Input
-							placeholder="e.g., Monday, Leg Day, Push A"
-							value={label.value}
-							onChange={label.onChange}
-							className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
-							autoFocus
-						/>
+					<div className="py-4 space-y-3">
+						<div className="space-y-1">
+							<span className="ftext-xs2 font-medium fupper fmuted">
+								Day Label
+							</span>
+							<Input
+								placeholder="e.g., Monday, Leg Day, Push A"
+								value={label.value}
+								onChange={label.onChange}
+								className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50"
+								autoFocus
+							/>
+						</div>
+
+						<div className="fcy justify-between gap-3 p-2.5 border border-border/40 bg-background/50 rounded-none">
+							<div className="fcol1 min-w-0">
+								<Label className="text-xs font-medium text-foreground">
+									Rest Day
+								</Label>
+								<p className="ftext-2xs fmuted leading-snug">
+									Excluded from session targets and the
+									workout log day picker.
+								</p>
+							</div>
+							<Switch
+								checked={isRestDay}
+								onCheckedChange={setIsRestDay}
+								className="shrink-0"
+							/>
+						</div>
 					</div>
 
 					<DialogFooter>

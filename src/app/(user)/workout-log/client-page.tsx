@@ -1,11 +1,11 @@
-/** biome-ignore-all lint/correctness/useExhaustiveDependencies: workout-log session state is intentionally keyed on a subset of plan fields */
 "use client";
 
-import { FilePlusIcon } from "@phosphor-icons/react";
+import { FilePlusIcon, MoonIcon } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PageTitleCard, SectionTitleCard } from "@/common";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
 	Empty,
 	EmptyContent,
@@ -52,6 +52,9 @@ export default function WorkoutLogClientView({
 
 	const { clearInputs } = useExerciseInputs();
 
+	const [overrodeRestDay, setOverrodeRestDay] = useState(false);
+	const lastDateRef = useRef<Date>(sessionDate);
+
 	const scheduledDayIndex = initialPlan
 		? dayIndexForDate(
 				initialPlan.anchorWeekday,
@@ -65,17 +68,39 @@ export default function WorkoutLogClientView({
 			? initialPlan?.days.find((d) => d.dayIndex === scheduledDayIndex)
 			: null;
 
+	const selectedDay = initialPlan?.days?.find(
+		(d) => d.dayIndex === selectedDayIndex,
+	);
+	const isRestDay = selectedDay?.isRestDay === true;
+
+	useEffect(() => {
+		const changed =
+			lastDateRef.current.toDateString() !== sessionDate.toDateString();
+		if (changed) {
+			lastDateRef.current = sessionDate;
+			setOverrodeRestDay(false);
+		}
+	}, [sessionDate]);
+
 	const currentDay = initialPlan?.days?.find(
 		(d) => d.dayIndex === selectedDayIndex,
 	);
 
+	const shouldLoadExercises = !isRestDay || overrodeRestDay;
+
 	const { performanceMap, isLoading: isLoadingPerformance } =
-		useExercisePerformance(currentDay?.exercises ?? []);
+		useExercisePerformance(
+			shouldLoadExercises ? (currentDay?.exercises ?? []) : [],
+		);
 
 	useEffect(() => {
 		if (!initialPlan) return;
 
 		if (initialPlan.anchorWeekday != null && scheduledDayIndex != null) {
+			if (scheduledDay?.isRestDay) {
+				setSelectedDayIndex(scheduledDayIndex);
+				return;
+			}
 			setSelectedDayIndex(scheduledDayIndex);
 			return;
 		}
@@ -84,9 +109,17 @@ export default function WorkoutLogClientView({
 			(d) => d.dayIndex === selectedDayIndex,
 		);
 		if (!dayExists && initialPlan.days.length) {
-			setSelectedDayIndex(initialPlan.days[0].dayIndex);
+			const firstTraining = initialPlan.days.find((d) => !d.isRestDay);
+			setSelectedDayIndex(
+				firstTraining?.dayIndex ?? initialPlan.days[0].dayIndex,
+			);
 		}
-	}, [sessionDate, initialPlan?.id, initialPlan?.anchorWeekday]);
+	}, [
+		sessionDate,
+		initialPlan?.id,
+		initialPlan?.anchorWeekday,
+		scheduledDayIndex,
+	]);
 
 	const handleAddExerciseSets = (
 		newSets: Array<Omit<LoggedSet, "id"> & { templateId?: string }>,
@@ -162,6 +195,86 @@ export default function WorkoutLogClientView({
 		);
 	}
 
+	const datePickerSection = (
+		<div className="space-y-3 w-full">
+			<SectionTitleCard title="Session" />
+			<DaySelector
+				programName={initialPlan.name}
+				days={initialPlan.days || []}
+				selectedDayIndex={selectedDayIndex}
+				anchorWeekday={initialPlan.anchorWeekday}
+				date={sessionDate}
+				onDateChange={setSessionDate}
+				onSelectDay={setSelectedDayIndex}
+				scheduledDayIndex={scheduledDayIndex}
+				scheduledDayLabel={
+					scheduledDay
+						? `Day ${scheduledDay.dayIndex} — ${scheduledDay.label}`
+						: null
+				}
+			/>
+		</div>
+	);
+
+	if (isRestDay && !overrodeRestDay) {
+		return (
+			<section className="lg:space-y-6 space-y-8">
+				<PageTitleCard
+					title="Workout Log"
+					subTitle="Recovery is part of the program"
+				/>
+
+				{datePickerSection}
+
+				<Separator />
+
+				<Card size="sm" className="fcard-flat card-ease">
+					<Empty className="p-10 sm:p-14 text-center w-full">
+						<EmptyHeader>
+							<EmptyMedia className="ficon-box-lg">
+								<MoonIcon
+									className="size-6 text-primary"
+									weight="duotone"
+								/>
+							</EmptyMedia>
+							<EmptyTitle className="text-base font-bold fupper text-foreground">
+								Rest Day
+							</EmptyTitle>
+							<EmptyDescription className="text-xs fmuted max-w-sm mx-auto leading-relaxed">
+								{selectedDay?.label
+									? `${selectedDay.label} is a rest day on this plan.`
+									: "Today is a rest day on this plan."}{" "}
+								Recover, eat well, sleep. Growth happens between
+								sessions.
+							</EmptyDescription>
+						</EmptyHeader>
+						<EmptyContent>
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => {
+									setOverrodeRestDay(true);
+									const firstTraining = initialPlan.days.find(
+										(d) => !d.isRestDay,
+									);
+									if (firstTraining) {
+										setSelectedDayIndex(
+											firstTraining.dayIndex,
+										);
+									}
+								}}
+								className="text-xs mt-2"
+							>
+								Train anyway
+							</Button>
+						</EmptyContent>
+					</Empty>
+				</Card>
+			</section>
+		);
+	}
+
+	// Training day view: unchanged from before.
 	return (
 		<section className="lg:space-y-6 space-y-8">
 			<PageTitleCard
@@ -169,24 +282,7 @@ export default function WorkoutLogClientView({
 				subTitle="Log today's session — sets, reps, and notes as you train"
 			/>
 
-			<div className="space-y-3 w-full">
-				<SectionTitleCard title="Session" />
-				<DaySelector
-					programName={initialPlan.name}
-					days={initialPlan.days || []}
-					selectedDayIndex={selectedDayIndex}
-					anchorWeekday={initialPlan.anchorWeekday}
-					date={sessionDate}
-					onDateChange={setSessionDate}
-					onSelectDay={setSelectedDayIndex}
-					scheduledDayIndex={scheduledDayIndex}
-					scheduledDayLabel={
-						scheduledDay
-							? `Day ${scheduledDay.dayIndex} — ${scheduledDay.label}`
-							: null
-					}
-				/>
-			</div>
+			{datePickerSection}
 
 			<Separator />
 
