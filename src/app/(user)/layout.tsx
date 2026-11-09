@@ -9,14 +9,14 @@ export default async function UserLayout({
 }: {
 	children: ReactNode;
 }) {
-	const [preferences, profile] = await Promise.all([
+	const [preferences] = await Promise.all([
 		getUserPreferences(),
 		getUserProfile(),
 	]);
 
 	return (
 		<UnitProvider preferences={preferences}>
-			<Navigation userName={profile.name} />
+			<Navigation />
 			<main className="main-padding">{children}</main>
 			<Footer />
 		</UnitProvider>
