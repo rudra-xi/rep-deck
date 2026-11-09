@@ -122,5 +122,5 @@
 }
 
 @utility main-padding {
-	@apply mx-6 my-20 lg:mx-10 lg:my-24;
+	@apply mx-6 my-20 lg:mx-10 lg:my-24 pb-8 lg:pb-0;
 }
