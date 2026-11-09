@@ -2,7 +2,7 @@
 
 import { BarbellIcon, GaugeIcon, TrophyIcon } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
 	Bar,
 	CartesianGrid,
@@ -30,9 +30,19 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 import { useLiftDetails } from "@/hooks";
+import { cn } from "@/lib/utils";
 import { ChartCardSkeleton } from "@/skeletons";
 import type { LiftDetailPoint } from "@/types/progress";
+import { type ViewMode, ViewToggle } from "../@common/view-toggle";
 
 interface IndividualLiftDetailsCardProps {
 	initialData?: LiftDetailPoint[];
@@ -44,6 +54,7 @@ export function IndividualLiftDetailsCard({
 	loading: propLoading = false,
 }: IndividualLiftDetailsCardProps) {
 	const { weightUnit, fmtWeight } = useUnits();
+	const [view, setView] = useState<ViewMode>("chart");
 
 	const liftChartConfig = useMemo<ChartConfig>(
 		() => ({
@@ -88,30 +99,49 @@ export function IndividualLiftDetailsCard({
 		[data, fmtWeight],
 	);
 
+	// Rows in reverse (newest first) with a computed change column.
+	const tableRows = useMemo(() => {
+		const reversed = [...convertedData].reverse();
+		return reversed.map((row, i) => {
+			const prev = reversed[i + 1];
+			const change =
+				prev &&
+				typeof row.estimated1RM === "number" &&
+				typeof prev.estimated1RM === "number"
+					? row.estimated1RM - prev.estimated1RM
+					: null;
+			return { ...row, change };
+		});
+	}, [convertedData]);
+
 	if (loading) {
 		return (
 			<ChartCardSkeleton
 				height="h-[200px] sm:h-[220px]"
 				hasToggleRow
+				hasViewToggle
 				toggleCount={4}
 				titleWidth="w-40"
 			/>
 		);
 	}
 
-	const liftToggle = (
-		<div className="flex ml-auto border border-border/50 p-0.5 bg-background w-fit">
-			{liftTypes.map((key) => (
-				<Button
-					key={key}
-					size="sm"
-					variant={selectedLift === key ? "default" : "ghost"}
-					onClick={() => setSelectedLift(key)}
-					className="h-5 px-1.5 text-[10px] rounded-none capitalize"
-				>
-					{key}
-				</Button>
-			))}
+	const controls = (
+		<div className="fri gap-2">
+			<ViewToggle view={view} onChange={setView} />
+			<div className="flex border border-border/50 p-0.5 bg-background">
+				{liftTypes.map((key) => (
+					<Button
+						key={key}
+						size="sm"
+						variant={selectedLift === key ? "default" : "ghost"}
+						onClick={() => setSelectedLift(key)}
+						className="h-5 px-1.5 text-[10px] rounded-none capitalize"
+					>
+						{key}
+					</Button>
+				))}
+			</div>
 		</div>
 	);
 
@@ -123,7 +153,8 @@ export function IndividualLiftDetailsCard({
 					title={`${liftLabels[selectedLift]} Performance`}
 				/>
 				<CardContent className="p-4 pt-1 fcol3">
-					{liftToggle}
+					{controls}
+
 					<Empty className="p-6 text-center w-full">
 						<EmptyHeader>
 							<EmptyMedia className="ficon-box-lg">
@@ -171,9 +202,8 @@ export function IndividualLiftDetailsCard({
 				}
 			/>
 
-			<CardContent className="fcol3">
-				{liftToggle}
-
+			<CardContent className="p-4 pt-1 fcol3">
+				{controls}
 				<div className="grid grid-cols-3 gap-2">
 					<div className="p-2 bg-background/50 border border-border/40">
 						<span className="ftext-3xs fupper font-medium fmuted block">
@@ -204,62 +234,129 @@ export function IndividualLiftDetailsCard({
 								className="size-3 text-primary sh0"
 								weight="duotone"
 							/>
-							<span className="">{lastPR}</span>
+							<span>{lastPR}</span>
 						</span>
 					</div>
 				</div>
 
-				<ChartContainer
-					config={liftChartConfig}
-					className="h-[160px] sm:h-[180px] w-full"
-				>
-					<ComposedChart
-						accessibilityLayer
-						data={convertedData}
-						margin={{ left: 12, right: 8, top: 4, bottom: 4 }}
+				{view === "chart" ? (
+					<ChartContainer
+						config={liftChartConfig}
+						className="h-40 sm:h-45 w-full"
 					>
-						<CartesianGrid vertical={false} strokeDasharray="3 3" />
-						<XAxis
-							dataKey="date"
-							tickLine={false}
-							axisLine={false}
-							tickMargin={4}
-							fontSize={10}
-						/>
-						<YAxis
-							tickLine={false}
-							axisLine={false}
-							tickMargin={4}
-							unit={weightUnit}
-							domain={["auto", "auto"]}
-							fontSize={10}
-							width={28}
-						/>
-						<ChartTooltip
-							content={<ChartTooltipContent indicator="line" />}
-						/>
-						<ChartLegend content={<ChartLegendContent />} />
+						<ComposedChart
+							accessibilityLayer
+							data={convertedData}
+							margin={{ left: 12, right: 8, top: 4, bottom: 4 }}
+						>
+							<CartesianGrid
+								vertical={false}
+								strokeDasharray="3 3"
+							/>
+							<XAxis
+								dataKey="date"
+								tickLine={false}
+								axisLine={false}
+								tickMargin={4}
+								fontSize={10}
+							/>
+							<YAxis
+								tickLine={false}
+								axisLine={false}
+								tickMargin={4}
+								unit={weightUnit}
+								domain={["auto", "auto"]}
+								fontSize={10}
+								width={28}
+							/>
+							<ChartTooltip
+								content={
+									<ChartTooltipContent indicator="line" />
+								}
+							/>
+							<ChartLegend content={<ChartLegendContent />} />
 
-						<Bar
-							dataKey="weight"
-							fill="var(--color-weight)"
-							radius={[2, 2, 0, 0]}
-							maxBarSize={24}
-							isAnimationActive={true}
-							animationDuration={1000}
-						/>
+							<Bar
+								dataKey="weight"
+								fill="var(--color-weight)"
+								radius={[2, 2, 0, 0]}
+								maxBarSize={24}
+								isAnimationActive={true}
+								animationDuration={1000}
+							/>
 
-						<Line
-							type="monotone"
-							dataKey="estimated1RM"
-							stroke="var(--color-estimated1RM)"
-							strokeWidth={2}
-							dot={{ r: 3 }}
-							isAnimationActive={true}
-							animationDuration={1500}
-						/>
-					</ComposedChart>
-				</ChartContainer>
+							<Line
+								type="monotone"
+								dataKey="estimated1RM"
+								stroke="var(--color-estimated1RM)"
+								strokeWidth={2}
+								dot={{ r: 3 }}
+								isAnimationActive={true}
+								animationDuration={1500}
+							/>
+						</ComposedChart>
+					</ChartContainer>
+				) : (
+					<div className="max-h-55 overflow-y-auto border border-border/40">
+						<Table>
+							<TableHeader>
+								<TableRow className="border-border/60 hover:bg-transparent">
+									<TableHead className="ftext-3xs fupper fmuted font-semibold">
+										Date
+									</TableHead>
+									<TableHead className="ftext-3xs fupper fmuted font-semibold text-right">
+										Top Set
+									</TableHead>
+									<TableHead className="ftext-3xs fupper fmuted font-semibold text-right">
+										Est. 1RM
+									</TableHead>
+									<TableHead className="ftext-3xs fupper fmuted font-semibold text-right">
+										Δ
+									</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{tableRows.map((row) => (
+									<TableRow
+										key={row.date}
+										className="border-border/40 hover:bg-muted/40"
+									>
+										<TableCell className="text-xs font-medium text-foreground">
+											{row.date}
+										</TableCell>
+										<TableCell className="text-right text-xs tabular-nums font-semibold text-foreground">
+											{typeof row.weight === "number"
+												? `${row.weight}`
+												: "—"}
+										</TableCell>
+										<TableCell className="text-right text-xs tabular-nums font-semibold text-foreground">
+											{typeof row.estimated1RM ===
+											"number"
+												? `${row.estimated1RM}`
+												: "—"}
+										</TableCell>
+										<TableCell
+											className={cn(
+												"text-right text-xs tabular-nums font-semibold",
+												row.change === null && "fmuted",
+												row.change !== null &&
+													row.change > 0 &&
+													"text-primary",
+												row.change !== null &&
+													row.change < 0 &&
+													"text-destructive",
+											)}
+										>
+											{row.change === null
+												? "—"
+												: `${row.change > 0 ? "+" : ""}${row.change.toFixed(1)}`}
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</div>
+				)}
 			</CardContent>
 		</Card>
 	);
