@@ -6,6 +6,7 @@ import { Navigation } from "./navigation";
 import { PageTitleCard } from "./page-title-card";
 import { SectionTitleCard } from "./section-title-card";
 import { UnitProvider, useUnits } from "./unit-provider";
+import { type ViewMode, ViewToggle } from "./view-toggle";
 import { WeightBodyFatTrend } from "./weight-body-fat-trend";
 
 export {
@@ -19,4 +20,6 @@ export {
 	useUnits,
 	WeightBodyFatTrend,
 	CardsHeader,
+	ViewToggle,
+	type ViewMode,
 };
