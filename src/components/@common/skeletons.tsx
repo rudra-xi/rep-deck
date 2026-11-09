@@ -66,6 +66,10 @@ export function KpiCardsSkeleton({ count = 4 }: { count?: number }) {
 					<CardContent>
 						<div className="flex items-baseline justify-between gap-2 min-h-8">
 							<Skeleton className="h-7 w-24 rounded-sm" />
+							{i === 2 && (
+								/* Best Lift card has a dropdown next to the value */
+								<Skeleton className="h-7 w-20 rounded-none" />
+							)}
 						</div>
 						<div className="fcy mt-1.5 gap-1.5 h-4">
 							<Skeleton className="h-3 w-32 rounded-sm" />
@@ -117,6 +121,9 @@ export function WorkoutTableSkeleton({ rows = 4 }: { rows?: number }) {
 							<div className="fcy gap-2 min-w-0">
 								<Skeleton className="size-3.5 rounded-sm sh0" />
 								<Skeleton className="h-3.5 w-28 rounded-sm" />
+								{i === 0 && (
+									<Skeleton className="size-3 rounded-sm" />
+								)}
 							</div>
 							<Skeleton className="h-3.5 w-14 rounded-sm ml-auto" />
 							<Skeleton className="h-3.5 w-8 rounded-sm ml-auto" />
@@ -315,6 +322,7 @@ export function DayExercisesListSkeleton({ rows = 4 }: { rows?: number }) {
 				trailing={<Skeleton className="h-7 w-28 rounded-none" />}
 			/>
 			<CardContent className="p-4 pt-1">
+				{/* Desktop: table with drag handle column */}
 				<div className="hidden md:block">
 					<table className="w-full table-fixed text-left text-xs border-collapse">
 						<thead>
@@ -338,10 +346,13 @@ export function DayExercisesListSkeleton({ rows = 4 }: { rows?: number }) {
 							{Array.from({ length: rows }).map((_, i) => (
 								<tr key={i}>
 									<td className="w-8 py-2.5 pl-2 pr-0">
-										<Skeleton className="size-6 rounded-sm" />
+										<Skeleton className="size-4 rounded-sm" />
 									</td>
 									<td className="py-2.5 px-2">
-										<Skeleton className="h-3.5 w-32 rounded-sm" />
+										<div className="fcy gap-2">
+											<Skeleton className="h-3.5 w-32 rounded-sm" />
+											<Skeleton className="h-3 w-12 rounded-sm" />
+										</div>
 									</td>
 									<td className="w-[10%] py-2.5 px-2">
 										<Skeleton className="h-3 w-6 rounded-sm mx-auto" />
@@ -351,8 +362,8 @@ export function DayExercisesListSkeleton({ rows = 4 }: { rows?: number }) {
 									</td>
 									<td className="w-[15%] py-2.5 pl-1 pr-2">
 										<div className="fcy justify-end gap-1">
-											<Skeleton className="size-7 rounded-sm" />
-											<Skeleton className="size-7 rounded-sm" />
+											<Skeleton className="size-6 rounded-sm" />
+											<Skeleton className="size-6 rounded-sm" />
 										</div>
 									</td>
 								</tr>
@@ -361,26 +372,24 @@ export function DayExercisesListSkeleton({ rows = 4 }: { rows?: number }) {
 					</table>
 				</div>
 
+				{/* Mobile: cards with drag handle strip */}
 				<div className="flex md:hidden flex-col gap-2">
 					{Array.from({ length: rows }).map((_, i) => (
 						<div
 							key={i}
 							className="flex items-stretch gap-2 border border-border/40 bg-background/50 p-2"
 						>
+							{/* Drag handle column */}
 							<Skeleton className="w-8 shrink-0 rounded-sm" />
 
 							<div className="flex flex-col gap-1.5 min-w-0 flex-1 py-0.5">
 								<div className="flex items-start justify-between gap-2">
-									<div className="flex items-center gap-1.5 min-w-0 flex-wrap">
-										<Skeleton className="h-3.5 w-28 rounded-sm" />
-									</div>
-
+									<Skeleton className="h-3.5 w-32 rounded-sm" />
 									<div className="flex items-center gap-0.5 shrink-0">
-										<Skeleton className="size-7 rounded-sm" />
-										<Skeleton className="size-7 rounded-sm" />
+										<Skeleton className="size-6 rounded-sm" />
+										<Skeleton className="size-6 rounded-sm" />
 									</div>
 								</div>
-
 								<div className="flex flex-wrap items-center gap-2">
 									<Skeleton className="h-4 w-14 rounded-none" />
 									<Skeleton className="h-3 w-12 rounded-sm" />
@@ -401,28 +410,40 @@ export function ChartCardSkeleton({
 	hasKpiRow = false,
 	toggleCount = 4,
 	titleWidth = "w-32",
+	hasViewToggle = false,
 }: {
 	height?: string;
 	hasToggleRow?: boolean;
 	hasKpiRow?: boolean;
 	toggleCount?: number;
 	titleWidth?: string;
+	hasViewToggle?: boolean;
 }) {
 	return (
 		<Card size="sm" className="relative fcard-flat card-ease">
 			<CardsHeaderSkeleton
 				titleWidth={titleWidth}
 				trailing={
-					hasToggleRow ? (
-						<div className="flex gap-1">
-							{Array.from({ length: toggleCount }).map((_, i) => (
-								<Skeleton
-									key={i}
-									className="h-5 w-9 rounded-none"
-								/>
-							))}
-						</div>
-					) : undefined
+					<div className="fcy gap-2">
+						{hasToggleRow && (
+							<div className="flex gap-1">
+								{Array.from({ length: toggleCount }).map(
+									(_, i) => (
+										<Skeleton
+											key={i}
+											className="h-5 w-9 rounded-none"
+										/>
+									),
+								)}
+							</div>
+						)}
+						{hasViewToggle && (
+							<div className="flex gap-1">
+								<Skeleton className="h-5 w-6 rounded-none" />
+								<Skeleton className="h-5 w-6 rounded-none" />
+							</div>
+						)}
+					</div>
 				}
 			/>
 			<CardContent className="p-4 pt-1 fcol3">
@@ -438,18 +459,18 @@ export function SessionHistoryListSkeleton({ rows = 4 }: { rows?: number }) {
 		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeaderSkeleton titleWidth="w-40" />
 			<CardContent className="p-4 pt-1 fcol4">
-				<Skeleton className="h-[140px] w-full rounded-none border-b border-border/30" />
+				<Skeleton className="h-35 w-full rounded-none border-b border-border/30" />
 				<div className="divide-y divide-border/30">
 					{Array.from({ length: rows }).map((_, i) => (
 						<div key={i} className="py-2.5 fcb px-1">
 							<div className="space-y-1.5 min-w-0">
 								<div className="fcy gap-2">
-									<Skeleton className="h-3 w-16 rounded-sm" />
+									<Skeleton className="h-3 w-28 rounded-sm" />
 									<Skeleton className="h-4 w-32 rounded-sm" />
 								</div>
 								<Skeleton className="h-3 w-40 rounded-sm" />
 							</div>
-							<Skeleton className="size-4 rounded-sm sh0" />
+							<Skeleton className="h-3 w-24 rounded-sm sh0" />
 						</div>
 					))}
 				</div>
