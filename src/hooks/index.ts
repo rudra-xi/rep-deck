@@ -30,6 +30,7 @@ import { useLiftDetails } from "./progress-hook/use-lift-details";
 import { useSessionHistory } from "./progress-hook/use-session-history";
 import { useStrengthOverview } from "./progress-hook/use-strength-overview";
 import { useTrainingFrequency } from "./progress-hook/use-training-frequency";
+import { useHideOnScroll } from "./use-hide-on-scroll";
 import { useToastPosition } from "./use-toast-position";
 import { useExerciseInputs } from "./workout-log-hook/use-exercise-inputs";
 import { useExercisePerformance } from "./workout-log-hook/use-exercise-performance";
@@ -44,6 +45,7 @@ export {
 	useFormField,
 	useRangedInput,
 	useWorkoutDraft,
+	useHideOnScroll,
 	useExerciseInputs,
 	useExercisePerformance,
 	useWorkoutSession,
