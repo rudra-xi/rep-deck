@@ -19,6 +19,14 @@ export interface StrengthTrendDataPoint {
 	bench?: number;
 	deadlift?: number;
 	ohp?: number;
+	squatWeight?: number;
+	benchWeight?: number;
+	deadliftWeight?: number;
+	ohpWeight?: number;
+	squatReps?: number;
+	benchReps?: number;
+	deadliftReps?: number;
+	ohpReps?: number;
 	prs?: {
 		squat?: boolean;
 		bench?: boolean;
@@ -354,7 +362,15 @@ export async function getDashboardData() {
 		const groupedByDate: Record<
 			string,
 			Partial<
-				Record<Big4Key, { weight: number; reps: number; isPR: boolean }>
+				Record<
+					Big4Key,
+					{
+						weight: number; // e1RM
+						actual: number; // actual top-set weight
+						reps: number;
+						isPR: boolean;
+					}
+				>
 			>
 		> = {};
 
@@ -379,6 +395,7 @@ export async function getDashboardData() {
 			if (!existing || estimated1RM > existing.weight) {
 				groupedByDate[dateKey][liftKey] = {
 					weight: estimated1RM,
+					actual: Number(set.weight),
 					reps: set.reps,
 					isPR: set.isPR || false,
 				};
@@ -397,7 +414,9 @@ export async function getDashboardData() {
 				liftKeys.forEach((key) => {
 					const liftData = lifts[key];
 					if (liftData) {
-						point[key] = Math.round(liftData.weight);
+						point[key] = Math.round(liftData.weight); // e1RM
+						point[`${key}Weight`] = Math.round(liftData.actual); // actual top set
+						point[`${key}Reps`] = liftData.reps;
 						if (liftData.isPR && point.prs) {
 							point.prs[key] = true;
 						}

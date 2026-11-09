@@ -1,18 +1,33 @@
 "use client";
 
-import { TrendUpIcon } from "@phosphor-icons/react";
+import { CaretUpDownIcon, TrendUpIcon } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useMemo } from "react";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { CardsHeader, useUnits } from "@/common";
+import { useMemo, useState } from "react";
+import {
+	Bar,
+	CartesianGrid,
+	ComposedChart,
+	Line,
+	XAxis,
+	YAxis,
+} from "recharts";
+import { CardsHeader, useUnits, type ViewMode, ViewToggle } from "@/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
 	type ChartConfig,
 	ChartContainer,
+	ChartLegend,
+	ChartLegendContent,
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
 	Empty,
 	EmptyContent,
@@ -21,7 +36,16 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 import { useStrengthChart } from "@/hooks";
+import { cn } from "@/lib/utils";
 import { ChartCardSkeleton } from "@/skeletons";
 
 export interface StrengthTrendDataPoint {
@@ -30,14 +54,32 @@ export interface StrengthTrendDataPoint {
 	bench?: number;
 	deadlift?: number;
 	ohp?: number;
+	squatWeight?: number;
+	benchWeight?: number;
+	deadliftWeight?: number;
+	ohpWeight?: number;
+	squatReps?: number;
+	benchReps?: number;
+	deadliftReps?: number;
+	ohpReps?: number;
+	prs?: {
+		squat?: boolean;
+		bench?: boolean;
+		deadlift?: boolean;
+		ohp?: boolean;
+	};
 }
 
-const chartConfig = {
+type LiftKey = "squat" | "bench" | "deadlift" | "ohp";
+
+const LIFT_META: Record<LiftKey, { label: string; color: string }> = {
 	squat: { label: "Squat", color: "var(--chart-1)" },
 	bench: { label: "Bench", color: "var(--chart-2)" },
 	deadlift: { label: "Deadlift", color: "var(--chart-3)" },
 	ohp: { label: "OHP", color: "var(--chart-4)" },
-} satisfies ChartConfig;
+};
+
+const LIFT_ORDER: LiftKey[] = ["squat", "bench", "deadlift", "ohp"];
 
 interface StrengthChartProps {
 	data?: StrengthTrendDataPoint[];
@@ -49,23 +91,52 @@ export function StrengthChart({
 	loading = false,
 }: StrengthChartProps) {
 	const { weightUnit, fmtWeight } = useUnits();
-	const { activeLifts, toggleLift, hasData } = useStrengthChart(data);
+	const { hasData } = useStrengthChart(data);
 
-	const convertedData = useMemo(
-		() =>
-			data.map((d) => ({
-				...d,
-				squat:
-					typeof d.squat === "number" ? fmtWeight(d.squat) : d.squat,
-				bench:
-					typeof d.bench === "number" ? fmtWeight(d.bench) : d.bench,
-				deadlift:
-					typeof d.deadlift === "number"
-						? fmtWeight(d.deadlift)
-						: d.deadlift,
-				ohp: typeof d.ohp === "number" ? fmtWeight(d.ohp) : d.ohp,
-			})),
-		[data, fmtWeight],
+	const [selectedLift, setSelectedLift] = useState<LiftKey>("bench");
+	const [view, setView] = useState<ViewMode>("chart"); // ← ViewMode type
+
+	const filteredData = useMemo(() => {
+		const currentKey =
+			`${selectedLift}Weight` as keyof StrengthTrendDataPoint;
+		const estKey = selectedLift as keyof StrengthTrendDataPoint;
+		const repsKey = `${selectedLift}Reps` as keyof StrengthTrendDataPoint;
+
+		return data
+			.filter(
+				(d) =>
+					typeof d[currentKey] === "number" ||
+					typeof d[estKey] === "number",
+			)
+			.map((d) => {
+				const current = d[currentKey];
+				const est = d[estKey];
+				const reps = d[repsKey];
+				return {
+					date: d.date,
+					current:
+						typeof current === "number"
+							? fmtWeight(current)
+							: undefined,
+					estimated:
+						typeof est === "number" ? fmtWeight(est) : undefined,
+					reps: typeof reps === "number" ? reps : undefined,
+				};
+			});
+	}, [data, selectedLift, fmtWeight]);
+
+	const chartConfig = useMemo<ChartConfig>(
+		() => ({
+			current: {
+				label: `Current (${weightUnit})`,
+				color: LIFT_META[selectedLift].color,
+			},
+			estimated: {
+				label: `Est. 1RM (${weightUnit})`,
+				color: "var(--chart-5)",
+			},
+		}),
+		[selectedLift, weightUnit],
 	);
 
 	if (loading) {
@@ -73,38 +144,11 @@ export function StrengthChart({
 			<ChartCardSkeleton
 				height="h-55 lg:h-70"
 				hasToggleRow
-				toggleCount={4}
-				titleWidth="w-24"
+				toggleCount={2}
+				titleWidth="w-32"
 			/>
 		);
 	}
-
-	const liftToggles = (
-		<div className="fg1 fwrap w-full justify-end">
-			{Object.entries(chartConfig).map(([key, config]) => {
-				const isActive = activeLifts[key as keyof typeof activeLifts];
-				return (
-					<Button
-						key={key}
-						variant="ghost"
-						size="sm"
-						onClick={() => toggleLift(key)}
-						className={`h-7 px-2 text-xs rounded-none transition-colors fgrow sm:flex-initial ${
-							isActive
-								? "border border-primary bg-primary/10 text-accent-foreground font-medium"
-								: "bg-transparent fmuted hover:text-foreground border border-border"
-						}`}
-					>
-						<span
-							className="mr-1.5 size-2 sh0 rounded-full"
-							style={{ backgroundColor: config.color }}
-						/>
-						{config.label}
-					</Button>
-				);
-			})}
-		</div>
-	);
 
 	if (!hasData) {
 		return (
@@ -122,8 +166,8 @@ export function StrengthChart({
 						</EmptyTitle>
 						<EmptyDescription className="text-xs fmuted max-w-sm mx-auto">
 							Log workouts with Squat, Bench Press, Deadlift, or
-							Overhead Press to see your estimated 1RM progression
-							over time.
+							Overhead Press to see current vs estimated 1RM
+							progression.
 						</EmptyDescription>
 					</EmptyHeader>
 					<EmptyContent>
@@ -144,123 +188,218 @@ export function StrengthChart({
 		);
 	}
 
+	const tableRows = filteredData
+		.map((row, idx) => {
+			const prev = idx > 0 ? filteredData[idx - 1] : null;
+			const change =
+				row.estimated != null && prev?.estimated != null
+					? Number(row.estimated) - Number(prev.estimated)
+					: null;
+			return { ...row, change };
+		})
+		.slice()
+		.reverse();
+
+	const liftSelector = (
+		<DropdownMenu>
+			<DropdownMenuTrigger
+				render={
+					<Button
+						variant="ghost"
+						size="sm"
+						className="h-7 px-2 text-xs rounded-none border border-border/60 gap-1.5"
+					>
+						<span
+							className="size-2 rounded-full"
+							style={{
+								backgroundColor: LIFT_META[selectedLift].color,
+							}}
+						/>
+						{LIFT_META[selectedLift].label}
+						<CaretUpDownIcon
+							className="size-3 opacity-60"
+							weight="bold"
+						/>
+					</Button>
+				}
+			/>
+			<DropdownMenuContent align="end" className="rounded-none">
+				{LIFT_ORDER.map((key) => (
+					<DropdownMenuItem
+						key={key}
+						onClick={() => setSelectedLift(key)}
+						className="text-xs rounded-none gap-2"
+					>
+						<span
+							className="size-2 rounded-full"
+							style={{ backgroundColor: LIFT_META[key].color }}
+						/>
+						{LIFT_META[key].label}
+					</DropdownMenuItem>
+				))}
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+
 	return (
 		<Card size="sm" className="fcard-flat w-full card-ease">
-			<CardsHeader icon={TrendUpIcon} title="Estimated 1RM" />
+			<CardsHeader
+				icon={TrendUpIcon}
+				title="Current vs Est. 1RM"
+				trailing={
+					<div className="fcy gap-2">
+						{liftSelector}
+						<ViewToggle view={view} onChange={setView} />
+					</div>
+				}
+			/>
 
 			<CardContent className="p-4 pt-1 fcol3">
-				{liftToggles}
-
-				<ChartContainer
-					config={chartConfig}
-					className="h-55 lg:h-70 w-full"
-				>
-					<LineChart
-						accessibilityLayer
-						data={convertedData}
-						margin={{
-							top: 10,
-							right: 10,
-							left: 10,
-							bottom: 0,
-						}}
+				{view === "chart" ? (
+					<ChartContainer
+						config={chartConfig}
+						className="h-55 lg:h-70 w-full"
 					>
-						<CartesianGrid
-							vertical={false}
-							strokeDasharray="3 3"
-							opacity={0.4}
-						/>
-						<XAxis
-							dataKey="date"
-							tickLine={false}
-							axisLine={false}
-							tickMargin={8}
-							fontSize={10}
-							interval="preserveStartEnd"
-							tickFormatter={(value: string) =>
-								new Date(value).toLocaleDateString("en-US", {
-									month: "short",
-									day: "numeric",
-								})
-							}
-						/>
-						<YAxis
-							fontSize={10}
-							tickLine={false}
-							axisLine={false}
-							unit={weightUnit}
-							width={38}
-							tickMargin={4}
-							domain={["auto", "auto"]}
-						/>
-						<ChartTooltip
-							cursor={false}
-							content={
-								<ChartTooltipContent
-									indicator="line"
-									labelFormatter={(value) =>
-										new Date(
-											value as string,
-										).toLocaleDateString("en-US", {
-											month: "short",
-											day: "numeric",
-											year: "numeric",
-										})
-									}
-								/>
-							}
-						/>
+						<ComposedChart
+							accessibilityLayer
+							data={filteredData}
+							margin={{
+								top: 10,
+								right: 10,
+								left: 10,
+								bottom: 0,
+							}}
+						>
+							<CartesianGrid
+								vertical={false}
+								strokeDasharray="3 3"
+								opacity={0.4}
+							/>
+							<XAxis
+								dataKey="date"
+								tickLine={false}
+								axisLine={false}
+								tickMargin={8}
+								fontSize={10}
+								interval="preserveStartEnd"
+								tickFormatter={(value: string) =>
+									new Date(value).toLocaleDateString(
+										"en-US",
+										{ month: "short", day: "numeric" },
+									)
+								}
+							/>
+							<YAxis
+								fontSize={10}
+								tickLine={false}
+								axisLine={false}
+								unit={weightUnit}
+								width={38}
+								tickMargin={4}
+								domain={["auto", "auto"]}
+							/>
+							<ChartTooltip
+								cursor={false}
+								content={
+									<ChartTooltipContent
+										indicator="line"
+										labelFormatter={(value) =>
+											new Date(
+												value as string,
+											).toLocaleDateString("en-US", {
+												month: "short",
+												day: "numeric",
+												year: "numeric",
+											})
+										}
+									/>
+								}
+							/>
+							<ChartLegend content={<ChartLegendContent />} />
 
-						{activeLifts.squat && (
+							<Bar
+								dataKey="current"
+								fill="var(--color-current)"
+								fillOpacity={0.4}
+								radius={[2, 2, 0, 0]}
+								maxBarSize={28}
+							/>
 							<Line
 								type="monotone"
-								dataKey="squat"
-								stroke="var(--color-squat)"
+								dataKey="estimated"
+								stroke="var(--color-estimated)"
 								strokeWidth={2}
 								dot={{ r: 3 }}
 								connectNulls
-								isAnimationActive={true}
-								animationDuration={900}
 							/>
-						)}
-						{activeLifts.bench && (
-							<Line
-								type="monotone"
-								dataKey="bench"
-								stroke="var(--color-bench)"
-								strokeWidth={2}
-								dot={{ r: 3 }}
-								connectNulls
-								isAnimationActive={true}
-								animationDuration={1000}
-							/>
-						)}
-						{activeLifts.deadlift && (
-							<Line
-								type="monotone"
-								dataKey="deadlift"
-								stroke="var(--color-deadlift)"
-								strokeWidth={2}
-								dot={{ r: 3 }}
-								connectNulls
-								isAnimationActive={true}
-								animationDuration={1300}
-							/>
-						)}
-						{activeLifts.ohp && (
-							<Line
-								type="monotone"
-								dataKey="ohp"
-								stroke="var(--color-ohp)"
-								strokeWidth={2}
-								dot={{ r: 3 }}
-								connectNulls
-								isAnimationActive={true}
-								animationDuration={1500}
-							/>
-						)}
-					</LineChart>
-				</ChartContainer>
+						</ComposedChart>
+					</ChartContainer>
+				) : (
+					<div className="max-h-70 overflow-y-auto border border-border/40">
+						<Table>
+							<TableHeader className="sticky top-0 bg-card z-10">
+								<TableRow className="border-border/60 hover:bg-transparent">
+									<TableHead className="ftext-2xs fupper fmuted font-semibold">
+										Date
+									</TableHead>
+									<TableHead className="ftext-2xs fupper fmuted font-semibold text-right">
+										Current
+									</TableHead>
+									<TableHead className="ftext-2xs fupper fmuted font-semibold text-right">
+										Est. 1RM
+									</TableHead>
+									<TableHead className="ftext-2xs fupper fmuted font-semibold text-right">
+										Δ
+									</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{tableRows.map((row) => (
+									<TableRow
+										key={row.date}
+										className="border-border/40 hover:bg-muted/40"
+									>
+										<TableCell className="text-xs text-foreground tabular-nums">
+											{new Date(
+												row.date,
+											).toLocaleDateString("en-US", {
+												month: "short",
+												day: "numeric",
+											})}
+										</TableCell>
+										<TableCell className="text-right text-xs tabular-nums text-foreground">
+											{row.current ?? "—"}
+											{row.reps != null && (
+												<span className="ftext-2xs fmuted ml-1">
+													× {row.reps}
+												</span>
+											)}
+										</TableCell>
+										<TableCell className="text-right text-xs tabular-nums text-foreground">
+											{row.estimated ?? "—"}
+										</TableCell>
+										<TableCell
+											className={cn(
+												"text-right text-xs tabular-nums font-semibold",
+												row.change == null && "fmuted",
+												row.change != null &&
+													row.change > 0 &&
+													"text-primary",
+												row.change != null &&
+													row.change < 0 &&
+													"text-destructive",
+											)}
+										>
+											{row.change == null
+												? "—"
+												: `${row.change > 0 ? "+" : ""}${row.change.toFixed(1)}`}
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</div>
+				)}
 			</CardContent>
 		</Card>
 	);
