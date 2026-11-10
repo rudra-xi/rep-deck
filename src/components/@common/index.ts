@@ -4,6 +4,8 @@ import { Footer } from "./footer";
 import { Logo } from "./logo";
 import { Navigation } from "./navigation";
 import { PageTitleCard } from "./page-title-card";
+import { ScheduleHeatmap } from "./schedule-heatmap";
+import { ScheduleHeatmapCard } from "./schedule-heatmap-card";
 import { SectionTitleCard } from "./section-title-card";
 import { UnitProvider, useUnits } from "./unit-provider";
 import { type ViewMode, ViewToggle } from "./view-toggle";
@@ -22,4 +24,6 @@ export {
 	CardsHeader,
 	ViewToggle,
 	type ViewMode,
+	ScheduleHeatmap,
+	ScheduleHeatmapCard,
 };

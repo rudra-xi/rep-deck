@@ -101,6 +101,7 @@
 
 ::-webkit-scrollbar {
 	width: 2px;
+	height: 1px;
 }
 ::-webkit-scrollbar-thumb {
 	background: var(--primary);

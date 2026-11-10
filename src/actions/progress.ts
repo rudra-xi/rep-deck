@@ -1,6 +1,6 @@
 "use server";
 
-import { format, subDays } from "date-fns";
+import { format, isAfter, startOfDay, subDays } from "date-fns";
 import { and, asc, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import { getCurrentUser } from "@/actions/auth";
 import { db } from "@/db";
@@ -371,4 +371,132 @@ export interface WeeklyRadarData {
 	weekLabel: string;
 	sessions: number;
 	target: number;
+}
+
+export type HeatmapDayStatus = "trained" | "rest" | "skipped" | "future";
+
+export interface ScheduleHeatmapDay {
+	date: string;
+	status: HeatmapDayStatus;
+	sessionsCount: number;
+	scheduledDayLabel?: string;
+}
+
+export async function getScheduleHeatmap(
+	weeks = 26,
+): Promise<ScheduleHeatmapDay[]> {
+	const { dbUser } = await getCurrentUser();
+	if (!dbUser) return [];
+
+	const [activePlan] = await db
+		.select({
+			id: programTemplates.id,
+			anchorWeekday: programTemplates.anchorWeekday,
+		})
+		.from(programTemplates)
+		.where(
+			and(
+				eq(programTemplates.userId, dbUser.id),
+				eq(programTemplates.active, true),
+			),
+		)
+		.limit(1);
+
+	let planDays: Array<{
+		dayIndex: number;
+		isRestDay: boolean;
+		label: string;
+	}> = [];
+
+	if (activePlan) {
+		planDays = await db
+			.select({
+				dayIndex: programDayTemplates.dayIndex,
+				isRestDay: programDayTemplates.isRestDay,
+				label: programDayTemplates.label,
+			})
+			.from(programDayTemplates)
+			.where(eq(programDayTemplates.programId, activePlan.id));
+	}
+
+	const weekdayInfo = new Map<number, { isRest: boolean; label: string }>();
+
+	if (activePlan && activePlan.anchorWeekday != null) {
+		for (const d of planDays) {
+			const weekday = (activePlan.anchorWeekday + d.dayIndex - 1) % 7;
+			weekdayInfo.set(weekday, {
+				isRest: d.isRestDay,
+				label: d.label,
+			});
+		}
+	}
+
+	const startDate = subDays(new Date(), weeks * 7 + 7);
+
+	const sessionRows = await db
+		.select({ date: workoutSessions.date })
+		.from(workoutSessions)
+		.where(
+			and(
+				eq(workoutSessions.userId, dbUser.id),
+				gte(workoutSessions.date, startDate),
+			),
+		);
+
+	const sessionsByDate = new Map<string, number>();
+	for (const row of sessionRows) {
+		const iso = format(new Date(row.date), "yyyy-MM-dd");
+		sessionsByDate.set(iso, (sessionsByDate.get(iso) ?? 0) + 1);
+	}
+
+	const today = startOfDay(new Date());
+	const result: ScheduleHeatmapDay[] = [];
+
+	for (let i = weeks * 7 + 6; i >= 0; i--) {
+		const date = subDays(today, i);
+		const iso = format(date, "yyyy-MM-dd");
+		const weekday = date.getDay();
+
+		if (isAfter(date, today)) {
+			result.push({ date: iso, status: "future", sessionsCount: 0 });
+			continue;
+		}
+
+		const count = sessionsByDate.get(iso) ?? 0;
+		if (count > 0) {
+			result.push({
+				date: iso,
+				status: "trained",
+				sessionsCount: count,
+				scheduledDayLabel: weekdayInfo.get(weekday)?.label,
+			});
+			continue;
+		}
+
+		if (activePlan && activePlan.anchorWeekday != null) {
+			const info = weekdayInfo.get(weekday);
+			if (info?.isRest) {
+				result.push({
+					date: iso,
+					status: "rest",
+					sessionsCount: 0,
+					scheduledDayLabel: info.label,
+				});
+			} else if (info) {
+				result.push({
+					date: iso,
+					status: "skipped",
+					sessionsCount: 0,
+					scheduledDayLabel: info.label,
+				});
+			} else {
+				result.push({ date: iso, status: "rest", sessionsCount: 0 });
+			}
+			continue;
+		}
+
+		result.push({ date: iso, status: "skipped", sessionsCount: 0 });
+	}
+
+	return result;
 }
