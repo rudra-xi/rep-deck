@@ -500,3 +500,252 @@ export async function getScheduleHeatmap(
 
 	return result;
 }
+
+export interface PlanDaySessionSummary {
+	id: string;
+	date: string; // formatted "MMM d, yyyy"
+	rawDate: string; // ISO for sorting/clicking
+	topSet: {
+		exerciseName: string;
+		weightKg: number;
+		reps: number;
+	} | null;
+	totalVolumeKg: number;
+	prCount: number;
+	notes: string | null;
+}
+
+export interface PlanDayBreakdown {
+	dayIndex: number;
+	label: string;
+	isRestDay: boolean;
+	sessionCount: number;
+	lastTrainedAt: string | null; // formatted
+	lastTrainedDaysAgo: number | null;
+	bestLift: {
+		exerciseName: string;
+		weightKg: number;
+		reps: number;
+	} | null;
+	averageVolumeKg: number;
+	recentSessions: PlanDaySessionSummary[];
+}
+
+export async function getPlanDayBreakdown(
+	recentPerDay = 3,
+): Promise<PlanDayBreakdown[]> {
+	try {
+		const { dbUser } = await getCurrentUser();
+		if (!dbUser) return [];
+
+		// 1. Active plan + its days.
+		const [activePlan] = await db
+			.select({
+				id: programTemplates.id,
+				name: programTemplates.name,
+				anchorWeekday: programTemplates.anchorWeekday,
+			})
+			.from(programTemplates)
+			.where(
+				and(
+					eq(programTemplates.userId, dbUser.id),
+					eq(programTemplates.active, true),
+				),
+			)
+			.limit(1);
+
+		if (!activePlan) return [];
+
+		const days = await db
+			.select({
+				dayIndex: programDayTemplates.dayIndex,
+				label: programDayTemplates.label,
+				isRestDay: programDayTemplates.isRestDay,
+			})
+			.from(programDayTemplates)
+			.where(eq(programDayTemplates.programId, activePlan.id))
+			.orderBy(programDayTemplates.dayIndex);
+
+		if (days.length === 0) return [];
+
+		// 2. All sessions under this plan.
+		const sessions = await db
+			.select({
+				id: workoutSessions.id,
+				date: workoutSessions.date,
+				dayIndex: workoutSessions.dayIndex,
+				notes: workoutSessions.notes,
+			})
+			.from(workoutSessions)
+			.where(
+				and(
+					eq(workoutSessions.userId, dbUser.id),
+					eq(workoutSessions.programId, activePlan.id),
+				),
+			)
+			.orderBy(desc(workoutSessions.date));
+
+		// 3. All sets for those sessions.
+		const sessionIds = sessions.map((s) => s.id);
+		const sets =
+			sessionIds.length > 0
+				? await db
+						.select({
+							sessionId: workoutSets.sessionId,
+							exerciseName: workoutSets.exerciseName,
+							weight: workoutSets.weight,
+							reps: workoutSets.reps,
+							isPR: workoutSets.isPR,
+						})
+						.from(workoutSets)
+						.where(inArray(workoutSets.sessionId, sessionIds))
+				: [];
+
+		// 4. Bucket sets by session.
+		const setsBySession = new Map<string, typeof sets>();
+		for (const s of sets) {
+			const bucket = setsBySession.get(s.sessionId);
+			if (bucket) bucket.push(s);
+			else setsBySession.set(s.sessionId, [s]);
+		}
+
+		// 5. Bucket sessions by dayIndex.
+		const sessionsByDay = new Map<number, typeof sessions>();
+		for (const s of sessions) {
+			if (s.dayIndex == null) continue;
+			const bucket = sessionsByDay.get(s.dayIndex);
+			if (bucket) bucket.push(s);
+			else sessionsByDay.set(s.dayIndex, [s]);
+		}
+
+		// 6. Build the breakdown per day.
+		const now = new Date();
+
+		return days.map((day): PlanDayBreakdown => {
+			const daySessions = sessionsByDay.get(day.dayIndex) ?? [];
+
+			if (daySessions.length === 0) {
+				return {
+					dayIndex: day.dayIndex,
+					label: toCapitalized(day.label),
+					isRestDay: day.isRestDay,
+					sessionCount: 0,
+					lastTrainedAt: null,
+					lastTrainedDaysAgo: null,
+					bestLift: null,
+					averageVolumeKg: 0,
+					recentSessions: [],
+				};
+			}
+
+			// Most recent session is first (query was desc by date).
+			const lastSession = daySessions[0];
+			const lastDate = new Date(lastSession.date);
+			const daysAgo = Math.floor(
+				(now.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24),
+			);
+
+			// Best lift across all sessions on this day.
+			// Use e1RM (weight × (1 + reps/30)) for comparison, weight
+			// for display.
+			let bestLift: PlanDayBreakdown["bestLift"] = null;
+			let bestE1RM = 0;
+
+			let totalVolumeAcrossSessions = 0;
+
+			for (const s of daySessions) {
+				const sessionSets = setsBySession.get(s.id) ?? [];
+				const sessionVolume = sessionSets.reduce(
+					(acc, set) => acc + Number(set.weight) * set.reps,
+					0,
+				);
+				totalVolumeAcrossSessions += sessionVolume;
+
+				for (const set of sessionSets) {
+					// Skip bodyweight sets for the "best lift" — they
+					// don't have a comparable load.
+					if (Number(set.weight) <= 0) continue;
+
+					const e1rm = Number(set.weight) * (1 + set.reps / 30);
+					if (e1rm > bestE1RM) {
+						bestE1RM = e1rm;
+						bestLift = {
+							exerciseName: toCapitalized(set.exerciseName),
+							weightKg: Number(set.weight),
+							reps: set.reps,
+						};
+					}
+				}
+			}
+
+			const recentSessions = daySessions
+				.slice(0, recentPerDay)
+				.map((s): PlanDaySessionSummary => {
+					const sessionSets = setsBySession.get(s.id) ?? [];
+					const totalVolume = sessionSets.reduce(
+						(acc, set) => acc + Number(set.weight) * set.reps,
+						0,
+					);
+					const prCount = sessionSets.filter(
+						(set) => set.isPR,
+					).length;
+
+					const topSet =
+						sessionSets
+							.filter((set) => Number(set.weight) > 0)
+							.sort((a, b) => {
+								const wDiff =
+									Number(b.weight) - Number(a.weight);
+								if (wDiff !== 0) return wDiff;
+								return b.reps - a.reps;
+							})[0] ?? null;
+
+					const sessionDate = new Date(s.date);
+
+					return {
+						id: s.id,
+						date: sessionDate.toLocaleDateString("en-US", {
+							day: "numeric",
+							month: "short",
+							year: "numeric",
+						}),
+						rawDate: s.date.toISOString(),
+						topSet: topSet
+							? {
+									exerciseName: toCapitalized(
+										topSet.exerciseName,
+									),
+									weightKg: Number(topSet.weight),
+									reps: topSet.reps,
+								}
+							: null,
+						totalVolumeKg: totalVolume,
+						prCount,
+						notes: s.notes,
+					};
+				});
+
+			return {
+				dayIndex: day.dayIndex,
+				label: toCapitalized(day.label),
+				isRestDay: day.isRestDay,
+				sessionCount: daySessions.length,
+				lastTrainedAt: lastDate.toLocaleDateString("en-US", {
+					day: "numeric",
+					month: "short",
+					year: "numeric",
+				}),
+				lastTrainedDaysAgo: daysAgo,
+				bestLift,
+				averageVolumeKg:
+					Math.round(
+						(totalVolumeAcrossSessions / daySessions.length) * 10,
+					) / 10,
+				recentSessions,
+			};
+		});
+	} catch (error) {
+		console.error("Error fetching plan day breakdown:", error);
+		return [];
+	}
+}

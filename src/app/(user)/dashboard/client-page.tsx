@@ -1,13 +1,14 @@
 "use client";
 
-import type { ScheduleHeatmapDay } from "@/actions/progress";
-import { PageTitleCard, ScheduleHeatmapCard, SectionTitleCard } from "@/common";
-import { Separator } from "@/components/ui/separator";
+import type { PlanDayBreakdown, ScheduleHeatmapDay } from "@/actions/progress";
 import {
-	KpiCards,
-	LastWorkoutCard,
-	StrengthChart,
-} from "@/dashboard";
+	PageTitleCard,
+	PlanDayBreakdownCard,
+	ScheduleHeatmapCard,
+	SectionTitleCard,
+} from "@/common";
+import { Separator } from "@/components/ui/separator";
+import { KpiCards, LastWorkoutCard, StrengthChart } from "@/dashboard";
 import { useDashboardData } from "@/hooks";
 
 interface DashboardClientPageProps {
@@ -15,11 +16,17 @@ interface DashboardClientPageProps {
 		ReturnType<typeof import("@/actions/dashboard").getDashboardData>
 	>;
 	scheduleData?: ScheduleHeatmapDay[];
+	breakdownData?: PlanDayBreakdown[];
+	anchorWeekday?: number | null;
+	programName?: string;
 }
 
 export function DashboardClientPage({
 	initialData,
 	scheduleData,
+	breakdownData = [],
+	anchorWeekday,
+	programName,
 }: DashboardClientPageProps) {
 	const { data, loading } = useDashboardData();
 
@@ -38,13 +45,24 @@ export function DashboardClientPage({
 
 			<Separator />
 
-			{/* Schedule Heatmap — full width, own row */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Training Consistency" />
 				<ScheduleHeatmapCard
 					data={scheduleData ?? []}
 					weeks={24}
 					title="Last 24 weeks"
+				/>
+			</div>
+
+			<Separator />
+
+			{/* Per-day breakdown */}
+			<div className="space-y-3 w-full">
+				<SectionTitleCard title="Per-Day Breakdown" />
+				<PlanDayBreakdownCard
+					data={breakdownData}
+					anchorWeekday={anchorWeekday}
+					programName={programName}
 				/>
 			</div>
 

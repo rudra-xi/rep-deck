@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { ScheduleHeatmapDay } from "@/actions/progress";
+import type { PlanDayBreakdown, ScheduleHeatmapDay } from "@/actions/progress";
 import {
 	PageTitleCard,
+	PlanDayBreakdownCard,
 	ScheduleHeatmapCard,
 	SectionTitleCard,
 	WeightBodyFatTrend,
@@ -20,10 +21,16 @@ import {
 
 interface ProgressClientPageProps {
 	scheduleData?: ScheduleHeatmapDay[];
+	initialBreakdown?: PlanDayBreakdown[];
+	anchorWeekday?: number | null;
+	programName?: string;
 }
 
 export default function ProgressClientPage({
 	scheduleData = [],
+	initialBreakdown = [],
+	anchorWeekday = null,
+	programName,
 }: ProgressClientPageProps) {
 	const [timeRange, setTimeRange] = useState<"2M" | "3M" | "6M" | "1Y">("3M");
 
@@ -34,28 +41,38 @@ export default function ProgressClientPage({
 				subTitle="Track strength, size, and body composition over time"
 			/>
 
+			{/* ── Activity & Consistency ─────────────────────────── */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Activity & Consistency" />
-				<div className="space-y-6 w-full">
-					<ScheduleHeatmapCard
-						data={scheduleData}
-						weeks={52}
-						title="Last 52 weeks"
-					/>
 
+				<div className="space-y-6 w-full">
+					{/* Row 1: Breakdown (2 cols) + Right column (Heatmap + Frequency) */}
 					<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">
-						<div className="lg:col-span-2 order-2 lg:order-1">
-							<SessionHistoryList />
+						<div className="lg:col-span-2">
+							<PlanDayBreakdownCard
+								data={initialBreakdown}
+								anchorWeekday={anchorWeekday}
+								programName={programName}
+							/>
 						</div>
-						<div className="lg:col-span-1 order-1 lg:order-2">
+						<div className="lg:col-span-1 min-w-0 flex flex-col gap-6">
+							<ScheduleHeatmapCard
+								data={scheduleData}
+								weeks={52}
+								title="Last 52 weeks"
+							/>
 							<TrainingFrequencyCard />
 						</div>
 					</div>
+
+					{/* Row 2: Session History full width */}
+					<SessionHistoryList />
 				</div>
 			</div>
 
 			<Separator />
 
+			{/* ── Body Composition ───────────────────────────────── */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Body Composition" />
 				<WeightBodyFatTrend />
@@ -63,6 +80,7 @@ export default function ProgressClientPage({
 
 			<Separator />
 
+			{/* ── Measurements Progress ──────────────────────────── */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Measurements Progress" />
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
@@ -73,6 +91,7 @@ export default function ProgressClientPage({
 
 			<Separator />
 
+			{/* ── Strength Performance ───────────────────────────── */}
 			<div className="space-y-3 w-full">
 				<SectionTitleCard title="Strength Performance" />
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full">
