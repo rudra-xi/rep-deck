@@ -525,3 +525,36 @@ export function AvatarSkeleton({
 		size === "sm" ? "size-6" : size === "lg" ? "size-10" : "size-8";
 	return <Skeleton className={cn("rounded-none", sizeClass, className)} />;
 }
+
+export function PlanDayBreakdownSkeleton({ rows = 4 }: { rows?: number }) {
+	return (
+		<Card size="sm" className="fcard-flat card-ease">
+			<CardsHeaderSkeleton titleWidth="w-40" />
+			<CardContent className="p-4 pt-1 fcol3">
+				{Array.from({ length: rows }).map((_, i) => (
+					<div
+						key={i}
+						className="fcol gap-2 border border-border/40 bg-background/50 p-3"
+					>
+						<div className="fcb">
+							<div className="fcy gap-2">
+								<Skeleton className="h-3.5 w-24 rounded-sm" />
+								<Skeleton className="h-3 w-8 rounded-sm" />
+							</div>
+							<Skeleton className="h-4 w-16 rounded-none" />
+						</div>
+						<div className="grid grid-cols-3 gap-2">
+							<Skeleton className="h-12 rounded-none" />
+							<Skeleton className="h-12 rounded-none" />
+							<Skeleton className="h-12 rounded-none" />
+						</div>
+						<div className="fcol gap-1">
+							<Skeleton className="h-7 w-full rounded-none" />
+							<Skeleton className="h-7 w-full rounded-none" />
+						</div>
+					</div>
+				))}
+			</CardContent>
+		</Card>
+	);
+}

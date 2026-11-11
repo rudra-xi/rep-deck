@@ -4,6 +4,7 @@ import { Footer } from "./footer";
 import { Logo } from "./logo";
 import { Navigation } from "./navigation";
 import { PageTitleCard } from "./page-title-card";
+import { PlanDayBreakdownCard } from "./plan-day-breakdown";
 import { ScheduleHeatmap } from "./schedule-heatmap";
 import { ScheduleHeatmapCard } from "./schedule-heatmap-card";
 import { SectionTitleCard } from "./section-title-card";
@@ -26,4 +27,5 @@ export {
 	type ViewMode,
 	ScheduleHeatmap,
 	ScheduleHeatmapCard,
+	PlanDayBreakdownCard,
 };
