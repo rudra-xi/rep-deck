@@ -1,13 +1,19 @@
 "use client";
 
 import { CalendarDotsIcon } from "@phosphor-icons/react";
+import Link from "next/link";
 import type { ScheduleHeatmapDay } from "@/actions/progress";
 import { CardsHeader } from "@/common";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScheduleHeatmap } from "./schedule-heatmap";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "../ui/empty";
 import { Button } from "../ui/button";
-import Link from "next/link";
+import {
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyTitle,
+} from "../ui/empty";
+import { ScheduleHeatmap } from "./schedule-heatmap";
 
 interface ScheduleHeatmapCardProps {
 	data: ScheduleHeatmapDay[];

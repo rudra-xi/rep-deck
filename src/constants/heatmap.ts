@@ -10,6 +10,21 @@ export const DAY_LABELS = [
 	{ key: "sun", short: "S", full: "Sunday" },
 ] as const;
 
+export const HEATMAP_MONTHS = [
+	"Jan",
+	"Feb",
+	"Mar",
+	"Apr",
+	"May",
+	"Jun",
+	"Jul",
+	"Aug",
+	"Sep",
+	"Oct",
+	"Nov",
+	"Dec",
+] as const;
+
 export const STATUS_STYLE: Record<
 	HeatmapDayStatus,
 	{ className: string; label: string; description: string }

@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { useMemo } from "react";
 import type { ScheduleHeatmapDay } from "@/actions/progress";
-import { DAY_LABELS, STATUS_STYLE } from "@/constants";
+import { DAY_LABELS, HEATMAP_MONTHS, STATUS_STYLE } from "@/constants";
 import { useMediaQuery } from "@/hooks";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ interface ScheduleHeatmapProps {
 
 interface WeekGrid {
 	key: string;
+	weekStart: Date;
 	days: Array<ScheduleHeatmapDay | null>;
 }
 
@@ -46,7 +47,7 @@ export function ScheduleHeatmap({ data, weeks = 26 }: ScheduleHeatmapProps) {
 				days.push(byDate.get(iso) ?? null);
 			}
 
-			grid.push({ key: weekKey, days });
+			grid.push({ key: weekKey, weekStart, days });
 		}
 		return { grid };
 	}, [data, displayWeeks]);
@@ -55,56 +56,98 @@ export function ScheduleHeatmap({ data, weeks = 26 }: ScheduleHeatmapProps) {
 	const skippedCount = data.filter((d) => d.status === "skipped").length;
 	const restCount = data.filter((d) => d.status === "rest").length;
 
+	// Month labels — show the month for a week column only when
+	// the month changes from the previous week. This avoids
+	// repeating "Jan Jan Jan Jan Jan..." across 52 columns.
+	const monthLabels = grid.map((week, idx) => {
+		const prev = idx > 0 ? grid[idx - 1].weekStart : null;
+		const currMonth = week.weekStart.getMonth();
+		const prevMonth = prev?.getMonth();
+		return prevMonth !== currMonth ? HEATMAP_MONTHS[currMonth] : null;
+	});
+
+	// ── Rectangle dimensions ───────────────────────────────────
+	// Mobile: 20×16 (wider than tall)
+	// Desktop: 24×18 (larger, still wide)
+	const cellW = "w-8 lg:w-15"; // 20px → 24px
+	const cellH = "h-3 lg:h-4"; // 16px → 18px
+	const gap = "gap-1 lg:gap-1.5";
+
 	return (
 		<div className="fcol gap-3">
 			<div className="w-full overflow-x-auto pb-1">
 				<div className="flex gap-2 items-start w-max">
 					{/* Day-of-week labels */}
-					<div className="fcol gap-1 sm:gap-1.5">
+					<div className={cn("fcol", gap)}>
 						{DAY_LABELS.map((day, i) => (
 							<span
 								key={day.key}
-								className="ftext-2xs fmuted fupper flex items-center h-4 sm:h-5 leading-none"
+								className={cn(
+									"ftext-2xs fmuted fupper flex items-center leading-none",
+									cellH,
+								)}
 							>
 								{i % 2 === 0 ? day.short : ""}
 							</span>
 						))}
 					</div>
 
-					{/* Grid */}
-					<div className="flex gap-1 sm:gap-1.5">
-						{grid.map((week) => (
-							<div
-								key={week.key}
-								className="fcol gap-1 sm:gap-1.5"
-							>
-								{week.days.map((day, di) => {
-									if (!day) {
+					{/* Grid + month labels */}
+					<div className="fcol gap-1">
+						{/* Month labels row */}
+						<div className={cn("flex", gap)}>
+							{monthLabels.map((label, idx) => (
+								<div
+									key={grid[idx].key}
+									className={cn(
+										"ftext-3xs fmuted font-semibold fupper",
+										"shrink-0",
+										cellW,
+									)}
+								>
+									{label ?? ""}
+								</div>
+							))}
+						</div>
+
+						{/* Heatmap grid */}
+						<div className={cn("flex", gap)}>
+							{grid.map((week) => (
+								<div key={week.key} className={cn("fcol", gap)}>
+									{week.days.map((day, di) => {
+										if (!day) {
+											return (
+												<div
+													key={`empty-${week.key}-${di}`}
+													className={cn(
+														"rounded-none border border-border/10",
+														cellW,
+														cellH,
+													)}
+												/>
+											);
+										}
+										const style = STATUS_STYLE[day.status];
 										return (
 											<div
-												key={`empty-${week.key}-${di}`}
-												className="size-4 sm:size-5 rounded-none border border-border/10"
+												key={day.date}
+												className={cn(
+													"rounded-none border transition-colors",
+													cellW,
+													cellH,
+													style.className,
+												)}
+												title={`${format(new Date(day.date), "PPP")} · ${style.description}${
+													day.scheduledDayLabel
+														? ` (${day.scheduledDayLabel})`
+														: ""
+												}`}
 											/>
 										);
-									}
-									const style = STATUS_STYLE[day.status];
-									return (
-										<div
-											key={day.date}
-											className={cn(
-												"size-4 sm:size-5 rounded-none border",
-												style.className,
-											)}
-											title={`${format(new Date(day.date), "PPP")} · ${style.description}${
-												day.scheduledDayLabel
-													? ` (${day.scheduledDayLabel})`
-													: ""
-											}`}
-										/>
-									);
-								})}
-							</div>
-						))}
+									})}
+								</div>
+							))}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -123,7 +166,7 @@ export function ScheduleHeatmap({ data, weeks = 26 }: ScheduleHeatmapProps) {
 						<div key={status} className="fcy gap-2">
 							<span
 								className={cn(
-									"size-3 rounded-none border",
+									"h-3 w-5 rounded-none border",
 									style.className,
 								)}
 							/>
